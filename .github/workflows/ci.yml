@@ -8,6 +8,9 @@ jobs:
       DISPLAY: :99
     steps:
       - uses: actions/checkout@v3
+        with:
+          # We need to fetch all branches and commits so that Nx affected has a base to compare against.
+          fetch-depth: 0
       - name: Set up Xvfb
         run: |
           sudo apt-get update
@@ -21,8 +24,8 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       # Set convenience variables. Source: https://nx.dev/ci/recipes/set-up/monorepo-ci-github-actions#get-the-commit-of-the-last-successful-build
-      - name: Get the commit of the last successful build
-        uses: nrwl/nx-set-shas@v3
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v4
       # This line is needed for nx affected to work when CI is running on a PR
       - run: git branch --track main origin/main
         if: ${{ github.event_name == 'pull_request' }}
