@@ -6,6 +6,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DISPLAY: :99
+    permissions:
+      contents: "read"
+      actions: "read"
     steps:
       - uses: actions/checkout@v3
         with:
