@@ -1,0 +1,1 @@
+export { OrganizationGeneralPage } from "./General";

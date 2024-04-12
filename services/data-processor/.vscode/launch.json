@@ -1,0 +1,40 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Python Debugger: Current File",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/../hello-sky"
+    },
+    {
+      "name": "Debug build index",
+      "type": "python",
+      "request": "launch",
+      "program": "src/build.py",
+      "args": [
+        "--organization_id",
+        "65d7cfecff1b3ee6872373d9",
+        "--index_name",
+        "65c4d1a039766b2df9f46a8f"
+      ],
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "name": "Debug data-processor",
+      "type": "python",
+      "request": "launch",
+      "program": "src/main.py",
+      "cwd": "${workspaceFolder}",
+      "justMyCode": false,
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}

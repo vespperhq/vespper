@@ -1,0 +1,1 @@
+export { OrgTabs } from "./Tabs";

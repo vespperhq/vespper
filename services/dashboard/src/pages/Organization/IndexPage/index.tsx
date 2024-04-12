@@ -1,0 +1,1 @@
+export { OrgIndexPage } from "./IndexPage";

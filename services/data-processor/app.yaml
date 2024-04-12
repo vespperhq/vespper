@@ -1,0 +1,18 @@
+service: merlinn-data-processor
+runtime: python310
+env: standard
+entrypoint: python src/main.py
+
+instance_class: F4_1G
+inbound_services:
+  - warmup
+
+env_variables:
+  RELOAD: false
+  GCLOUD_PROJECT: merlinn
+  NLTK_DATA: /tmp/nltk_cache
+  LLAMA_INDEX_CACHE_DIR: /tmp/llama_index_cache
+  MONGO_URI: $MONGO_URI
+  PINECONE_API_KEY: $PINECONE_API_KEY
+  OPENAI_API_KEY: $OPENAI_API_KEY
+  ATLASSIAN_CLIENT_ID: $ATLASSIAN_CLIENT_ID
