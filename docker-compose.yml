@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+    volumes:
+      - ./data/dev/mongo:/data/db
+    ports:
+      - "27017:27017"
+  api:
+    build:
+      context: ../api
+      dockerfile: ../api/Dockerfile.dev
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - MONGO_URI=mongodb://localhost:27017/assistant-db
+      - REDIS_URL=redis://localhost:6379
+    volumes:
+      - ../api/src:/src
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo

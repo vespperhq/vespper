@@ -2,14 +2,22 @@
   "name": "nexus",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "prepare": "husky"
+  },
   "private": true,
   "dependencies": {},
   "devDependencies": {
+    "@nrwl/eslint-plugin-nx": "^18.2.4",
+    "@nrwl/linter": "^18.2.4",
     "@nx/js": "18.2.4",
-    "nx": "18.2.4"
+    "@nxlv/python": "^18.0.1",
+    "husky": "^9.0.11",
+    "nx": "18.2.4",
+    "prettier": "^3.2.5"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "services/*"
   ]
 }
