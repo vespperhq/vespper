@@ -1,0 +1,79 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Slackbot: Debug",
+      "cwd": "${workspaceFolder}/services/slackbot",
+      "program": "${workspaceFolder}/services/slackbot/src/app.js",
+      "envFile": "${workspaceFolder}/services/slackbot/.env"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "API: Debug",
+      "program": "${workspaceFolder}/services/api/node_modules/ts-node/dist/bin.js",
+      "args": ["${workspaceFolder}/services/api/src/server.ts"],
+      "sourceMaps": true,
+      "cwd": "${workspaceFolder}/services/api/",
+      "envFile": "${workspaceFolder}/services/api/.env",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "API: Debug TypeScript",
+      "program": "${workspaceFolder}/services/api/node_modules/ts-node/dist/bin.js",
+      "args": ["${file}"],
+      "sourceMaps": true,
+      "cwd": "${workspaceFolder}/services/api/",
+      "internalConsoleOptions": "neverOpen",
+      "envFile": "${workspaceFolder}/services/api/.env"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "API: Debug Jest current file",
+      "program": "${workspaceFolder}/services/api/node_modules/.bin/jest",
+      "args": ["${file}", "--config", "jest.config.js"],
+      "console": "integratedTerminal",
+      "windows": {
+        "program": "${workspaceFolder}/services/api/node_modules/jest/bin/jest"
+      }
+    },
+    {
+      "name": "Data Processor: Debug Current File",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/services/data-processor/"
+    },
+    {
+      "name": "Data Processor: Debug build index",
+      "request": "launch",
+      "program": "src/build.py",
+      "args": [
+        "--organization_id",
+        "65d7cfecff1b3ee6872373d9",
+        "--index_name",
+        "65c4d1a039766b2df9f46a8f"
+      ],
+      "cwd": "${workspaceFolder}/services/data-processor/",
+      "justMyCode": false,
+      "envFile": "${workspaceFolder}/services/data-processor/.env"
+    },
+    {
+      "name": "Data Processor: Debug",
+      "request": "launch",
+      "program": "src/main.py",
+      "cwd": "${workspaceFolder}/services/data-processor/",
+      "justMyCode": false,
+      "envFile": "${workspaceFolder}/services/data-processor/.env"
+    }
+  ]
+}
