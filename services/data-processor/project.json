@@ -57,7 +57,8 @@
         "{workspaceRoot}/coverage/proj1"
       ],
       "options": {
-        "command": "poetry run pytest tests/"
+        "command": "poetry run pytest tests/",
+        "cwd": "./services/data-processor"
       }
     }
   },

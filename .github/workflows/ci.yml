@@ -1,0 +1,94 @@
+on: push
+
+name: Run CI
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      DISPLAY: :99
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Xvfb
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+      - name: Start Xvfb
+        run: Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      # Set convenience variables. Source: https://nx.dev/ci/recipes/set-up/monorepo-ci-github-actions#get-the-commit-of-the-last-successful-build
+      - name: Get the commit of the last successful build
+        uses: nrwl/nx-set-shas@v3
+      # This line is needed for nx affected to work when CI is running on a PR
+      - run: git branch --track main origin/main
+        if: ${{ github.event_name == 'pull_request' }}
+      - name: Run lint
+        run: npx nx affected -t lint
+      - name: Run tests
+        run: npx nx affected -t test
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   needs: test
+  #   if: github.ref == 'refs/heads/main' # Run deploy only for the main branch
+  #   permissions:
+  #     contents: "read"
+  #     id-token: "write"
+  #   steps:
+  #     - name: Checkout Repository
+  #       uses: actions/checkout@v2
+  #     - name: Load app secrets
+  #       uses: 73h/gae-app-yaml-replace-env-variables@v0.3
+  #       env:
+  #         GCLOUD_PROJECT: ${{ secrets.GCLOUD_PROJECT }}
+  #         AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
+  #         AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
+  #         AUTH0_TEMPORARY_PASSWORD: ${{ secrets.AUTH0_TEMPORARY_PASSWORD }}
+  #         ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
+  #         GH_APP_CLIENT_ID: ${{ secrets.GH_APP_CLIENT_ID }}
+  #         GH_APP_CLIENT_SECRET: ${{ secrets.GH_APP_CLIENT_SECRET }}
+  #         LANGFUSE_PROJECT_ID: ${{ secrets.LANGFUSE_PROJECT_ID }}
+  #         LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+  #         LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+  #         METADATA_ENCRYPTION_KEY: ${{ secrets.METADATA_ENCRYPTION_KEY }}
+  #         MONGO_URI: ${{ secrets.MONGO_URI }}
+  #         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+  #         PAGERDUTY_CLIENT_ID: ${{ secrets.PAGERDUTY_CLIENT_ID }}
+  #         PAGERDUTY_CLIENT_SECRET: ${{ secrets.PAGERDUTY_CLIENT_SECRET }}
+  #         PAGERDUTY_SECRET: ${{ secrets.PAGERDUTY_SECRET }}
+  #         SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+  #         SLACK_APP_TOKEN: ${{ secrets.SLACK_APP_TOKEN }}
+  #         SLACK_CLIENT_ID: ${{ secrets.SLACK_CLIENT_ID }}
+  #         SLACK_CLIENT_SECRET: ${{ secrets.SLACK_CLIENT_SECRET }}
+  #         NOTION_CLIENT_ID: ${{ secrets.NOTION_CLIENT_ID }}
+  #         NOTION_CLIENT_SECRET: ${{ secrets.NOTION_CLIENT_SECRET }}
+  #         ATLASSIAN_CLIENT_ID: ${{ secrets.ATLASSIAN_CLIENT_ID }}
+  #         ATLASSIAN_CLIENT_SECRET: ${{ secrets.ATLASSIAN_CLIENT_SECRET }}
+  #         SLACK_EVENTS_CHANNEL_ID: ${{ secrets.SLACK_EVENTS_CHANNEL_ID }}
+  #         SLACK_NOTIFIER_TOKEN: ${{ secrets.SLACK_NOTIFIER_TOKEN }}
+  #         PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+  #         MIXPANEL_PROJECT_TOKEN: ${{ secrets.MIXPANEL_PROJECT_TOKEN }}
+  #       with:
+  #         app_yaml_path: "app.yaml"
+  #     - name: Declare variables
+  #       shell: bash
+  #       run: |
+  #         sha_short=$(git rev-parse --short "$GITHUB_SHA")
+  #         branch=$(echo ${GITHUB_REF#refs/heads/})
+  #         echo "image_id=${{ vars.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ vars.APP }}/$branch-$sha_short:production" >> "$GITHUB_ENV"
+  #     - name: Authenticate to Google Cloud
+  #       uses: "google-github-actions/auth@v0.4.0"
+  #       with:
+  #         workload_identity_provider: "projects/${{ secrets.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/ci-pool/providers/github-actions"
+  #         service_account: "app-engine-deployer@merlinn.iam.gserviceaccount.com"
+  #     - name: "Set up Google Cloud SDK"
+  #       uses: "google-github-actions/setup-gcloud@v2"
+  #       with:
+  #         version: ">= 363.0.0"
+  #         project_id: "${{ secrets.GCP_PROJECT_ID }}"
+  #     - name: Deploy to App Engine
+  #       run: |
+  #         gcloud app deploy app.yaml

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"No test specified yet!\"",
     "start": "node src/app.js",
     "dev": "npx env-cmd nodemon src/app.js",
     "lint": "npx nx lint"
