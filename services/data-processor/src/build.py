@@ -30,7 +30,7 @@ def is_index_alive(pc: Pinecone, index_name: str):
     try:
         pc.describe_index(index_name)
         return True
-    except:
+    except Exception:
         return False
 
 

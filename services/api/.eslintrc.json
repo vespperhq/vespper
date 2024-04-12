@@ -1,5 +1,5 @@
 {
-  "extends": ["../../.eslintrc.json"],
+  "extends": ["../../.eslintrc.json", "plugin:@typescript-eslint/recommended"],
   "env": {
     "browser": true,
     "es2021": true,

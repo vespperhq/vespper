@@ -135,7 +135,7 @@ export class SlackClient {
   waitAndFetchMessage = async (
     channel_id: string,
     content: string,
-    ms: number = 1000,
+    ms = 1000,
   ) => {
     let messages;
     let ogMessage;

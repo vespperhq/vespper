@@ -65,8 +65,8 @@ export function nodesToText(nodes: TextNode[], similarities: number[]) {
 export async function semanticSearch(
   query: string,
   indexName: string,
-  topK: number = 5,
-  textify: boolean = false,
+  topK = 5,
+  textify = false,
 ) {
   const vector = await embedModel.getTextEmbedding(query);
   const pc = new Pinecone({ apiKey: process.env.PINECONE_API_KEY as string });

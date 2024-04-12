@@ -1,6 +1,6 @@
 export function flatten(
   obj: Record<string, unknown>,
-  parentKey: string = "",
+  parentKey = "",
 ): Record<string, unknown> {
   let result: Record<string, unknown> = {};
 

@@ -245,10 +245,6 @@ export interface AtlassianIntegration extends BaseConnection {
   };
 }
 
-export interface ConfluenceIntegration extends AtlassianIntegration {}
-
-export interface JiraIntegration extends AtlassianIntegration {}
-
 export interface MongoDBIntegration extends BaseConnection {
   credentials: {
     dbUrl: string;
@@ -263,8 +259,7 @@ export type IIntegration =
   | DataDogIntegration
   | GithubIntegration
   | NotionIntegration
-  | ConfluenceIntegration
-  | JiraIntegration
+  | AtlassianIntegration
   | MongoDBIntegration;
 
 export interface IWebhook extends BaseConnection {

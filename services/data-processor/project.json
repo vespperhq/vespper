@@ -44,16 +44,16 @@
     },
     "lint": {
       "executor": "@nxlv/python:ruff-check",
-      "outputs": ["{workspaceRoot}/reports/proj1/pylint.txt"],
+      "outputs": ["{workspaceRoot}/reports/ruff.txt"],
       "options": {
-        "outputFile": "reports/proj1/pylint.txt",
+        "outputFile": "reports/ruff.txt",
         "lintFilePatterns": ["./**/*.py"]
       }
     },
     "test": {
       "executor": "@nxlv/python:run-commands",
       "outputs": [
-        "{workspaceRoot}/reports/proj1/unittests",
+        "{workspaceRoot}/reports/unittests",
         "{workspaceRoot}/coverage/proj1"
       ],
       "options": {

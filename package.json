@@ -8,8 +8,7 @@
   "private": true,
   "dependencies": {},
   "devDependencies": {
-    "@nrwl/eslint-plugin-nx": "^18.2.4",
-    "@nrwl/linter": "^18.2.4",
+    "@nx/eslint": "18.2.4",
     "@nx/js": "18.2.4",
     "@nxlv/python": "^18.0.1",
     "husky": "^9.0.11",

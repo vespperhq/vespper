@@ -5,5 +5,13 @@
     "appsDir": "services",
     "libsDir": "packages"
   },
-  "plugins": ["@nxlv/python"]
+  "plugins": [
+    "@nxlv/python",
+    {
+      "plugin": "@nx/eslint/plugin",
+      "options": {
+        "targetName": "lint"
+      }
+    }
+  ]
 }

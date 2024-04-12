@@ -37,7 +37,7 @@
     "watch": "npx nodemon -L --exec \"npx ts-node src/server.ts\" --ext ts",
     "dev": "npx env-cmd -f .env concurrently \"yarn run tunnel\" \"yarn run watch\"",
     "tunnel": "source .env && ngrok http 3000 --domain=$TUNNEL_URL",
-    "lint": "eslint . --ext ts",
+    "lint": "nx lint --ext ts",
     "test": "jest",
     "prepare": "husky install",
     "typecheck": "tsc -p tsconfig.json --noEmit"
@@ -71,5 +71,18 @@
   "engines": {
     "node": ">=10.16.3"
   },
-  "engineStrict": true
+  "engineStrict": true,
+  "nx": {
+    "includedScripts": [
+      "start",
+      "build",
+      "gcp-build",
+      "watch",
+      "dev",
+      "tunnel",
+      "test",
+      "prepare",
+      "typecheck"
+    ]
+  }
 }

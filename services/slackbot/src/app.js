@@ -18,17 +18,22 @@ const app = new App({
     fetchInstallation: async (installQuery) => {
       // Bolt will pass your handler an installQuery object
       // Change the lines below so they fetch from your database
-      if (installQuery.isEnterpriseInstall && installQuery.enterpriseId !== undefined) {
+      if (
+        installQuery.isEnterpriseInstall &&
+        installQuery.enterpriseId !== undefined
+      ) {
         // handle org wide app installation lookup
-        return await database.get(installQuery.enterpriseId);
+        // return await database.get(installQuery.enterpriseId);
+        return null;
       }
       if (installQuery.teamId !== undefined) {
         // single team app installation lookup
-        return await database.get(installQuery.teamId);
+        // return await database.get(installQuery.teamId);
+        return null;
       }
-      throw new Error('Failed fetching installation');
-    }
-  }
+      throw new Error("Failed fetching installation");
+    },
+  },
 });
 
 app.event("reaction_added", async ({ event, client }) => {

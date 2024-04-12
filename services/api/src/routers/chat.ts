@@ -77,9 +77,9 @@ router.post(
     }
 
     let output: string | null = null;
-    let traceId: string = "";
-    let traceURL: string = "";
-    let observationId: string = "";
+    let traceId = "";
+    let traceURL = "";
+    let observationId = "";
     const chatMessages = parseMessages(messages);
     const message = chatMessages[chatMessages.length - 1];
 
