@@ -3,6 +3,26 @@ import { program } from "commander";
 import { spawn } from "child_process";
 import fs from "fs";
 
+const variables = [
+  "CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE",
+  "GOOGLE_APPLICATION_CREDENTIALS",
+  "CLOUDSDK_PROJECT",
+  "CLOUDSDK_CORE_PROJECT",
+  "GCP_PROJECT",
+  "GCLOUD_PROJECT",
+  "GOOGLE_CLOUD_PROJECT",
+];
+for (const variable of variables) {
+  if (!process.env[variable]) {
+    console.error(`Environment variable "${variable}" is not provided.`);
+    process.exit(1);
+  } else {
+    console.log(
+      `Environment variable "${variable}" is provided. Value: ${process.env[variable]}`,
+    );
+  }
+}
+
 program.arguments("<service_names...>");
 program.parse();
 

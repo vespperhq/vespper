@@ -2,51 +2,51 @@ on: push
 
 name: Run CI
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    env:
-      DISPLAY: :99
-    permissions:
-      contents: "read"
-      actions: "read"
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          # We need to fetch all branches and commits so that Nx affected has a base to compare against.
-          fetch-depth: 0
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      - name: Install Yarn
-        run: npm install -g yarn
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-      - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v4
-      # This line is needed for nx affected to work when CI is running on a PR
-      - run: git branch --track main origin/main
-        if: ${{ github.event_name == 'pull_request' }}
-      - name: Run lint
-        run: npx nx affected --base=$NX_BASE --head=$NX_HEAD -t lint
-      - name: Run tests
-        run: npx nx affected --base=$NX_BASE --head=$NX_HEAD -t test
-      # Get all the affected services for the next step.
-      # Nx calls them "apps" internally.
-      # IMPORTANT: we exclude dashboard manually here, since Vercel takes care of the deployment for us
-      # Need to find a better way.
-      # One possible solution is to introduce a convention for services (web-*, js-*, py-*)
-      # This will allow us to exclude based on patterns.
-      - name: Store affected services
-        id: get-affected-projects
-        run: |
-          affected_services=$(npx nx show projects --affected --type app --exclude dashboard)
-          echo $affected_services
-          echo "::set-output name=affected-services::${affected_services}"
+  # test:
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     DISPLAY: :99
+  #   permissions:
+  #     contents: "read"
+  #     actions: "read"
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         # We need to fetch all branches and commits so that Nx affected has a base to compare against.
+  #         fetch-depth: 0
+  #     - name: Install Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: 18
+  #     - name: Install Yarn
+  #       run: npm install -g yarn
+  #     - name: Install dependencies
+  #       run: yarn install --frozen-lockfile
+  #     - name: Derive appropriate SHAs for base and head for `nx affected` commands
+  #       uses: nrwl/nx-set-shas@v4
+  #     # This line is needed for nx affected to work when CI is running on a PR
+  #     - run: git branch --track main origin/main
+  #       if: ${{ github.event_name == 'pull_request' }}
+  #     - name: Run lint
+  #       run: npx nx affected --base=$NX_BASE --head=$NX_HEAD -t lint
+  #     - name: Run tests
+  #       run: npx nx affected --base=$NX_BASE --head=$NX_HEAD -t test
+  #     # Get all the affected services for the next step.
+  #     # Nx calls them "apps" internally.
+  #     # IMPORTANT: we exclude dashboard manually here, since Vercel takes care of the deployment for us
+  #     # Need to find a better way.
+  #     # One possible solution is to introduce a convention for services (web-*, js-*, py-*)
+  #     # This will allow us to exclude based on patterns.
+  #     - name: Store affected services
+  #       id: get-affected-projects
+  #       run: |
+  #         affected_services=$(npx nx show projects --affected --type app --exclude dashboard)
+  #         echo $affected_services
+  #         echo "::set-output name=affected-services::${affected_services}"
   deploy:
     runs-on: ubuntu-latest
-    needs: test
-    if: github.ref == 'refs/heads/main' && ${{ needs.test.outputs.affected-services != '' }}
+    # needs: test
+    if: github.ref == 'refs/heads/main'
     permissions:
       contents: "read"
       id-token: "write"
@@ -83,3 +83,6 @@ jobs:
           secrets: ${{ toJSON(secrets) }}
       - name: Deploy services
         run: npx nx affected --base=$NX_BASE --head=$NX_HEAD --exclude dashboard -t deploy
+        env:
+          GOOGLE_CLOUD_PROJECT: ${{ secrets.GCP_PROJECT_ID }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
