@@ -41,6 +41,7 @@ jobs:
         id: get-affected-projects
         run: |
           affected_services=$(npx nx show projects --affected --type app --exclude dashboard)
+          echo $affected_services
           echo "::set-output name=affected-services::${affected_services}"
   deploy:
     runs-on: ubuntu-latest

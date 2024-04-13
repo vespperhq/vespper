@@ -22,7 +22,7 @@ app.use(bodyParser.json({ limit: "1mb" }));
 app.use(express.static("public"));
 
 app.get("/", (req: Request, res: Response) => {
-  return res.status(200).send("Merlinn API 🚀");
+  return res.status(200).send("Merlinn API! 🚀");
 });
 
 // Attach routers to app
