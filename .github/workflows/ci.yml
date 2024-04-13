@@ -54,6 +54,7 @@ jobs:
     permissions:
       contents: "read"
       id-token: "write"
+      actions: "read"
     steps:
       - uses: actions/checkout@v3
         with:
