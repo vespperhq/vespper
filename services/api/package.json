@@ -40,7 +40,8 @@
     "lint": "nx lint --ext ts",
     "test": "jest",
     "prepare": "husky install",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "deploy": "npx ts-node tools/scripts/deploy.ts api"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.23.3",

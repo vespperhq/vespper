@@ -15,6 +15,17 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Workspace: Deploy",
+      "program": "${workspaceFolder}/node_modules/ts-node/dist/bin.js",
+      "args": ["${workspaceFolder}/tools/scripts/deploy.ts", "api"],
+      "sourceMaps": true,
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "API: Debug",
       "program": "${workspaceFolder}/services/api/node_modules/ts-node/dist/bin.js",
       "args": ["${workspaceFolder}/services/api/src/server.ts"],

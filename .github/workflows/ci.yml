@@ -36,65 +36,45 @@ jobs:
         run: npx nx affected -t lint
       - name: Run tests
         run: npx nx affected -t test
-  # deploy:
-  #   runs-on: ubuntu-latest
-  #   needs: test
-  #   if: github.ref == 'refs/heads/main' # Run deploy only for the main branch
-  #   permissions:
-  #     contents: "read"
-  #     id-token: "write"
-  #   steps:
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@v2
-  #     - name: Load app secrets
-  #       uses: 73h/gae-app-yaml-replace-env-variables@v0.3
-  #       env:
-  #         GCLOUD_PROJECT: ${{ secrets.GCLOUD_PROJECT }}
-  #         AUTH0_CLIENT_ID: ${{ secrets.AUTH0_CLIENT_ID }}
-  #         AUTH0_CLIENT_SECRET: ${{ secrets.AUTH0_CLIENT_SECRET }}
-  #         AUTH0_TEMPORARY_PASSWORD: ${{ secrets.AUTH0_TEMPORARY_PASSWORD }}
-  #         ENCRYPTION_SALT: ${{ secrets.ENCRYPTION_SALT }}
-  #         GH_APP_CLIENT_ID: ${{ secrets.GH_APP_CLIENT_ID }}
-  #         GH_APP_CLIENT_SECRET: ${{ secrets.GH_APP_CLIENT_SECRET }}
-  #         LANGFUSE_PROJECT_ID: ${{ secrets.LANGFUSE_PROJECT_ID }}
-  #         LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
-  #         LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
-  #         METADATA_ENCRYPTION_KEY: ${{ secrets.METADATA_ENCRYPTION_KEY }}
-  #         MONGO_URI: ${{ secrets.MONGO_URI }}
-  #         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-  #         PAGERDUTY_CLIENT_ID: ${{ secrets.PAGERDUTY_CLIENT_ID }}
-  #         PAGERDUTY_CLIENT_SECRET: ${{ secrets.PAGERDUTY_CLIENT_SECRET }}
-  #         PAGERDUTY_SECRET: ${{ secrets.PAGERDUTY_SECRET }}
-  #         SENDGRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
-  #         SLACK_APP_TOKEN: ${{ secrets.SLACK_APP_TOKEN }}
-  #         SLACK_CLIENT_ID: ${{ secrets.SLACK_CLIENT_ID }}
-  #         SLACK_CLIENT_SECRET: ${{ secrets.SLACK_CLIENT_SECRET }}
-  #         NOTION_CLIENT_ID: ${{ secrets.NOTION_CLIENT_ID }}
-  #         NOTION_CLIENT_SECRET: ${{ secrets.NOTION_CLIENT_SECRET }}
-  #         ATLASSIAN_CLIENT_ID: ${{ secrets.ATLASSIAN_CLIENT_ID }}
-  #         ATLASSIAN_CLIENT_SECRET: ${{ secrets.ATLASSIAN_CLIENT_SECRET }}
-  #         SLACK_EVENTS_CHANNEL_ID: ${{ secrets.SLACK_EVENTS_CHANNEL_ID }}
-  #         SLACK_NOTIFIER_TOKEN: ${{ secrets.SLACK_NOTIFIER_TOKEN }}
-  #         PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
-  #         MIXPANEL_PROJECT_TOKEN: ${{ secrets.MIXPANEL_PROJECT_TOKEN }}
-  #       with:
-  #         app_yaml_path: "app.yaml"
-  #     - name: Declare variables
-  #       shell: bash
-  #       run: |
-  #         sha_short=$(git rev-parse --short "$GITHUB_SHA")
-  #         branch=$(echo ${GITHUB_REF#refs/heads/})
-  #         echo "image_id=${{ vars.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ vars.APP }}/$branch-$sha_short:production" >> "$GITHUB_ENV"
-  #     - name: Authenticate to Google Cloud
-  #       uses: "google-github-actions/auth@v0.4.0"
-  #       with:
-  #         workload_identity_provider: "projects/${{ secrets.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/ci-pool/providers/github-actions"
-  #         service_account: "app-engine-deployer@merlinn.iam.gserviceaccount.com"
-  #     - name: "Set up Google Cloud SDK"
-  #       uses: "google-github-actions/setup-gcloud@v2"
-  #       with:
-  #         version: ">= 363.0.0"
-  #         project_id: "${{ secrets.GCP_PROJECT_ID }}"
-  #     - name: Deploy to App Engine
-  #       run: |
-  #         gcloud app deploy app.yaml
+      # Get all the affected services for the next step.
+      # Nx calls them "apps" internally.
+      # IMPORTANT: we exclude dashboard manually here, since Vercel takes care of the deployment for us
+      # Need to find a better way.
+      # One possible solution is to introduce a convention for services (web-*, js-*, py-*)
+      # This will allow us to exclude based on patterns.
+      - name: Store affected services
+        id: get-affected-projects
+        run: |
+          affected_services=$(nx show projects --affected --type app --exclude dashboard)
+          echo "::set-output name=affected-services::${affected_services}"
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main' && ${{ needs.test.outputs.affected-services != '' }}
+    permissions:
+      contents: "read"
+      id-token: "write"
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          # We need to fetch all branches and commits so that Nx affected has a base to compare against.
+          fetch-depth: 0
+      - uses: oNaiPs/secrets-to-env-action@v1
+        with:
+          secrets: ${{ toJSON(secrets) }}
+      # This step is relevant for docker images. Right now we use a managed environment in GCP App Engine.
+      - name: Authenticate to Google Cloud
+        uses: "google-github-actions/auth@v0.4.0"
+        with:
+          workload_identity_provider: "projects/${{ secrets.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/ci-pool/providers/github-actions"
+          service_account: "app-engine-deployer@merlinn.iam.gserviceaccount.com"
+      - name: "Set up Google Cloud SDK"
+        uses: "google-github-actions/setup-gcloud@v2"
+        with:
+          version: ">= 363.0.0"
+          project_id: "${{ secrets.GCP_PROJECT_ID }}"
+      - uses: oNaiPs/secrets-to-env-action@v1
+        with:
+          secrets: ${{ toJSON(secrets) }}
+      - name: Deploy services
+        run: nx affected -t deploy --type app --exclude dashboard
