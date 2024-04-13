@@ -2,30 +2,29 @@ import { program } from "commander";
 import { spawn } from "child_process";
 import fs from "fs";
 
-const variables = [
-  "CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE",
-  "GOOGLE_APPLICATION_CREDENTIALS",
-  "CLOUDSDK_PROJECT",
-  "CLOUDSDK_CORE_PROJECT",
-  "GCP_PROJECT",
-  "GCLOUD_PROJECT",
-  "GOOGLE_CLOUD_PROJECT",
-];
-for (const variable of variables) {
-  if (!process.env[variable]) {
-    console.error(`Environment variable "${variable}" is not provided.`);
-    process.exit(1);
-  } else {
-    console.log(
-      `Environment variable "${variable}" is provided. Value: ${process.env[variable]}`,
-    );
-  }
-}
-
 program.arguments("<service_names...>");
 program.parse();
 
 const serviceNames = program.args;
+
+function execCommand(command) {
+  return new Promise((resolve, reject) => {
+    const childProcess = spawn(command, {
+      stdio: "inherit",
+      shell: true,
+    });
+    childProcess.on("error", (error) => {
+      reject(error);
+    });
+    childProcess.on("exit", (code) => {
+      if (code === 0) {
+        resolve(code);
+      } else {
+        reject(new Error(`Command exited with code ${code}.`));
+      }
+    });
+  });
+}
 
 function getEnvPrefix(serviceName: string) {
   return serviceName.replace("-", "_").toUpperCase() + "_SERVICE";
@@ -54,38 +53,12 @@ function injectEnvVars(serviceName: string, envVars: Record<string, string>) {
   fs.writeFileSync("app.yaml", yamlContent, "utf8");
 }
 
-async function deployService(serviceName: string) {
-  return new Promise((resolve, reject) => {
-    const command = `gcloud`;
-    const args = ["app", "deploy", "app.yaml", "--quiet"];
-
-    console.log("Running command:", command, args.join(" "));
-    const childProcess = spawn(command, args);
-    childProcess.stdout.on("data", (data) => {
-      console.log(data);
-    });
-
-    childProcess.stderr.on("data", (data) => {
-      console.error(data);
-    });
-
-    childProcess.on("close", (code) => {
-      console.log("Ended!");
-      resolve(code);
-    });
-
-    childProcess.on("error", (err) => {
-      console.error("Error!!!!");
-      reject(err);
-    });
-  });
-}
 (async () => {
   for (const serviceName of serviceNames) {
     console.log(`Deploying ${serviceName}...`);
     const envVars = collectEnvVars(serviceName);
     injectEnvVars(serviceName, envVars);
 
-    await deployService(serviceName);
+    await execCommand("gcloud app deploy app.yaml --quiet");
   }
 })();
