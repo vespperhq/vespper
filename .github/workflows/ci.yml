@@ -33,9 +33,9 @@ jobs:
       - run: git branch --track main origin/main
         if: ${{ github.event_name == 'pull_request' }}
       - name: Run lint
-        run: npx nx affected -t lint
+        run: npx nx affected --base=$NX_BASE --head=$NX_HEAD -t lint
       - name: Run tests
-        run: npx nx affected -t test
+        run: npx nx affected --base=$NX_BASE --head=$NX_HEAD -t test
       # Get all the affected services for the next step.
       # Nx calls them "apps" internally.
       # IMPORTANT: we exclude dashboard manually here, since Vercel takes care of the deployment for us
@@ -80,4 +80,4 @@ jobs:
         with:
           secrets: ${{ toJSON(secrets) }}
       - name: Deploy services
-        run: npx nx affected -t deploy --type app --exclude dashboard
+        run: npx nx affected --base=$NX_BASE --head=$NX_HEAD -t deploy --type app --exclude dashboard
