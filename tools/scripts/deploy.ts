@@ -12,6 +12,9 @@ function execCommand(command: string) {
     const childProcess = spawn(command, {
       stdio: "inherit",
       shell: true,
+      env: {
+        ...process.env,
+      },
     });
     childProcess.on("error", (error) => {
       reject(error);
