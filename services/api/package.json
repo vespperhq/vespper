@@ -39,7 +39,6 @@
     "tunnel": "source .env && ngrok http 3000 --domain=$TUNNEL_URL",
     "lint": "nx lint --ext ts",
     "test": "jest",
-    "prepare": "husky install",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "deploy": "npx ts-node ../../tools/scripts/deploy.ts api"
   },

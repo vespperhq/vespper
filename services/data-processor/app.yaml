@@ -12,7 +12,7 @@ env_variables:
   GCLOUD_PROJECT: merlinn
   NLTK_DATA: /tmp/nltk_cache
   LLAMA_INDEX_CACHE_DIR: /tmp/llama_index_cache
-  MONGO_URI: $MONGO_URI
-  PINECONE_API_KEY: $PINECONE_API_KEY
-  OPENAI_API_KEY: $OPENAI_API_KEY
-  ATLASSIAN_CLIENT_ID: $ATLASSIAN_CLIENT_ID
+  MONGO_URI: mongodb+srv://davidlasry696:bm-4JSk53dTRAd_@cluster0.xct5bdq.mongodb.net/?retryWrites=true&w=majority
+  PINECONE_API_KEY: 848ae0a5-ee44-4923-a84d-d1a671f72503
+  OPENAI_API_KEY: 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
+  ATLASSIAN_CLIENT_ID: 1Ubv7b3taVd7pbHsJoMP12aYWxK1EqX4

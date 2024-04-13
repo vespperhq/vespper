@@ -24,7 +24,7 @@ class BuildIndexRequestData(BaseModel):
 # Root route (root-raut at the moment)
 @app.get("/")
 async def root():
-    return {"message": "Data processor API"}
+    return {"message": "Data processor API 🚀"}
 
 
 @app.post("/build-index", response_model=Index)
