@@ -45,7 +45,7 @@ jobs:
       - name: Store affected services
         id: get-affected-projects
         run: |
-          affected_services=$(nx show projects --affected --type app --exclude dashboard)
+          affected_services=$(npx nx show projects --affected --type app --exclude dashboard)
           echo "::set-output name=affected-services::${affected_services}"
   deploy:
     runs-on: ubuntu-latest
@@ -77,4 +77,4 @@ jobs:
         with:
           secrets: ${{ toJSON(secrets) }}
       - name: Deploy services
-        run: nx affected -t deploy --type app --exclude dashboard
+        run: npx nx affected -t deploy --type app --exclude dashboard
