@@ -7,13 +7,15 @@
     "deploy": {
       "executor": "nx:run-commands",
       "options": {
+        "cwd": "services/data-processor",
         "commands": [
           "poetry self add poetry-plugin-export",
+          "poetry config warnings.export false",
           // Currently poetry export adds a strict python marker. We need to
           // remove it since GCP App Engine works with MAJOR MINOR version.
           // https://github.com/python-poetry/poetry-plugin-export/issues/191
-          "poetry export --without-hashes --without-urls | awk '{ print $1 }' FS=';' > requirements.txt",
-          "npx ts-node ../../tools/scripts/deploy.ts data-processor"
+          "poetry export --without-hashes --without-urls | awk '{ print $1 }' FS=';' > requirements.txt"
+          // "npx ts-node ../../tools/scripts/deploy.ts data-processor"
         ]
       }
     }
