@@ -82,4 +82,4 @@ jobs:
         with:
           secrets: ${{ toJSON(secrets) }}
       - name: Deploy services
-        run: npx nx affected --base=$NX_BASE --head=$NX_HEAD -t deploy --type app --exclude dashboard
+        run: npx nx affected --base=$NX_BASE --head=$NX_HEAD --exclude dashboard -t deploy
