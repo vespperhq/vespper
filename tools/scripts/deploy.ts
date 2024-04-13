@@ -23,10 +23,8 @@ function collectEnvVars(serviceName: string) {
 
 function injectEnvVars(serviceName: string, envVars: Record<string, string>) {
   const envVarsPrefix = getEnvPrefix(serviceName);
-  const servicePath = join("services", serviceName);
-  const configPath = join(servicePath, "app.yaml");
 
-  let yamlContent = fs.readFileSync(configPath, "utf8");
+  let yamlContent = fs.readFileSync("app.yaml", "utf8");
 
   Object.entries(envVars).forEach(([key, value]) => {
     const strippedKey = key.replace(`${envVarsPrefix}_`, "");
@@ -34,14 +32,11 @@ function injectEnvVars(serviceName: string, envVars: Record<string, string>) {
     yamlContent = yamlContent.replace(placeholder, value);
   });
 
-  fs.writeFileSync(configPath, yamlContent, "utf8");
+  fs.writeFileSync("app.yaml", yamlContent, "utf8");
 }
 
 async function deployService(serviceName: string) {
   return new Promise((resolve, reject) => {
-    const servicePath = join("services", serviceName);
-    process.chdir(servicePath);
-
     const command = `gcloud`;
     const args = ["app", "deploy", "app.yaml", "--quiet"];
 

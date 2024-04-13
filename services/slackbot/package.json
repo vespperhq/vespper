@@ -8,7 +8,7 @@
     "start": "node src/app.js",
     "dev": "npx env-cmd nodemon src/app.js",
     "lint": "npx nx lint",
-    "deploy": "npx ts-node tools/scripts/deploy.ts slackbot"
+    "deploy": "npx ts-node ../../tools/scripts/deploy.ts slackbot"
   },
   "keywords": [],
   "author": "",
@@ -25,7 +25,8 @@
     "includedScripts": [
       "test",
       "start",
-      "dev"
+      "dev",
+      "deploy"
     ]
   }
 }
