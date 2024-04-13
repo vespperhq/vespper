@@ -7,7 +7,7 @@ program.parse();
 
 const serviceNames = program.args;
 
-function execCommand(command) {
+function execCommand(command: string) {
   return new Promise((resolve, reject) => {
     const childProcess = spawn(command, {
       stdio: "inherit",
