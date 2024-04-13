@@ -59,6 +59,7 @@ async function deployService(serviceName: string) {
     const command = `gcloud`;
     const args = ["app", "deploy", "app.yaml", "--quiet"];
 
+    console.log("Running command:", command, args.join(" "));
     const childProcess = spawn(command, args);
     childProcess.stdout.on("data", (data) => {
       console.log(data);
@@ -69,10 +70,12 @@ async function deployService(serviceName: string) {
     });
 
     childProcess.on("close", (code) => {
+      console.log("Ended!");
       resolve(code);
     });
 
     childProcess.on("error", (err) => {
+      console.error("Error!!!!");
       reject(err);
     });
   });
