@@ -59,9 +59,8 @@ jobs:
         with:
           # We need to fetch all branches and commits so that Nx affected has a base to compare against.
           fetch-depth: 0
-      - uses: oNaiPs/secrets-to-env-action@v1
-        with:
-          secrets: ${{ toJSON(secrets) }}
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
       # This step is relevant for docker images. Right now we use a managed environment in GCP App Engine.
       - name: Authenticate to Google Cloud
         uses: "google-github-actions/auth@v0.4.0"
