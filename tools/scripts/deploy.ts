@@ -1,4 +1,3 @@
-import { join } from "path";
 import { program } from "commander";
 import { spawn } from "child_process";
 import fs from "fs";
