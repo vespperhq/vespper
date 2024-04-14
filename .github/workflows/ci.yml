@@ -85,4 +85,4 @@ jobs:
           secrets: ${{ toJSON(secrets) }}
       - name: Deploy services
         # run: npx nx affected --base=$NX_BASE --head=$NX_HEAD --exclude dashboard -t deploy
-        run: npx nx run-many -t deploy
+        run: npx nx run-many --output-style stream -t deploy
