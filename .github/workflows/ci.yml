@@ -9,6 +9,8 @@ jobs:
     permissions:
       contents: "read"
       actions: "read"
+    outputs:
+      affected_services: ${{ steps.get-affected-projects.outputs.affected_services }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -42,11 +44,11 @@ jobs:
         run: |
           affected_services=$(npx nx show projects --affected --type app --exclude dashboard)
           echo $affected_services
-          echo "::set-output name=affected-services::${affected_services}"
+          echo "affected_services=$affected_services" >> "$GITHUB_OUTPUT"
   deploy:
     runs-on: ubuntu-latest
     needs: test
-    if: ${{ github.ref == 'refs/heads/main' && needs.test.outputs.affected-services != '' }}
+    if: ${{ github.ref == 'refs/heads/main' && needs.test.outputs.affected_services != '' }}
     permissions:
       contents: "read"
       id-token: "write"
