@@ -41,7 +41,7 @@ router.get(
         params,
       );
 
-      const { access_token, ...installation } = response.data;
+      const { access_token, ...metadata } = response.data;
 
       const vendor = await vendorModel.getOne({ name: "Slack" });
       const organization = await organizationModel.getOneById(state as string);
@@ -54,7 +54,7 @@ router.get(
         throw new AppError("Could not find the given organization.", 404);
       }
 
-      const formattedCredentials = await createCredentials(
+      const credentials = await createCredentials(
         organization._id.toString(),
         vendor.name,
         { access_token },
@@ -64,8 +64,8 @@ router.get(
       await integrationModel.create({
         vendor,
         organization,
-        credentials: formattedCredentials,
-        metadata: installation,
+        credentials,
+        metadata,
       });
 
       return res.send("App installed successfully");

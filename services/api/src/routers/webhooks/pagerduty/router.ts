@@ -63,7 +63,8 @@ router.post(
       await populateCredentials([slackIntegration])
     )[0] as SlackIntegration;
 
-    const { channel_id: channelId } = slackIntegration.metadata;
+    const { channel_id: channelId } =
+      slackIntegration.metadata.incoming_webhook;
     const { access_token: slackToken } = slackIntegration.credentials;
     const slackClient = new SlackClient(slackToken);
 
@@ -74,8 +75,8 @@ router.post(
     );
 
     const messages = await slackClient.getChannelHistoryGracefully(channelId);
-    const pdMessage = messages?.find(
-      (message) => message.text?.includes(event.data.id),
+    const pdMessage = messages?.find((message) =>
+      message.text?.includes(event.data.id),
     );
     if (!pdMessage) {
       throw new AppError("Could not find Slack message", 500);

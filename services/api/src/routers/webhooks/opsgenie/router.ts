@@ -65,7 +65,8 @@ router.post(
 
     const { alert } = event;
     const { alertId } = alert;
-    const { channel_id: channelId } = slackIntegration.metadata;
+    const { channel_id: channelId } =
+      slackIntegration.metadata.incoming_webhook;
     const ogMessage = await slackClient.waitAndFetchMessage(channelId, alertId);
 
     await postInitialStatus(access_token, channelId, ogMessage.ts!);
