@@ -16,7 +16,7 @@ function HomePage() {
       if (!organizationId) {
         return "Welcome! Create an organization to get started 🚀";
       } else {
-        return `Welcome back ${auth0.user?.name}!! 😊 🚀`;
+        return `Welcome back ${auth0.user?.name}! 😊 🚀`;
       }
     }
   })();
