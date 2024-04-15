@@ -6,7 +6,9 @@
     "prepare": "husky"
   },
   "private": true,
-  "dependencies": {},
+  "dependencies": {
+    "nx-ignore": "^18.0.2"
+  },
   "devDependencies": {
     "@nx/eslint": "18.2.4",
     "@nx/js": "18.2.4",

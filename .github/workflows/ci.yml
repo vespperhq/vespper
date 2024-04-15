@@ -78,8 +78,6 @@ jobs:
         with:
           version: ">= 363.0.0"
           project_id: "${{ secrets.GCP_PROJECT_ID }}"
-      - name: Print identity info (Debugging)
-        run: gcloud auth list
       - uses: oNaiPs/secrets-to-env-action@v1
         with:
           secrets: ${{ toJSON(secrets) }}
