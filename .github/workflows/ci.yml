@@ -83,13 +83,7 @@ jobs:
       - uses: oNaiPs/secrets-to-env-action@v1
         with:
           secrets: ${{ toJSON(secrets) }}
-      - name: Declare variables
-        shell: bash
-        run: |
-          sha_short=$(git rev-parse --short "$GITHUB_SHA")
-          branch=$(echo ${GITHUB_REF#refs/heads/})
-          echo "image_id=${{ vars.GAR_LOCATION }}-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/${{ vars.APP }}/$branch-$sha_short:production" >> "$GITHUB_ENV"
-      - name: "Build images"
-        run: npx nx affected --base=$NX_BASE --head=$NX_HEAD --output-style stream --target=container --parallel=2 --configuration=production
-      # - name: Deploy services
-      #   run: npx nx affected --base=$NX_BASE --head=$NX_HEAD --output-style stream --exclude dashboard -t deploy
+      - name: Build images and push to Google Artifact Registry
+        run: npx nx affected --base=$NX_BASE --head=$NX_HEAD --output-style stream --exclude dashboard --target=container --parallel=2 --configuration=production
+      - name: Deploy services
+        run: npx nx affected --base=$NX_BASE --head=$NX_HEAD --output-style stream --exclude dashboard -t deploy

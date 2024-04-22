@@ -69,10 +69,8 @@ It will show tasks that you can run with Nx.
 
 - [Learn more about Exploring the Project Graph](https://nx.dev/core-features/explore-graph)
 
-## Debug Github Actions
-
-Run the following command:
+## Run with Docker
 
 ```bash
-gh act --secret-file .env -s GITHUB_TOKEN="$(gh auth token)"
+docker-compose up api
 ```

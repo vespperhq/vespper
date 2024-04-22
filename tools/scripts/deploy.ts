@@ -10,58 +10,54 @@ const serviceNames = program.args;
 function execCommand(command: string) {
   return new Promise((resolve, reject) => {
     const childProcess = spawn(command, {
-      stdio: "inherit",
+      stdio: "pipe",
       shell: true,
       env: {
         ...process.env,
       },
     });
+
+    let stdoutData = "";
+    let stderrData = "";
+    childProcess.stdout.on("data", (data) => {
+      stdoutData += data.toString();
+    });
+    childProcess.stderr.on("data", (data) => {
+      stderrData += data.toString();
+    });
+
     childProcess.on("error", (error) => {
       reject(error);
     });
     childProcess.on("exit", (code) => {
       if (code === 0) {
-        resolve(code);
+        resolve(stdoutData.trim());
       } else {
-        reject(new Error(`Command exited with code ${code}.`));
+        reject(
+          new Error(`Command exited with code ${code}. Output: ${stderrData}`),
+        );
       }
     });
   });
 }
 
-function getEnvPrefix(serviceName: string) {
-  return serviceName.replace("-", "_").toUpperCase() + "_SERVICE";
-}
-function collectEnvVars(serviceName: string) {
-  const envVarsPrefix = getEnvPrefix(serviceName);
-
-  const envVars = Object.entries(process.env)
-    .filter(([key]) => key.startsWith(envVarsPrefix))
-    .reduce((total, [key, value]) => ({ ...total, [key]: value }), {});
-
-  return envVars;
+function getImageTag(serviceName: string) {
+  return execCommand(
+    `docker images --filter "reference=europe-west2-docker.pkg.dev/merlinn/production/${serviceName}" --format "{{.Repository}}:{{.Tag}}"`,
+  );
 }
 
-function injectEnvVars(serviceName: string, envVars: Record<string, string>) {
-  const envVarsPrefix = getEnvPrefix(serviceName);
-
-  let yamlContent = fs.readFileSync("app.yaml", "utf8");
-
-  Object.entries(envVars).forEach(([key, value]) => {
-    const strippedKey = key.replace(`${envVarsPrefix}_`, "");
-    const placeholder = `$${strippedKey}`;
-    yamlContent = yamlContent.replace(placeholder, value);
-  });
-
-  fs.writeFileSync("app.yaml", yamlContent, "utf8");
+async function deployImage(serviceName: string) {
+  console.log(`Deploying ${serviceName}...`);
+  const imageTag = await getImageTag(serviceName);
+  console.log(`Image tag: ${imageTag}`);
+  return execCommand(
+    `gcloud run deploy merlinn-${serviceName} --image ${imageTag} --region europe-west2`,
+  );
 }
 
 (async () => {
   for (const serviceName of serviceNames) {
-    console.log(`Deploying ${serviceName}...`);
-    const envVars = collectEnvVars(serviceName);
-    injectEnvVars(serviceName, envVars);
-
-    await execCommand("gcloud app deploy app.yaml --quiet");
+    await deployImage(serviceName);
   }
 })();
