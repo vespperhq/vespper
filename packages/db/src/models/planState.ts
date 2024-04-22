@@ -1,10 +1,5 @@
 import { Types } from "mongoose";
-import {
-  FieldsState,
-  IPlanField,
-  IPlanState,
-  PlanFieldKind,
-} from "../../types";
+import { FieldsState, IPlanField, IPlanState, PlanFieldKind } from "../types";
 import { PlanState } from "../schemas/planState";
 import { BaseModel } from "./base";
 import { planModel } from "./plan";

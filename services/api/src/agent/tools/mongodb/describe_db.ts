@@ -1,6 +1,6 @@
 import { DynamicTool } from "langchain/tools";
 import { MongoClient, Db, WithId, Document } from "mongodb";
-import { MongoDBIntegration } from "../../../types";
+import type { MongoDBIntegration } from "@merlinn/db";
 import util from "util";
 
 interface CollectionInfo {

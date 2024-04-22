@@ -1,7 +1,6 @@
 import { PagerDutyClient } from "../../../clients";
 import { populateCredentials } from "../../../clients/secretManager";
-import { integrationModel } from "../../../db/models/integration";
-import { PagerDutyIntegration } from "../../../types";
+import { integrationModel, PagerDutyIntegration } from "@merlinn/db";
 import { AlertEvent } from "../../../types/internal";
 import { refreshPagerDutyToken } from "../../oauth";
 

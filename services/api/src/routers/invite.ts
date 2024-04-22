@@ -2,15 +2,13 @@ import express, { Request, Response } from "express";
 import { checkJWT, getDBUser } from "../middlewares/auth";
 import { createAuth0User, createResetTicket } from "../clients/auth0";
 import { SendGridClient, OpsgenieClient, PagerDutyClient } from "../clients";
-import { userModel } from "../db/models/user";
-import { integrationModel } from "../db/models/integration";
-import {
+import { userModel, integrationModel, PlanFieldCode } from "@merlinn/db";
+import type {
   IIntegration,
   IOrganization,
   OpsgenieIntegration,
   PagerDutyIntegration,
-  PlanFieldCode,
-} from "../types";
+} from "@merlinn/db";
 import { EventType, SystemEvent, events } from "../events";
 import { catchAsync } from "../utils/errors";
 import { AppError } from "../errors";
@@ -81,6 +79,9 @@ router.get(
           throw new AppError(`Could not fetch users from ${source}`, 500);
         }
         return res.status(200).json({ users });
+      }
+      default: {
+        throw new AppError(`Source ${source} is not supported`, 400);
       }
     }
   }),

@@ -1,5 +1,4 @@
-import { connectToDB } from "../src/db";
-import { betaCodeModel } from "../src/db/models/beta-code";
+import { connectToDB, betaCodeModel } from "@merlinn/db";
 import { v4 as uuid } from "uuid";
 
 (async () => {

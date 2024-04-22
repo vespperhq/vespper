@@ -21,7 +21,6 @@ import { FormGroup } from "@mui/material";
 import * as paths from "../../../../routes/paths";
 
 export const InformationCard = ({ organization }: any) => {
-  console.log("organization: ", organization);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -42,7 +41,10 @@ export const InformationCard = ({ organization }: any) => {
   const submitForm = async () => {
     setIsDirty(false);
     const { name } = orgFormData;
-    const promise = updateOrganization(name, organization._id);
+    const promise = updateOrganization({
+      name,
+      organizationId: organization._id,
+    });
 
     toast.promise(promise, {
       loading: "Updating organization...",

@@ -1,5 +1,5 @@
 import { FilterQuery } from "mongoose";
-import { IIntegration, IVendor } from "../../types";
+import { IIntegration, IVendor } from "../types";
 import { Integration } from "../schemas/integration";
 import { BaseModel } from "./base";
 import { vendorModel } from "./vendor";

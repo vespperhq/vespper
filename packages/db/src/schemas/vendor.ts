@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IVendor } from "../../types";
+import { IVendor } from "../types";
 
 const Schema = mongoose.Schema;
 

@@ -1,16 +1,18 @@
 import express, { Request, Response } from "express";
-import { organizationModel } from "../db/models/organization";
+import {
+  PlanFieldCode,
+  organizationModel,
+  userModel,
+  planModel,
+  integrationModel,
+  webhookModel,
+  indexModel,
+  planStateModel,
+} from "@merlinn/db";
 import { checkJWT, getDBUser } from "../middlewares/auth";
-import { userModel } from "../db/models/user";
-import { planModel } from "../db/models/plan";
 import { catchAsync } from "../utils/errors";
 import { AppError } from "../errors";
-import { integrationModel } from "../db/models/integration";
-import { webhookModel } from "../db/models/webhook";
-import { indexModel } from "../db/models/db-index";
-import { planStateModel } from "../db/models/planState";
 import { getPlanFieldState } from "../services/plans";
-import { PlanFieldCode } from "../types";
 import { EventType, events } from "../events";
 
 const router = express.Router();
@@ -125,8 +127,8 @@ router.put(
 
     const { id } = req.params;
     const { organization } = req.body;
-    const updated = await organizationModel.getOneAndUpdate(
-      { _id: id },
+    const updated = await organizationModel.getOneByIdAndUpdate(
+      id,
       organization,
     );
 

@@ -1,12 +1,12 @@
 import { AxiosError } from "axios";
-import { AtlassianClient } from "../../clients";
+import { integrationModel } from "@merlinn/db";
+import type { AtlassianIntegration } from "@merlinn/db";
 import {
   populateCredentials,
   recreateCredentials,
 } from "../../clients/secretManager";
-import { integrationModel } from "../../db/models/integration";
+import { AtlassianClient } from "../../clients";
 import { AppError } from "../../errors";
-import { AtlassianIntegration } from "../../types";
 
 export async function refreshToken(integrationId: string) {
   try {

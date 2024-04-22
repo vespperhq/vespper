@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IIndex, VendorName } from "../../types";
+import { IIndex, VendorName } from "../types";
 
 const Schema = mongoose.Schema;
 

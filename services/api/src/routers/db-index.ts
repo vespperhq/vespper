@@ -3,15 +3,13 @@ import axios from "axios";
 import { checkJWT, getDBUser } from "../middlewares/auth";
 import { catchAsync } from "../utils/errors";
 import { AppError, ErrorCode } from "../errors";
-import { indexModel } from "../db/models/db-index";
+import { indexModel, integrationModel, PlanFieldCode } from "@merlinn/db";
 import { pinecone } from "../clients/pinecone";
 import { refreshAtlassianToken } from "../services/oauth";
-import { integrationModel } from "../db/models/integration";
-import { AtlassianIntegration, IIntegration } from "../types";
+import type { AtlassianIntegration, IIntegration } from "@merlinn/db";
 import { zip } from "../utils/arrays";
 import { getTimestamp } from "../utils/dates";
 import { getPlanFieldState } from "../services/plans";
-import { PlanFieldCode } from "../types";
 
 const ATLASSIAN_DATA_SOURCES = ["Confluence", "Jira"];
 

@@ -1,10 +1,8 @@
 import express, { Request, Response } from "express";
 import { catchAsync } from "../../utils/errors";
 import { AppError } from "../../errors";
-import { vendorModel } from "../../db/models/vendor";
-import { organizationModel } from "../../db/models/organization";
+import { vendorModel, integrationModel, organizationModel } from "@merlinn/db";
 import { createCredentials } from "../../clients/secretManager";
-import { integrationModel } from "../../db/models/integration";
 import axios, { AxiosError } from "axios";
 
 const router = express.Router();

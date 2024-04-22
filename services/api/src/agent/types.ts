@@ -1,7 +1,7 @@
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { ChatPromptTemplate } from "langchain/prompts";
 import { AIMessage, HumanMessage, MessageContent } from "langchain/schema";
-import { IIntegration } from "../types";
+import type { IIntegration } from "@merlinn/db";
 import { AnswerHandler } from "./callbacks";
 
 // Langchain helper types

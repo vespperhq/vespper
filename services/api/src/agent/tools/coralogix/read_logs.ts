@@ -1,7 +1,8 @@
 import { AxiosError } from "axios";
 import { z } from "zod";
 import { DynamicStructuredTool } from "langchain/tools";
-import { CoralogixIntegration, CoralogixRegionKey } from "../../../types";
+import type { CoralogixIntegration } from "@merlinn/db";
+import type { CoralogixRegionKey } from "../../../types";
 // import { textToQuery } from "./utils";
 import { Timescale, getTimestamp } from "../../../utils/dates";
 import { buildOutput } from "../utils";

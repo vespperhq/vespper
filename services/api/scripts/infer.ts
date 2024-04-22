@@ -1,11 +1,9 @@
 import { runAgent } from "../src/agent";
 import { chatModel } from "../src/agent/model";
 import { investigationTemplate } from "../src/agent/prompts";
-import { RunContext } from "../src/agent/types";
-import { connectToDB } from "../src/db";
-import { integrationModel } from "../src/db/models/integration";
-import { organizationModel } from "../src/db/models/organization";
-import { IIntegration } from "../src/types";
+import { connectToDB, integrationModel, organizationModel } from "@merlinn/db";
+import type { IIntegration } from "@merlinn/db";
+import type { RunContext } from "../src/agent/types";
 
 (async () => {
   await connectToDB(process.env.MONGO_URI as string);

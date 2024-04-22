@@ -4,10 +4,10 @@ import { runAgent } from "../../../agent";
 import {
   IIntegration,
   PagerDutyIntegration,
-  PagerDutyWebhookEvent,
   SlackIntegration,
-} from "../../../types";
-import { integrationModel } from "../../../db/models/integration";
+  integrationModel,
+} from "@merlinn/db";
+import { PagerDutyWebhookEvent } from "../../../types";
 import { postInitialStatus } from "../utils";
 import {
   checkAlertsQuota,

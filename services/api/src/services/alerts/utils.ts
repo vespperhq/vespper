@@ -1,5 +1,5 @@
-import { AlertEvent } from "../../types/internal";
 import { getDistance } from "../../utils/dates";
+import type { AlertEvent } from "../../types/internal";
 
 export const buildPrompt = (event: AlertEvent, context?: string) => {
   const alertDate = new Date(event.createdAt);

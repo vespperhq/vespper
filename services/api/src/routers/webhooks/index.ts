@@ -1,10 +1,8 @@
 import express, { Request, Response } from "express";
+import { webhookModel, vendorModel, organizationModel } from "@merlinn/db";
 import { router as pagerdutyRouter } from "./pagerduty";
 import { router as opsgenieRouter } from "./opsgenie";
 import { checkJWT, getDBUser } from "../../middlewares/auth";
-import { webhookModel } from "../../db/models/webhook";
-import { vendorModel } from "../../db/models/vendor";
-import { organizationModel } from "../../db/models/organization";
 
 const router = express.Router();
 

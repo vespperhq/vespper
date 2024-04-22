@@ -1,6 +1,6 @@
 import { analyticsListener } from "./analytics/listener";
 import { app } from "./app";
-import { connectToDB } from "./db";
+import { connectToDB } from "@merlinn/db";
 import { startAllJobs } from "./jobs";
 import { notificationsListener } from "./notifications";
 

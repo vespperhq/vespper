@@ -1,8 +1,7 @@
 import express, { Request, Response } from "express";
-import { vendorModel } from "../db/models/vendor";
-import { organizationModel } from "../db/models/organization";
+import { vendorModel, organizationModel, integrationModel } from "@merlinn/db";
+import type { IIntegration } from "@merlinn/db";
 import { checkJWT, getDBUser } from "../middlewares/auth";
-import { integrationModel } from "../db/models/integration";
 import { catchAsync } from "../utils/errors";
 import { AppError } from "../errors";
 import {
@@ -10,7 +9,6 @@ import {
   populateCredentials,
   deleteCredentials,
 } from "../clients/secretManager";
-import { IIntegration } from "../types";
 
 const router = express.Router();
 router.use(checkJWT);

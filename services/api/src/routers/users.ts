@@ -1,13 +1,39 @@
 import express, { Request, Response } from "express";
 import { checkJWT, getDBUser } from "../middlewares/auth";
-import { getEnrichedUsers, userModel } from "../db/models/user";
-import { IUser, PlanFieldCode } from "../types";
+import { userModel, PlanFieldCode } from "@merlinn/db";
+import type { IUser } from "@merlinn/db";
 import { FilterQuery } from "mongoose";
-import { deleteAuth0User } from "../clients/auth0";
-import { EventType, SystemEvent, events } from "../events";
+import { deleteAuth0User, getAuth0User } from "../clients/auth0";
+import { EventType, events } from "../events";
+import type { SystemEvent } from "../events";
 import { catchAsync } from "../utils/errors";
 import { AppError } from "../errors";
 import { decrementPlanFieldState } from "../services/plans";
+import type { EnrichedUser } from "../types/internal";
+
+// Helper function to get users and their auth0 info
+const getEnrichedUsers = async (filters: FilterQuery<IUser>) => {
+  const users = await userModel.get(filters);
+  const auth0Users = await Promise.all(
+    users.map((user) => getAuth0User(user.auth0Id)),
+  );
+  const enrichedUsers = [] as EnrichedUser[];
+  for (let i = 0; i < users.length; i++) {
+    const { _id, status, role } = users[i];
+    const { email, name, picture, user_id } = auth0Users[i];
+
+    enrichedUsers.push({
+      auth0Id: user_id,
+      _id,
+      status,
+      email,
+      name,
+      picture,
+      role,
+    });
+  }
+  return enrichedUsers;
+};
 
 const router = express.Router();
 router.use(checkJWT);

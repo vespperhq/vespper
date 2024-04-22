@@ -1,11 +1,11 @@
 import express, { Request, Response } from "express";
+import { integrationModel, indexModel, PlanFieldCode } from "@merlinn/db";
+import { IIntegration } from "@merlinn/db";
 import { runAgent } from "../agent";
-import { integrationModel } from "../db/models/integration";
 import { AnswerContext } from "../agent/callbacks";
 import { getInteractionUser } from "../middlewares/slack";
 import { langfuse } from "../clients/langfuse";
 import { parseMessages } from "../agent/parse";
-import { IIntegration, PlanFieldCode } from "../types";
 import { RunContext, TextBlock } from "../agent/types";
 import { conversationTemplate } from "../agent/prompts";
 import { chatModel, visionModel } from "../agent/model";
@@ -15,7 +15,6 @@ import { EventType, SystemEvent, events } from "../events";
 import { catchAsync } from "../utils/errors";
 import { validateModeration } from "../utils/moderation";
 import { getPlanFieldState, incrementPlanFieldState } from "../services/plans";
-import { indexModel } from "../db/models/db-index";
 
 const router = express.Router();
 router.use(getInteractionUser);

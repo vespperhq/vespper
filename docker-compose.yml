@@ -10,15 +10,16 @@ services:
       - "27017:27017"
   api:
     build:
-      context: ../api
-      dockerfile: ../api/Dockerfile.dev
+      context: "."
+      dockerfile: services/api/Dockerfile
+    env_file:
+      - services/api/.env
     environment:
-      - NODE_ENV=production
-      - PORT=3000
-      - MONGO_URI=mongodb://localhost:27017/assistant-db
-      - REDIS_URL=redis://localhost:6379
+      - MONGO_URI=mongodb://mongo:27017/merlinn-db
+      - GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/application_default_credentials.json
     volumes:
-      - ../api/src:/src
+      # Google Cloud credentials file
+      - ~/.config/gcloud/application_default_credentials.json:/tmp/keys/application_default_credentials.json
     ports:
       - "3000:3000"
     depends_on:

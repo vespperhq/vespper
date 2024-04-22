@@ -1,5 +1,5 @@
 import { semanticSearch } from "../../agent/rag";
-import { AlertEvent, EventSource } from "../../types/internal";
+import type { AlertEvent, EventSource } from "../../types/internal";
 import { parseOpsgenieAlert, parsePagerDutyAlert } from "./parsers";
 import { buildPrompt } from "./utils";
 

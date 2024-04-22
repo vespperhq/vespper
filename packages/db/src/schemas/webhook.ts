@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
-import mongooseFieldEncryption from "mongoose-field-encryption";
-import { IWebhook } from "../../types";
+import { fieldEncryption } from "mongoose-field-encryption";
+import { IWebhook } from "../types";
 
 const Schema = mongoose.Schema;
-const Encryption = mongooseFieldEncryption.fieldEncryption;
+const Encryption = fieldEncryption;
 
 const WebhookSchema = new Schema<IWebhook>(
   {
@@ -22,8 +22,8 @@ const WebhookSchema = new Schema<IWebhook>(
 
 WebhookSchema.plugin(Encryption, {
   fields: ["secret"],
-  secret: process.env.METADATA_ENCRYPTION_KEY,
-  saltGenerator: () => process.env.ENCRYPTION_SALT,
+  secret: process.env["METADATA_ENCRYPTION_KEY"],
+  saltGenerator: () => process.env["ENCRYPTION_SALT"],
 });
 
 export const Webhook = mongoose.model("Webhook", WebhookSchema);

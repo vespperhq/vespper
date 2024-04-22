@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { DynamicStructuredTool } from "langchain/tools";
-import { GithubIntegration } from "../../../types";
+import type { GithubIntegration } from "@merlinn/db";
 import { GithubClient } from "../../../clients";
 import { chatModel } from "../../model";
 import { summarizeReadmePrompt } from "../../prompts";

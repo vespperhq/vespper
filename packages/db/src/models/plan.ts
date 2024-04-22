@@ -5,7 +5,7 @@ import {
   PlanFieldCode,
   PlanFieldKind,
   ResetMode,
-} from "../../types";
+} from "../types";
 import { BaseModel } from "./base";
 import { planFieldModel } from "./planField";
 

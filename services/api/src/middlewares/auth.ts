@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { auth } from "express-oauth2-jwt-bearer";
-import { userModel } from "../db/models/user";
+import { userModel, IUser } from "@merlinn/db";
 import { AppError, ErrorCode } from "../errors";
-import { IUser } from "../types";
 import { catchAsync } from "../utils/errors";
 
 export const checkJWT = auth({

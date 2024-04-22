@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@merlinn/db": "*",
     "@datadog/datadog-api-client": "^1.21.0",
     "@google-cloud/secret-manager": "^5.1.0",
     "@octokit/types": "^12.4.0",
@@ -31,7 +32,7 @@
     "octokit": "^3.1.2"
   },
   "scripts": {
-    "start": "node dist/server.js",
+    "start": "node dist/src/server.js",
     "build": "npx tsc",
     "gcp-build": "yarn build",
     "watch": "npx nodemon -L --exec \"npx ts-node src/server.ts\" --ext ts",

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IBetaCode } from "../../types";
+import { IBetaCode } from "../types";
 
 const Schema = mongoose.Schema;
 

@@ -1,6 +1,6 @@
 import cron from "node-cron";
 import { resetPlanStates } from "./base";
-import { ResetMode } from "../../types";
+import { ResetMode } from "@merlinn/db";
 
 // TODO: move these jobs to a different service maybe
 const hourlyJob = cron.schedule("0 * * * *", async () => {

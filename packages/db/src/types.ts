@@ -1,5 +1,4 @@
 import { Types } from "mongoose";
-import { CoralogixRegionKey } from "./vendors";
 
 // Beta
 export interface IBetaCode {
@@ -112,16 +111,6 @@ export interface IUser {
   organization: IOrganization;
 }
 
-export interface EnrichedUser {
-  _id: Types.ObjectId;
-  auth0Id: string;
-  status: "activated" | "invited";
-  role: "owner" | "member";
-  email: string;
-  name: string;
-  picture: string;
-}
-
 // Organization
 export interface IOrganization {
   _id: Types.ObjectId;
@@ -205,7 +194,7 @@ export interface CoralogixIntegration extends BaseConnection {
     artKey: string; // Alerts, Rules and Tags Key
   };
   metadata: {
-    region: CoralogixRegionKey;
+    region: "EU1" | "AP1" | "US1" | "EU2" | "AP2" | "US2";
     domainURL: string;
   };
   settings: {

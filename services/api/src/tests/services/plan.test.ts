@@ -1,10 +1,14 @@
-import { planStateModel } from "../../db/models/planState";
+import {
+  PlanState,
+  PlanField,
+  Plan,
+  planStateModel,
+  planFieldModel,
+  PlanFieldKind,
+  ResetMode,
+} from "@merlinn/db";
 import { Types } from "mongoose";
-import { planFieldModel } from "../../db/models/planField";
-import { PlanField } from "../../db/schemas/planField";
-import { IPlanState, PlanFieldKind, ResetMode } from "../../types";
-import { Plan } from "../../db/schemas/plan";
-import { PlanState } from "../../db/schemas/planState";
+import type { IPlanState } from "@merlinn/db";
 import { resetPlanStates } from "../../services/plans/base";
 
 const DUMMY_FIELDS = [

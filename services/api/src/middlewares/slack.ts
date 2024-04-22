@@ -1,7 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { integrationModel } from "../db/models/integration";
-import { userModel } from "../db/models/user";
-import { IUser } from "../types";
+import { IUser, userModel, integrationModel } from "@merlinn/db";
 import { AppError, ErrorCode } from "../errors";
 import { catchAsync } from "../utils/errors";
 

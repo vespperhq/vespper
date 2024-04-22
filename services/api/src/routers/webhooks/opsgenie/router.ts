@@ -1,11 +1,11 @@
 import express, { Request, Response } from "express";
-import { integrationModel } from "../../../db/models/integration";
-import {
+import { integrationModel } from "@merlinn/db";
+import type {
   IIntegration,
   OpsgenieIntegration,
-  OpsgenieWebhookEvent,
   SlackIntegration,
-} from "../../../types";
+} from "@merlinn/db";
+import { OpsgenieWebhookEvent } from "../../../types";
 import { SlackClient } from "../../../clients/slack";
 import { runAgent } from "../../../agent";
 import { postInitialStatus } from "../utils";

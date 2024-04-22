@@ -11,7 +11,7 @@ export enum ErrorCode {
 }
 
 export class AppError extends Error {
-  public readonly message: string;
+  public override readonly message: string;
   public readonly statusCode: number;
   public readonly status: "fail" | "error";
   public readonly internalCode?: ErrorCode;

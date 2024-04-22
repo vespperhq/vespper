@@ -72,14 +72,14 @@ export class LLMCallbacks extends BaseCallbackHandler {
     this.context = new AnswerContext(trace);
   }
 
-  async handleToolEnd(output: string) {
+  override async handleToolEnd(output: string) {
     const sources = extractSources(output);
     if (sources) {
       this.context!.addSources(sources);
     }
   }
 
-  handleChatModelStart(
+  override handleChatModelStart(
     llm: Serialized,
     messages: BaseMessage[][],
     runId: string,
@@ -87,7 +87,7 @@ export class LLMCallbacks extends BaseCallbackHandler {
     this.context.setObservationId(runId);
   }
 
-  async handleLLMEnd(output: LLMResult) {
+  override async handleLLMEnd(output: LLMResult) {
     const { text } = output.generations[0][0];
     if (text) {
       // Check & add sources section

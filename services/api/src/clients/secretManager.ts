@@ -1,7 +1,7 @@
 import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
+import { Integration } from "@merlinn/db";
+import type { IIntegration } from "@merlinn/db";
 import { AppError } from "../errors";
-import { IIntegration } from "../types";
-import { Integration } from "../db/schemas/integration";
 
 const projectId = process.env.GCLOUD_PROJECT;
 

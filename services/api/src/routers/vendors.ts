@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { vendorModel } from "../db/models/vendor";
+import { vendorModel } from "@merlinn/db";
 import { checkJWT, getDBUser } from "../middlewares/auth";
 import { catchAsync } from "../utils/errors";
 

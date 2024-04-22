@@ -1,0 +1,28 @@
+{
+  "name": "api",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "targets": {
+    "container": {
+      "executor": "@nx-tools/nx-container:build",
+      "defaultConfiguration": "local",
+      "options": {
+        "engine": "docker",
+        "file": "services/api/Dockerfile",
+        "platforms": ["linux/amd64"]
+      },
+      "configurations": {
+        "local": {
+          "tags": ["api:latest"],
+          "push": false
+        },
+        "production": {
+          "push": true,
+          "metadata": {
+            "images": ["europe-west2-docker.pkg.dev/merlinn/production/"],
+            "tags": ["type=sha"]
+          }
+        }
+      }
+    }
+  }
+}

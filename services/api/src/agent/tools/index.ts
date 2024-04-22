@@ -1,10 +1,10 @@
-import {
+import type {
   CoralogixIntegration,
   DataDogIntegration,
   GithubIntegration,
   IIntegration,
   MongoDBIntegration,
-} from "../../types";
+} from "@merlinn/db";
 import { toolLoaders as coralogixToolLoaders } from "./coralogix";
 import { toolLoaders as githubToolLoaders } from "./github";
 import { toolLoaders as datadogToolLoaders } from "./datadog";

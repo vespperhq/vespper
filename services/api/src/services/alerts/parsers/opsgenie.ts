@@ -1,12 +1,9 @@
 import { OpsgenieClient, CoralogixClient } from "../../../clients";
 import { populateCredentials } from "../../../clients/secretManager";
-import { integrationModel } from "../../../db/models/integration";
-import {
-  CoralogixIntegration,
-  OpsgenieAlert,
-  OpsgenieIntegration,
-} from "../../../types";
-import { AlertEvent } from "../../../types/internal";
+import { integrationModel } from "@merlinn/db";
+import type { CoralogixIntegration, OpsgenieIntegration } from "@merlinn/db";
+import type { OpsgenieAlert } from "../../../types";
+import type { AlertEvent } from "../../../types/internal";
 
 export const parseAlert = async (
   alertId: string,

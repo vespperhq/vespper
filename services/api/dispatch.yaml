@@ -1,3 +1,0 @@
-dispatch:
-  - url: api.merlinn.co/*
-    service: merlinn-api

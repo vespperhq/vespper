@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { DynamicStructuredTool } from "langchain/tools";
 import { MongoClient, Db } from "mongodb";
-import { MongoDBIntegration } from "../../../types";
+import type { MongoDBIntegration } from "@merlinn/db";
 
 export default async function (integration: MongoDBIntegration) {
   const { dbUrl } = integration.credentials;

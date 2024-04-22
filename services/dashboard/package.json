@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "lint": "nx lint --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "test": "jest",
     "preview": "vite preview",
     "prepare": "husky install",

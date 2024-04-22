@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { IPlanField } from "../../types";
+import { IPlanField } from "../types";
 
 const Schema = mongoose.Schema;
 

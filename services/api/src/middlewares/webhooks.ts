@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { webhookModel } from "../db/models/webhook";
-import { IWebhook, PlanFieldCode } from "../types";
+import { webhookModel, PlanFieldCode, IWebhook } from "@merlinn/db";
 import { catchAsync } from "../utils/errors";
 import { AppError } from "../errors";
 import { getPlanFieldState } from "../services/plans";

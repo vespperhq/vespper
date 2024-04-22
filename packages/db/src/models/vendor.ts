@@ -1,5 +1,5 @@
 import { Vendor } from "../schemas/vendor";
-import { IVendor } from "../../types";
+import { IVendor } from "../types";
 import { BaseModel } from "./base";
 
 export const vendorModel = new BaseModel(Vendor);

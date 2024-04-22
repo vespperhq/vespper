@@ -1,8 +1,8 @@
-import { organizationModel } from "../../db/models/organization";
-import { planFieldModel } from "../../db/models/planField";
-import { planStateModel } from "../../db/models/planState";
-import { userModel } from "../../db/models/user";
 import {
+  organizationModel,
+  planFieldModel,
+  planStateModel,
+  userModel,
   ComputedOrgLevelFieldState,
   ComputedUserLevelFieldState,
   IPlan,
@@ -11,7 +11,7 @@ import {
   PlanFieldKind,
   ResetMode,
   UserLevelFieldState,
-} from "../../types";
+} from "@merlinn/db";
 
 interface BaseUpdateParams {
   fieldCode?: PlanFieldCode;
