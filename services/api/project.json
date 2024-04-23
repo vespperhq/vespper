@@ -18,7 +18,7 @@
         "production": {
           "push": true,
           "metadata": {
-            "images": ["europe-west2-docker.pkg.dev/merlinn/production/"],
+            "images": ["europe-west2-docker.pkg.dev/merlinn/production/api"],
             "tags": ["type=sha"]
           }
         }
