@@ -20,10 +20,12 @@ const WebhookSchema = new Schema<IWebhook>(
   { timestamps: true },
 );
 
-WebhookSchema.plugin(Encryption, {
-  fields: ["secret"],
-  secret: process.env["METADATA_ENCRYPTION_KEY"],
-  saltGenerator: () => process.env["ENCRYPTION_SALT"],
-});
+if (process.env.NODE_ENV !== "test") {
+  WebhookSchema.plugin(Encryption, {
+    fields: ["secret"],
+    secret: process.env["METADATA_ENCRYPTION_KEY"],
+    saltGenerator: () => process.env["ENCRYPTION_SALT"],
+  });
+}
 
 export const Webhook = mongoose.model("Webhook", WebhookSchema);
