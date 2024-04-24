@@ -84,6 +84,9 @@ jobs:
         with:
           version: ">= 363.0.0"
           project_id: "${{ secrets.GCP_PROJECT_ID }}"
+      - name: "Docker auth"
+        run: |-
+          gcloud auth configure-docker ${{ vars.GAR_LOCATION }}-docker.pkg.dev
       - uses: oNaiPs/secrets-to-env-action@v1
         with:
           secrets: ${{ toJSON(secrets) }}

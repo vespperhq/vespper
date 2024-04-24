@@ -103,7 +103,7 @@ export const textToQuery = async (
     return null;
   }
   query = query.replaceAll("\n", ""); // ChatGPT sometimes add new lines because it is shown in the cheatsheet
-  query = query.replaceAll('"', "'"); // Replace double quotes with single quotes
+  query = query.replaceAll('"', "'"); // Replace double quotes with single quotes.
   query = replaceSuccessiveQuotes(query);
 
   return query;
