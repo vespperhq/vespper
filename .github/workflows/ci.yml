@@ -88,6 +88,6 @@ jobs:
         with:
           secrets: ${{ toJSON(secrets) }}
       - name: Build images and push to Google Artifact Registry
-        run: npx nx affected --base=$NX_BASE --head=$NX_HEAD --output-style stream --exclude dashboard --target=container --parallel=2 --configuration=production
+        run: INPUT_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} npx nx affected --base=$NX_BASE --head=$NX_HEAD --output-style stream --exclude dashboard -t container --parallel=2 --configuration=production
       - name: Deploy services
         run: npx nx affected --base=$NX_BASE --head=$NX_HEAD --output-style stream --exclude dashboard -t deploy
