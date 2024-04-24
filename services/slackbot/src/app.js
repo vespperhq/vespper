@@ -5,7 +5,7 @@ const { extractEventId, parseMessage } = require("./lib");
 const { BotNames } = require("./constants");
 const { sendFeedback } = require("./api/feedback");
 
-// Initializes your app with your bot token and signing secret.
+// Initializes your app with your bot token and signing secret
 const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
   clientId: process.env.SLACK_CLIENT_ID,
