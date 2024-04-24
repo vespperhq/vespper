@@ -27,7 +27,7 @@ async def get_documents(
     vendor_names = [integration.vendor.name for integration in integrations]
     print(f"Found {len(integrations)} integrations: {vendor_names}")
 
-    # Calculate the limit per source.
+    # Calculate the limit per source
     limit_per_source = round(total_limit / len(integrations))
 
     stats = {}

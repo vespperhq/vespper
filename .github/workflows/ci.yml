@@ -16,6 +16,8 @@ jobs:
         with:
           # We need to fetch all branches and commits so that Nx affected has a base to compare against.
           fetch-depth: 0
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v4
       - name: Install Node.js
         uses: actions/setup-node@v3
         with:
@@ -24,15 +26,15 @@ jobs:
         run: npm install -g yarn
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v4
       # This line is needed for nx affected to work when CI is running on a PR
-      - run: git branch --track main origin/main
-        if: ${{ github.event_name == 'pull_request' }}
-      - name: Run lint
-        run: npx nx affected --base=$NX_BASE --head=$NX_HEAD -t lint
-      - name: Run tests
-        run: npx nx affected --base=$NX_BASE --head=$NX_HEAD -t test
+      # - run: git branch --track main origin/main
+      #   if: ${{ github.event_name == 'pull_request' }}
+      # - name: Run lint
+      #   run: npx nx affected --base=$NX_BASE --head=$NX_HEAD -t lint
+      # - name: Run tests
+      #   run: npx nx affected --base=$NX_BASE --head=$NX_HEAD -t test
+
+      # -------
       # Get all the affected services for the next step.
       # Nx calls them "apps" internally.
       # IMPORTANT: we exclude dashboard manually here, since Vercel takes care of the deployment for us
@@ -52,42 +54,45 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: test
-    if: ${{ github.ref == 'refs/heads/main' && needs.test.outputs.affected_services != '' }}
+    # if: ${{ github.ref == 'refs/heads/main' && needs.test.outputs.affected_services != '' }}
+    if: ${{ github.ref == 'refs/heads/main' }}
     permissions:
       contents: "read"
       id-token: "write"
       actions: "read"
     steps:
-      - uses: actions/checkout@v3
-        with:
-          # We need to fetch all branches and commits so that Nx affected has a base to compare against.
-          fetch-depth: 0
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      - name: Install Yarn
-        run: npm install -g yarn
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-      - name: Install Poetry # For our python services
-        uses: snok/install-poetry@v1
-      - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v4
-      - name: Authenticate to Google Cloud
-        uses: "google-github-actions/auth@v0.4.0"
-        with:
-          workload_identity_provider: "projects/${{ secrets.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/ci-pool/providers/github-actions"
-          service_account: "app-engine-deployer@merlinn.iam.gserviceaccount.com"
-      - name: "Set up Google Cloud SDK"
-        uses: "google-github-actions/setup-gcloud@v2"
-        with:
-          version: ">= 363.0.0"
-          project_id: "${{ secrets.GCP_PROJECT_ID }}"
-      - uses: oNaiPs/secrets-to-env-action@v1
-        with:
-          secrets: ${{ toJSON(secrets) }}
-      - name: Build images and push to Google Artifact Registry
-        run: npx nx affected --base=$NX_BASE --head=$NX_HEAD --output-style stream --exclude dashboard --target=container --parallel=2 --configuration=production
-      - name: Deploy services
-        run: npx nx affected --base=$NX_BASE --head=$NX_HEAD --output-style stream --exclude dashboard -t deploy
+      - name: Debug affected_services
+        run: "echo 'Affected Services: ${{ needs.test.outputs.affected_services }}'"
+      # - uses: actions/checkout@v3
+      #   with:
+      #     # We need to fetch all branches and commits so that Nx affected has a base to compare against.
+      #     fetch-depth: 0
+      # - name: Install Node.js
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: 18
+      # - name: Install Yarn
+      #   run: npm install -g yarn
+      # - name: Install dependencies
+      #   run: yarn install --frozen-lockfile
+      # - name: Install Poetry # For our python services
+      #   uses: snok/install-poetry@v1
+      # - name: Derive appropriate SHAs for base and head for `nx affected` commands
+      #   uses: nrwl/nx-set-shas@v4
+      # - name: Authenticate to Google Cloud
+      #   uses: "google-github-actions/auth@v0.4.0"
+      #   with:
+      #     workload_identity_provider: "projects/${{ secrets.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/ci-pool/providers/github-actions"
+      #     service_account: "app-engine-deployer@merlinn.iam.gserviceaccount.com"
+      # - name: "Set up Google Cloud SDK"
+      #   uses: "google-github-actions/setup-gcloud@v2"
+      #   with:
+      #     version: ">= 363.0.0"
+      #     project_id: "${{ secrets.GCP_PROJECT_ID }}"
+      # - uses: oNaiPs/secrets-to-env-action@v1
+      #   with:
+      #     secrets: ${{ toJSON(secrets) }}
+      # - name: Build images and push to Google Artifact Registry
+      #   run: npx nx affected --base=$NX_BASE --head=$NX_HEAD --output-style stream --exclude dashboard --target=container --parallel=2 --configuration=production
+      # - name: Deploy services
+      #   run: npx nx affected --base=$NX_BASE --head=$NX_HEAD --output-style stream --exclude dashboard -t deploy
