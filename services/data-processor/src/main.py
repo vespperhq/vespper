@@ -21,7 +21,7 @@ class BuildIndexRequestData(BaseModel):
     dataSources: Optional[List[str]] = None
 
 
-# Root route (root-raut at the moment)
+# Root route
 @app.get("/")
 async def root():
     return {"message": "Data processor API! 🚀"}

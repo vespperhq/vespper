@@ -52,7 +52,7 @@ const DUMMY_PLAN = new Plan({
     [String(DUMMY_FIELDS[1]._id)]: 4, // Can teleport 4 times per day
     [String(DUMMY_FIELDS[2]._id)]: 6, // Can launch 6 rockets per week
     [String(DUMMY_FIELDS[3]._id)]: 8, // Can play ping pong 8 times per month
-    [String(DUMMY_FIELDS[4]._id)]: 1, // Can drink water just one time per year!
+    [String(DUMMY_FIELDS[4]._id)]: 1, // Can drink water just one time per year
   },
 });
 

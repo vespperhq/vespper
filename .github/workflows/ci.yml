@@ -43,8 +43,9 @@ jobs:
         id: get-affected-projects
         run: |
           affected_services=$(npx nx show projects --affected --type app --exclude dashboard)
+          echo "affected_services<<EOF"
           echo $affected_services
-          echo "affected_services=$affected_services" >> "$GITHUB_OUTPUT"
+          echo EOF >> $GITHUB_OUTPUT
   deploy:
     runs-on: ubuntu-latest
     needs: test
