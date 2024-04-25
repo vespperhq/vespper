@@ -17,7 +17,8 @@
   "dependencies": {
     "@merlinn/db": "*",
     "@slack/bolt": "^3.17.1",
-    "axios": "^1.6.8"
+    "axios": "^1.6.8",
+    "sharp": "^0.33.3"
   },
   "devDependencies": {
     "@types/node": "^20.12.7",

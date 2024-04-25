@@ -1,14 +1,24 @@
-FROM node:18.18.2-alpine as base
+# First phase - install monorepo's dependencies
+FROM node:18.18.2-alpine as dependencies
 
-# Add package file
+WORKDIR /app
+
 COPY package.json ./
 COPY yarn.lock ./
+COPY nx.json ./
+COPY tsconfig.*.json ./
+COPY jest.preset.js ./
+COPY jest.config.ts ./
 
-# Install deps
-RUN yarn install
+# IMPORTANT: Copy internal libraries
+COPY packages packages
+COPY services/slackbot services/slackbot
 
-# Copy source
-COPY src ./src
+RUN yarn install --frozen-lockfile
+
+RUN npx nx build slackbot --verbose
+
+WORKDIR /app/services/slackbot/dist
 
 # Run server
-CMD ["npm", "start"]
+CMD ["node", "app.js"]

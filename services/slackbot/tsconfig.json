@@ -8,5 +8,6 @@
     "outDir": "dist"
   },
   "include": ["src/**/*"],
+  "files": ["./src/index.d.ts"],
   "exclude": ["dist"]
 }

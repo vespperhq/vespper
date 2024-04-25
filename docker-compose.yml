@@ -24,3 +24,19 @@ services:
       - "3000:3000"
     depends_on:
       - mongo
+  slackbot:
+    build:
+      context: "."
+      dockerfile: services/slackbot/Dockerfile
+    env_file:
+      - services/slackbot/.env
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/merlinn-db
+      - GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/application_default_credentials.json
+    volumes:
+      # Google Cloud credentials file
+      - ~/.config/gcloud/application_default_credentials.json:/tmp/keys/application_default_credentials.json
+    ports:
+      - "3003:3003"
+    depends_on:
+      - mongo

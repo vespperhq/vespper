@@ -12,9 +12,6 @@ import { authorize } from "./utils/install";
 const port = Number(process.env.PORT || 3000);
 const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
-  // clientId: process.env.SLACK_CLIENT_ID,
-  // clientSecret: process.env.SLACK_CLIENT_SECRET,
-  // stateSecret: process.env.SLACK_STATE_SECRET,
   appToken: process.env.APP_TOKEN,
   socketMode: true, // enable the following to use socket mode
   scopes: SCOPES,

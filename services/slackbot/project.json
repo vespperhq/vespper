@@ -1,0 +1,30 @@
+{
+  "name": "slackbot",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "targets": {
+    "container": {
+      "executor": "@nx-tools/nx-container:build",
+      "defaultConfiguration": "local",
+      "options": {
+        "engine": "docker",
+        "file": "services/slackbot/Dockerfile",
+        "platforms": ["linux/amd64"]
+      },
+      "configurations": {
+        "local": {
+          "tags": ["slackbot:latest"],
+          "push": false
+        },
+        "production": {
+          "push": true,
+          "metadata": {
+            "images": [
+              "europe-west2-docker.pkg.dev/merlinn/production/slackbot"
+            ],
+            "tags": ["type=sha"]
+          }
+        }
+      }
+    }
+  }
+}
