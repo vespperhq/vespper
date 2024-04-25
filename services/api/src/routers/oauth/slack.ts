@@ -41,6 +41,20 @@ router.get(
 
       const { access_token, ...metadata } = response.data;
 
+      // Get the bot id. Slack doesn't return this piece of information by default.
+      // https://github.com/slackapi/bolt-js/issues/196
+      console.log("bot_user_id", metadata.bot_user_id);
+      const { data: userData } = await axios.get(
+        `https://slack.com/api/users.info?user=${metadata.bot_user_id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        },
+      );
+      console.log(userData);
+      const bot_id = userData.user.profile.bot_id;
+
       const vendor = await vendorModel.getOne({ name: "Slack" });
       const organization = await organizationModel.getOneById(state as string);
       if (!vendor) {
@@ -63,7 +77,7 @@ router.get(
         vendor,
         organization,
         credentials,
-        metadata,
+        metadata: { ...metadata, bot_id },
       });
 
       return res.send("App installed successfully");

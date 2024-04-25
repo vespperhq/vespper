@@ -143,6 +143,7 @@ export interface SlackIntegration extends BaseConnection {
     scope: string;
     token_type: string;
     bot_user_id: string;
+    bot_id: string;
     is_enterprise_install: string;
     warning: string;
     incoming_webhook: {

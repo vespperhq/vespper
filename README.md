@@ -74,3 +74,9 @@ It will show tasks that you can run with Nx.
 ```bash
 docker-compose up api
 ```
+
+# Run multiple projects
+
+```bash
+nx run-many -t dev -p api dashboard slackbot
+```
