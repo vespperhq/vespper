@@ -21,7 +21,7 @@ import { investigationTemplate } from "../../../agent/prompts";
 import { chatModel } from "../../../agent/model";
 import { catchAsync } from "../../../utils/errors";
 import { AppError, ErrorCode } from "../../../errors";
-import { populateCredentials } from "../../../clients/secretManager";
+import { populateCredentials } from "@merlinn/utils";
 import { RunContext } from "../../../agent/types";
 
 const router = express.Router();

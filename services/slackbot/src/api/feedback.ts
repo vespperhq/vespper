@@ -1,6 +1,18 @@
-const { default: axios } = require("axios");
+import axios from "axios";
 
-async function sendFeedback({ traceId, observationId, value, email, team }) {
+export async function sendFeedback({
+  traceId,
+  observationId,
+  value,
+  email,
+  team,
+}: {
+  traceId: string;
+  observationId: string;
+  value: number;
+  email: string;
+  team: string;
+}) {
   const response = await axios.post(
     `${process.env.API_BASE_URL}/chat/feedback`,
     {
@@ -14,9 +26,7 @@ async function sendFeedback({ traceId, observationId, value, email, team }) {
         "x-slack-email": email,
         "x-slack-team": team,
       },
-    }
+    },
   );
   return response.data;
 }
-
-module.exports = { sendFeedback };

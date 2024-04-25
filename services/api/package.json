@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@merlinn/db": "*",
     "@datadog/datadog-api-client": "^1.21.0",
-    "@google-cloud/secret-manager": "^5.1.0",
+    "@merlinn/db": "*",
+    "@merlinn/utils": "*",
     "@octokit/types": "^12.4.0",
     "@pinecone-database/pinecone": "^2.0.1",
     "@sendgrid/mail": "^8.1.0",
@@ -34,7 +34,6 @@
   "scripts": {
     "start": "node dist/src/server.js",
     "build": "npx tsc",
-    "gcp-build": "yarn build",
     "watch": "npx nodemon -L --exec \"npx ts-node src/server.ts\" --ext ts",
     "dev": "npx env-cmd -f .env concurrently \"yarn run tunnel\" \"yarn run watch\"",
     "tunnel": "source .env && ngrok http 3000 --domain=$TUNNEL_URL",

@@ -8,7 +8,7 @@ import {
   createCredentials,
   populateCredentials,
   deleteCredentials,
-} from "../clients/secretManager";
+} from "@merlinn/utils";
 
 const router = express.Router();
 router.use(checkJWT);

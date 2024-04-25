@@ -9,7 +9,7 @@ module.exports = {
     return `nx affected --target=typecheck --files=${getRelativePaths(files).join(',')}`;
   },
   '{services,packages,tools}/**/*.{js,ts,jsx,tsx,json}': [
-    files => `nx affected:lint --files=${getRelativePaths(files).join(',')}`,
-    files => `nx format:write --files=${getRelativePaths(files).join(',')}`,
+    files => `nx affected -t lint`,
+    files => `nx format -t write`,
   ],
   };

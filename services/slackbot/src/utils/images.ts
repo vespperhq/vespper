@@ -1,16 +1,15 @@
-const sharp = require("sharp");
+import sharp from "sharp";
 
-async function getMetadata(buffer) {
+async function getMetadata(buffer: Buffer) {
   return await sharp(buffer).metadata();
 }
 
-async function resize(buffer, maxWidth, maxHeight) {
-  const { width: originalWidth, height: originalHeight } = await getMetadata(
-    buffer
-  );
+async function resize(buffer: Buffer, maxWidth: number, maxHeight: number) {
+  const { width: originalWidth, height: originalHeight } =
+    await getMetadata(buffer);
 
   // Calculate new dimensions while maintaining the aspect ratio
-  const aspectRatio = originalWidth / originalHeight;
+  const aspectRatio = originalWidth! / originalHeight!;
   let newWidth = maxWidth;
   let newHeight = maxHeight;
 

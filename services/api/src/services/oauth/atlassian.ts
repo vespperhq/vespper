@@ -1,10 +1,7 @@
 import { AxiosError } from "axios";
 import { integrationModel } from "@merlinn/db";
 import type { AtlassianIntegration } from "@merlinn/db";
-import {
-  populateCredentials,
-  recreateCredentials,
-} from "../../clients/secretManager";
+import { populateCredentials, recreateCredentials } from "@merlinn/utils";
 import { AtlassianClient } from "../../clients";
 import { AppError } from "../../errors";
 

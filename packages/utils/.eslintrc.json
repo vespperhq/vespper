@@ -2,7 +2,9 @@
   "extends": ["../../.eslintrc.json", "plugin:@typescript-eslint/recommended"],
   "env": {
     "browser": true,
-    "es2021": true,
+    "es2020": true,
     "node": true
-  }
+  },
+  "ignorePatterns": ["dist"],
+  "parser": "@typescript-eslint/parser"
 }

@@ -2,10 +2,7 @@ import { AxiosError } from "axios";
 import { integrationModel } from "@merlinn/db";
 import type { PagerDutyIntegration } from "@merlinn/db";
 import { PagerDutyClient } from "../../clients";
-import {
-  populateCredentials,
-  recreateCredentials,
-} from "../../clients/secretManager";
+import { populateCredentials, recreateCredentials } from "@merlinn/utils";
 import { AppError } from "../../errors";
 
 export async function refreshToken(integrationId: string) {

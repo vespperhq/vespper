@@ -1,9 +1,10 @@
-const { App } = require("@slack/bolt");
-const { getMyId, addFeedbackReactions, addReaction } = require("./utils/slack");
-const { getCompletion } = require("./api/chat");
-const { extractEventId, parseMessage } = require("./lib");
-const { BotNames } = require("./constants");
-const { sendFeedback } = require("./api/feedback");
+import { App, GenericMessageEvent } from "@slack/bolt";
+import { getMyId, addFeedbackReactions, addReaction } from "./utils/slack";
+import { getCompletion } from "./api/chat";
+import { extractEventId, parseMessage } from "./lib";
+import { BotNames } from "./constants";
+import { sendFeedback } from "./api/feedback";
+import { CustomEventPayload } from "./types";
 
 // Initializes your app with your bot token and signing secret.
 const app = new App({
@@ -52,20 +53,28 @@ app.event("reaction_added", async ({ event, client }) => {
       ts: event.item.ts,
       include_all_metadata: true,
     });
+    if (!response.messages) {
+      console.log("No messages found");
+      return;
+    } else if (!response.messages[0].metadata) {
+      console.log("No metadata found");
+      return;
+    }
+
     const message = response.messages[0];
-    const { event_type, event_payload } = message.metadata;
+    const { event_type, event_payload } = message.metadata!;
     if (event_type !== "answer_created") {
       console.log("Not a valid auto-generated message");
       return;
     }
 
-    const { trace_id, observation_id } = event_payload;
+    const { trace_id, observation_id } = event_payload as CustomEventPayload;
     const value = event.reaction === "+1" ? 1 : -1;
-
     await sendFeedback({
       traceId: trace_id,
       observationId: observation_id,
-      email: user.profile.email,
+      email: user.profile!.email!,
+      team: message.team!,
       value,
     });
   } catch (error) {
@@ -73,7 +82,8 @@ app.event("reaction_added", async ({ event, client }) => {
   }
 });
 
-app.message(async ({ message, say, client }) => {
+app.message(async ({ message: msg, say, client }) => {
+  const message = msg as GenericMessageEvent;
   const user = await client.users.profile.get({ user: message.user });
 
   try {
@@ -94,30 +104,41 @@ app.message(async ({ message, say, client }) => {
     await addReaction(client, message.channel, message.ts, "eyes");
 
     let messages;
-    const metadata = {};
+    const metadata = {} as { eventId: string };
     if (message.thread_ts) {
       const historyResponse = await client.conversations.replies({
         channel: message.channel,
         ts: message.thread_ts,
         inclusive: true,
       });
-
+      if (!historyResponse.messages) {
+        console.log("No messages found");
+        throw new Error("No messages found");
+      }
       const firstMessage = historyResponse.messages[0];
       if (
         firstMessage.bot_profile &&
-        BotNames.includes(firstMessage.bot_profile.name)
+        BotNames.includes(firstMessage.bot_profile.name!)
       ) {
         const eventId = extractEventId(firstMessage);
         metadata.eventId = eventId;
       }
-      messages = await Promise.all(historyResponse.messages.map(parseMessage));
+      messages = await Promise.all(
+        historyResponse.messages.map((msg) => parseMessage(msg, botUserId!)),
+      );
     } else {
       // We use Promise.all here since we want to build an array with a single value.
-      messages = await Promise.all([parseMessage(message)]);
+      messages = await Promise.all([parseMessage(message, botUserId!)]);
     }
 
+    if (!user.profile) {
+      throw new Error("User profile not found");
+    }
     const { email } = user.profile;
     const { team } = message;
+    if (!email || !team) {
+      throw new Error("Email or team not found");
+    }
 
     const { output, traceId, observationId } = await getCompletion({
       messages,
@@ -140,10 +161,11 @@ app.message(async ({ message, say, client }) => {
       metadata: message_metadata,
     });
     const { ok, channel, ts } = response;
-    if (ok) {
+    if (ok && channel && ts) {
       await addFeedbackReactions(client, channel, ts);
     }
-  } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
     console.error("error: ", error);
     if (error.response && error.response.status === 404) {
       if (error.response.data.code === 37) {
@@ -161,7 +183,7 @@ app.message(async ({ message, say, client }) => {
           token: process.env.SLACK_BOT_TOKEN,
           channel: message.channel,
           user: message.user,
-          text: `Seems like you are not invited to use me :cry: Make sure an admin invites you, using your email: ${user.profile.email}`,
+          text: `Seems like you are not invited to use me :cry: Make sure an admin invites you, using your email: ${user.profile?.email}`,
           thread_ts: message.thread_ts,
         });
       } else if (error.response.data.code === 30) {

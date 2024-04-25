@@ -1,32 +1,29 @@
 {
   "name": "slackbot",
   "version": "1.0.0",
-  "description": "",
+  "description": "Merlinn's slackbot application",
   "main": "index.js",
+  "author": "davidlasry696@gmail.com",
+  "license": "MIT",
+  "private": true,
   "scripts": {
     "test": "echo \"No test specified yet!\"",
-    "start": "node src/app.js",
-    "dev": "npx env-cmd nodemon src/app.js",
-    "lint": "npx nx lint",
+    "dev": "npx env-cmd npx ts-node src/app.ts",
+    "build": "tsc -p .",
+    "build:watch": "tsc -w -p .",
+    "start": "node dist/src/app.js",
     "deploy": "npx ts-node ../../tools/scripts/deploy.ts slackbot"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "@slack/bolt": "^3.16.0",
-    "axios": "^1.6.2",
-    "env-cmd": "^10.1.0"
+    "@merlinn/db": "*",
+    "@slack/bolt": "^3.17.1",
+    "axios": "^1.6.8"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
-  },
-  "nx": {
-    "includedScripts": [
-      "test",
-      "start",
-      "dev",
-      "deploy"
-    ]
+    "@types/node": "^20.12.7",
+    "env-cmd": "^10.1.0",
+    "nodemon": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
   }
 }

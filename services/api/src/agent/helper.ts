@@ -4,7 +4,7 @@ import { createAgent } from "./agent";
 import { createTools } from "./tools";
 import { LLMCallbacks } from "./callbacks";
 import { langfuse } from "../clients/langfuse";
-import { populateCredentials } from "../clients/secretManager";
+import { populateCredentials } from "@merlinn/utils";
 import { RunAgentParams, RunContext, RunModelParams } from "./types";
 
 function generateTrace(context: RunContext) {

@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import { catchAsync } from "../../utils/errors";
 import { AppError } from "../../errors";
 import { vendorModel, integrationModel, organizationModel } from "@merlinn/db";
-import { createCredentials } from "../../clients/secretManager";
+import { createCredentials } from "@merlinn/utils";
 import axios, { AxiosError } from "axios";
 
 const router = express.Router();

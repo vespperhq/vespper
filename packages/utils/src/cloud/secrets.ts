@@ -1,7 +1,6 @@
 import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
 import { Integration } from "@merlinn/db";
 import type { IIntegration } from "@merlinn/db";
-import { AppError } from "../errors";
 
 const projectId = process.env.GCLOUD_PROJECT;
 
@@ -18,7 +17,7 @@ export const fetchSecrets = async (secretNames: string[]) => {
       });
 
       if (!version?.payload?.data) {
-        throw new AppError(`Could not found secret ${secretName}`, 404);
+        throw new Error(`Could not found secret ${secretName}`);
       }
 
       const payload = version.payload.data.toString();
@@ -65,7 +64,7 @@ export const createSecret = async (secretName: string, secretValue: string) => {
     });
   } catch (err) {
     console.log("secret create err: ", err);
-    throw new AppError("Failed creating a secret", 500);
+    throw new Error("Failed creating a secret");
   }
 };
 

@@ -1,5 +1,5 @@
 import { OpsgenieClient, CoralogixClient } from "../../../clients";
-import { populateCredentials } from "../../../clients/secretManager";
+import { populateCredentials } from "@merlinn/utils";
 import { integrationModel } from "@merlinn/db";
 import type { CoralogixIntegration, OpsgenieIntegration } from "@merlinn/db";
 import type { OpsgenieAlert } from "../../../types";

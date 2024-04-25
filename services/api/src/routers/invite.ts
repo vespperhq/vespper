@@ -12,7 +12,7 @@ import type {
 import { EventType, SystemEvent, events } from "../events";
 import { catchAsync } from "../utils/errors";
 import { AppError } from "../errors";
-import { populateCredentials } from "../clients/secretManager";
+import { populateCredentials } from "@merlinn/utils";
 import { refreshPagerDutyToken } from "../services/oauth";
 import { getPlanFieldState, incrementPlanFieldState } from "../services/plans";
 

@@ -1,11 +1,17 @@
-const { default: axios } = require("axios");
+import type { View, WebClient } from "@slack/web-api";
+import axios from "axios";
 
-async function getMyId(client) {
+export async function getMyId(client: WebClient) {
   const response = await client.auth.test();
   return response.user_id;
 }
 
-async function addReaction(client, channel, timestamp, name) {
+export async function addReaction(
+  client: WebClient,
+  channel: string,
+  timestamp: string,
+  name: string,
+) {
   try {
     return await client.reactions.add({
       channel,
@@ -18,7 +24,11 @@ async function addReaction(client, channel, timestamp, name) {
   }
 }
 
-async function addFeedbackReactions(client, channel, timestamp) {
+export async function addFeedbackReactions(
+  client: WebClient,
+  channel: string,
+  timestamp: string,
+) {
   try {
     await Promise.all([
       addReaction(client, channel, timestamp, "thumbsup"),
@@ -30,14 +40,18 @@ async function addFeedbackReactions(client, channel, timestamp) {
   }
 }
 
-async function openModal(client, trigger_id, view) {
+export async function openModal(
+  client: WebClient,
+  trigger_id: string,
+  view: View,
+) {
   await client.views.open({
     trigger_id,
     view,
   });
 }
 
-async function downloadFile(botToken, url) {
+export async function downloadFile(botToken: string, url: string) {
   try {
     const config = {
       headers: { Authorization: `Bearer ${botToken}` },
@@ -47,9 +61,9 @@ async function downloadFile(botToken, url) {
       headers: config.headers,
     });
     return new Promise((resolve, reject) => {
-      const chunks = [];
+      const chunks: Uint8Array[] = [];
 
-      response.data.on("data", (chunk) => {
+      response.data.on("data", (chunk: Uint8Array) => {
         chunks.push(chunk);
       });
 
@@ -58,7 +72,7 @@ async function downloadFile(botToken, url) {
         resolve(buffer);
       });
 
-      response.data.on("error", (err) => {
+      response.data.on("error", (err: unknown) => {
         reject(err);
       });
     });
@@ -67,10 +81,3 @@ async function downloadFile(botToken, url) {
     throw error;
   }
 }
-module.exports = {
-  getMyId,
-  addReaction,
-  addFeedbackReactions,
-  openModal,
-  downloadFile,
-};
