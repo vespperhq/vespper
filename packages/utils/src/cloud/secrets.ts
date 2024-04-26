@@ -5,7 +5,7 @@ import type { IIntegration } from "@merlinn/db";
 const projectId = process.env.GCLOUD_PROJECT;
 
 export const fetchSecrets = async (secretNames: string[]) => {
-  const client = new SecretManagerServiceClient();
+  const client = new SecretManagerServiceClient({ fallback: true });
 
   const result: { [key: string]: string } = {};
   const secretsPromises = secretNames.map(async (secretName) => {
