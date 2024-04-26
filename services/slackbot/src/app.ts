@@ -18,6 +18,16 @@ const app = new App({
   port,
   authorize,
   developerMode: false,
+  customRoutes: [
+    {
+      path: "/",
+      method: ["GET"],
+      handler: (req, res) => {
+        res.writeHead(200);
+        res.end(`Slackbot service!`);
+      },
+    },
+  ],
 });
 
 app.event("reaction_added", async ({ event, client }) => {
