@@ -216,7 +216,7 @@ init();
 
 async function init() {
   try {
-    // Port is defined at the top of this file, in the installerOptions object.
+    // Port is defined at the top of this file, in the installerOptions object
     // This is due to SocketModeReceiver not using the port argument
     // https://github.com/slackapi/bolt-js/issues/1179
     await app.start();

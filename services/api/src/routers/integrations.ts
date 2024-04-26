@@ -1,5 +1,10 @@
 import express, { Request, Response } from "express";
-import { vendorModel, organizationModel, integrationModel } from "@merlinn/db";
+import {
+  vendorModel,
+  organizationModel,
+  integrationModel,
+  userModel,
+} from "@merlinn/db";
 import type { IIntegration } from "@merlinn/db";
 import { checkJWT, getDBUser } from "../middlewares/auth";
 import { catchAsync } from "../utils/errors";
@@ -84,8 +89,17 @@ router.get(
   "/",
   catchAsync(async (req: Request, res: Response) => {
     const query = req.query;
-    if (req.user) {
-      query.organization = req.user!.organization._id;
+    const { sub: auth0Id } = req.auth!.payload;
+    // Get the user that performs the request and get their organization
+    const user = await userModel.getOne({ auth0Id }).populate({
+      path: "organization",
+      populate: {
+        path: "plan",
+      },
+    });
+
+    if (user) {
+      query.organization = String(user.organization._id);
     }
     const integrations = await integrationModel.get(query).populate("vendor");
 
