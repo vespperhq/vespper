@@ -2,6 +2,7 @@ import { integrationModel } from "@merlinn/db";
 import type { SlackIntegration } from "@merlinn/db";
 import { populateCredentials } from "@merlinn/utils";
 import { AuthorizeResult } from "@slack/bolt";
+import { getIntegration } from "../api/integration";
 
 // This function is responsible for fetching the relevant credentials
 // from the database & secrets manager, and returning them to Slack.
@@ -43,6 +44,32 @@ export async function authorize({
   return {
     // You could also set userToken instead
     botToken: populatedIntegration.credentials.access_token,
+    botId: integration.metadata.bot_id,
+    botUserId: integration.metadata.bot_user_id,
+    teamId: integration.metadata.team.id,
+  };
+}
+
+export async function authorize_api({
+  enterpriseId,
+  teamId,
+}: {
+  enterpriseId?: string;
+  teamId?: string;
+}): Promise<AuthorizeResult> {
+  if (enterpriseId && teamId) {
+    throw new Error("You can only specify either enterpriseId or teamId");
+  }
+  const query = {} as { teamId?: string; enterpriseId?: string };
+  if (enterpriseId) {
+    query.enterpriseId = enterpriseId;
+  } else if (teamId) {
+    query.teamId = teamId;
+  }
+  const integration = await getIntegration(query);
+
+  return {
+    botToken: integration.credentials.access_token,
     botId: integration.metadata.bot_id,
     botUserId: integration.metadata.bot_user_id,
     teamId: integration.metadata.team.id,

@@ -1,12 +1,11 @@
 import { App, GenericMessageEvent } from "@slack/bolt";
-import { connectToDB } from "@merlinn/db";
 import { getMyId, addFeedbackReactions, addReaction } from "./utils/slack";
 import { getCompletion } from "./api/chat";
 import { extractEventId, parseMessage } from "./lib";
 import { BotNames, SCOPES } from "./constants";
 import { sendFeedback } from "./api/feedback";
 import { CustomEventPayload } from "./types";
-import { authorize } from "./utils/install";
+import { authorize_api } from "./utils/install";
 
 // Initializes your app with your bot token and signing secret.
 const port = Number(process.env.PORT || 3000);
@@ -16,7 +15,7 @@ const app = new App({
   socketMode: true, // enable the following to use socket mode
   scopes: SCOPES,
   port,
-  authorize,
+  authorize: authorize_api,
   developerMode: false,
   customRoutes: [
     {
@@ -216,9 +215,6 @@ app.message(async ({ message: msg, say, client }) => {
 init();
 
 async function init() {
-  const mongoUri = process.env.MONGO_URI as string;
-  await connectToDB(mongoUri);
-
   try {
     // Port is defined at the top of this file, in the installerOptions object.
     // This is due to SocketModeReceiver not using the port argument

@@ -12,10 +12,10 @@ import {
 
 const router = express.Router();
 router.use(checkJWT);
-router.use(getDBUser);
 
 router.post(
   "/",
+  getDBUser,
   catchAsync(async (req: Request, res: Response) => {
     const {
       vendor: vendorName,
@@ -58,6 +58,7 @@ router.post(
 
 router.put(
   "/:id",
+  getDBUser,
   catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
     const { tools } = req.body;
@@ -82,14 +83,11 @@ router.put(
 router.get(
   "/",
   catchAsync(async (req: Request, res: Response) => {
-    if (req.user!.role !== "owner") {
-      throw new AppError("Only owners can view integrations", 403);
+    const query = req.query;
+    if (req.user) {
+      query.organization = req.user!.organization._id;
     }
-    const integrations = await integrationModel
-      .get({
-        organization: req.user!.organization?._id,
-      })
-      .populate("vendor");
+    const integrations = await integrationModel.get(query).populate("vendor");
 
     const populated = await populateCredentials(integrations as IIntegration[]);
 
@@ -99,6 +97,7 @@ router.get(
 
 router.delete(
   "/:id",
+  getDBUser,
   catchAsync(async (req: Request, res: Response) => {
     if (req.user!.role !== "owner") {
       throw new AppError("Only owners can delete integrations", 403);

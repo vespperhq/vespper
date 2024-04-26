@@ -70,8 +70,6 @@ jobs:
         run: npm install -g yarn
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-      - name: Install Poetry # For our python services
-        uses: snok/install-poetry@v1
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v4
       - name: Authenticate to Google Cloud
@@ -87,9 +85,6 @@ jobs:
       - name: "Docker auth"
         run: |-
           gcloud auth configure-docker ${{ vars.GAR_LOCATION }}-docker.pkg.dev
-      - uses: oNaiPs/secrets-to-env-action@v1
-        with:
-          secrets: ${{ toJSON(secrets) }}
       - name: Build images and push to Google Artifact Registry
         run: INPUT_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} npx nx affected --base=$NX_BASE --head=$NX_HEAD --output-style stream --exclude dashboard -t container --parallel=3 --configuration=production
       - name: Deploy services
