@@ -23,15 +23,22 @@ export async function authorize({
   } else if (teamId) {
     query["metadata.team.id"] = teamId;
   }
+  console.log("Fetching credentials for query:", JSON.stringify(query));
   const integration = (await integrationModel.getOne(
     query,
   )) as SlackIntegration;
   if (!integration) {
     throw new Error(`No integration found for query: ${JSON.stringify(query)}`);
   }
+  console.log("Found integration:", JSON.stringify(integration));
+  console.log(
+    "Populating credentials for integration:",
+    JSON.stringify(integration),
+  );
   const populatedIntegration = (
     await populateCredentials([integration])
   )[0] as SlackIntegration;
+  console.log("Populated integration!");
 
   return {
     // You could also set userToken instead
