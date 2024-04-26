@@ -52,6 +52,6 @@ services:
       # Google Cloud credentials file
       - ~/.config/gcloud/application_default_credentials.json:/tmp/keys/application_default_credentials.json
     ports:
-      - "3003:3003"
+      - "3002:3002"
     depends_on:
       - mongo
