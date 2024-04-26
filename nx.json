@@ -1,5 +1,5 @@
 {
-  "extends": "./node_modules/nx/presets/npm.json",
+  "extends": "nx/presets/npm.json",
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "workspaceLayout": {
     "appsDir": "services",
