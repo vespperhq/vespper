@@ -8773,9 +8773,9 @@ nwsapi@^2.2.2:
   integrity sha512-ub5E4+FBPKwAZx0UwIQOjYWGHTEq5sPqHQNRN8Z9e4A7u3Tj1weLJsL59yH9vmvqEtBHaOmT6cYQKIZOxp35FQ==
 
 nx-ignore@^18.0.2:
-  version "18.0.2"
-  resolved "https://registry.yarnpkg.com/nx-ignore/-/nx-ignore-18.0.2.tgz#dae13db2870a7c3ca80875543bbaa1eb7b784c72"
-  integrity sha512-Tw7C/TRXXKstGgI7nZOwRrkXFUftMzI1QAlgvVVAULHt5Fdj3fwJ8PwtOkVZWnLkE+84JlF20kmlZaSOKso31Q==
+  version "18.3.0"
+  resolved "https://registry.yarnpkg.com/nx-ignore/-/nx-ignore-18.3.0.tgz#c6cb4b6141f01966e5102b9c68ae01977d4f84b4"
+  integrity sha512-/LoPhY+VhJIKU/btiBNiBS4PRcutepZ/5SIX88Jug8WqYsBileBESOrkEOQkD5jIxOUuwesW+EwEzUbsFFdFPg==
   dependencies:
     "@swc/helpers" "0.5.1"
     fs-extra "^10.1.0"
