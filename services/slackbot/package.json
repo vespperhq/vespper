@@ -15,6 +15,7 @@
     "deploy": "npx ts-node ../../tools/scripts/deploy.ts slackbot"
   },
   "dependencies": {
+    "@merlinn/utils": "*",
     "@merlinn/db": "*",
     "@slack/bolt": "^3.17.1",
     "axios": "^1.6.8",

@@ -113,11 +113,15 @@ app.message(async ({ message: msg, say, client }) => {
         metadata.eventId = eventId;
       }
       messages = await Promise.all(
-        historyResponse.messages.map((msg) => parseMessage(msg, botUserId!)),
+        historyResponse.messages.map((msg) =>
+          parseMessage(msg, botUserId!, client.token!),
+        ),
       );
     } else {
       // We use Promise.all here since we want to build an array with a single value.
-      messages = await Promise.all([parseMessage(message, botUserId!)]);
+      messages = await Promise.all([
+        parseMessage(message, botUserId!, client.token!),
+      ]);
     }
 
     if (!user.profile) {

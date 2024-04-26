@@ -52,7 +52,7 @@ async function deployImage(serviceName: string) {
   const imageTag = await getImageTag(serviceName);
   console.log(`Image tag: ${imageTag}`);
   return execCommand(
-    `gcloud run deploy merlinn-${serviceName} --image ${imageTag} --region europe-west2`,
+    `gcloud run deploy ${serviceName} --image ${imageTag} --region europe-west2`,
   );
 }
 

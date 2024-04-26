@@ -30,6 +30,7 @@ export function extractEventId(message: MessageElement) {
 export async function parseMessage(
   message: GenericMessageEvent | MessageElement,
   botUserId: string,
+  token: string,
 ): Promise<ChatMessage> {
   const botMentionString = `<@${botUserId}>`;
   const role = message.user === botUserId ? Roles.assistant : Roles.user;
@@ -40,10 +41,7 @@ export async function parseMessage(
     return { role, content: text };
   }
   const { url_private_download: url } = message.files![0];
-  const buffer = (await downloadFile(
-    process.env.SLACK_BOT_TOKEN as string,
-    url as string,
-  )) as Buffer;
+  const buffer = (await downloadFile(token, url as string)) as Buffer;
   const base64Data = buffer.toString("base64");
   const imageFormat = url!.endsWith(".png") ? "png" : "jpeg";
 
