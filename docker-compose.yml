@@ -29,9 +29,10 @@ services:
       context: "."
       dockerfile: services/slackbot/Dockerfile
     env_file:
-      - services/slackbot/.env
+      - services/slackbot/.env.prod
     environment:
-      - MONGO_URI=mongodb://mongo:27017/merlinn-db
+      # - MONGO_URI=mongodb://mongo:27017/merlinn-db
+      # - API_BASE_URL=http://api:3000
       - GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/application_default_credentials.json
     volumes:
       # Google Cloud credentials file

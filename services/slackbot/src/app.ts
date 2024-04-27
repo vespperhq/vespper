@@ -11,8 +11,8 @@ import { authorize_api } from "./utils/install";
 const port = Number(process.env.PORT || 3000);
 const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
-  appToken: process.env.APP_TOKEN,
-  socketMode: true, // enable the following to use socket mode
+  // appToken: process.env.APP_TOKEN,
+  // socketMode: true, // enable the following to use socket mode
   scopes: SCOPES,
   port,
   authorize: authorize_api,
@@ -78,9 +78,11 @@ app.message(async ({ message: msg, say, client }) => {
   // There is a known issue with Bolt.js message params in TypeScript.
   // https://github.com/slackapi/bolt-js/issues/904
   // The solution in the meantime is to cast the message to Casting to GenericMessageEvent
+  console.log("Received message!");
   const message = msg as GenericMessageEvent;
 
   const botUserId = await getMyId(client);
+  console.log("Got id:");
   const botMentionString = `<@${botUserId}>`;
 
   // Check if the bot is mentioned in the message or a user has sent a direct message

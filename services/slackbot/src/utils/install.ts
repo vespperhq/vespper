@@ -54,6 +54,7 @@ export async function authorize_api({
   enterpriseId?: string;
   teamId?: string;
 }): Promise<AuthorizeResult> {
+  console.log("Authorizing request...");
   if (enterpriseId && teamId) {
     throw new Error("You can only specify either enterpriseId or teamId");
   }
@@ -63,7 +64,9 @@ export async function authorize_api({
   } else if (teamId) {
     query.teamId = teamId;
   }
+  console.log("Fetching integration...");
   const integration = await getIntegration(query);
+  console.log("Integration fetched!");
 
   return {
     botToken: integration.credentials.access_token,
