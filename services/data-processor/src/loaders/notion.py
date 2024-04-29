@@ -15,5 +15,7 @@ def fetch_notion_documents(integration: Integration):
     # Adding the global "source" metadata field
     for document in documents:
         document.metadata["source"] = "Notion"
+        document.metadata["workspace_id"] = integration.metadata["workspace_id"]
+        document.metadata["workspace_name"] = integration.metadata["workspace_name"]
 
     return documents

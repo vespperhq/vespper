@@ -37,5 +37,8 @@ def fetch_slack_documents(integration: Integration):
     for document in documents:
         document.metadata["source"] = "Slack"
         document.metadata["channel_name"] = id2name[document.metadata["channel_id"]]
+        document.metadata["workspace_url"] = integration.metadata["incoming_webhook"][
+            "configuration_url"
+        ].split("/services")[0]
 
     return documents

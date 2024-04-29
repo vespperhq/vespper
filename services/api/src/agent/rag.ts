@@ -66,7 +66,6 @@ export async function semanticSearch(
   query: string,
   indexName: string,
   topK = 5,
-  textify = false,
 ) {
   const vector = await embedModel.getTextEmbedding(query);
   const pc = new Pinecone({ apiKey: process.env.PINECONE_API_KEY as string });
@@ -74,11 +73,5 @@ export async function semanticSearch(
     .index(indexName)
     .query({ topK, vector, includeMetadata: true });
 
-  const result = responseToNodes(response);
-  if (textify) {
-    const text = nodesToText(result.nodes, result.similarities);
-    return text;
-  }
-
-  return result;
+  return responseToNodes(response);
 }

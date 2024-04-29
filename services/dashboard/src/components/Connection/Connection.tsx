@@ -4,6 +4,7 @@ import { useCallback, useState } from "react";
 import {
   Box,
   Button,
+  Chip,
   CircularProgress,
   IconButton,
   ListDivider,
@@ -61,6 +62,8 @@ const connectVendor = {
     [ConnectionName.PagerDuty]: ConnectPageDutyWebhook,
   },
 };
+
+const BETA = [ConnectionName.Jaeger];
 
 interface ConnectRequest {
   url?: string;
@@ -124,11 +127,24 @@ export const Connection = ({ vendor, data, orgId, type }: Props) => {
   return (
     <CustomPaper sx={{ boxShadow: "lg" }}>
       <div style={{ width: "100%" }}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <Icon
-            style={{ marginRight: "10px", width: "30px", height: "30px" }}
-          />
-          <Typography level="title-sm">{vendor.name}</Typography>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Icon
+              style={{ marginRight: "10px", width: "30px", height: "30px" }}
+            />
+            <Typography level="title-sm">{vendor.name}</Typography>
+          </div>
+          {BETA.includes(vendor.name) && (
+            <Chip color="warning" size="sm">
+              Beta
+            </Chip>
+          )}
         </div>
         <ListDivider sx={{ margin: "20px 0" }} />
         <Typography level="body-sm">{vendor.description}</Typography>

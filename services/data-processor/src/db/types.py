@@ -15,7 +15,7 @@ class Organization(CommonDBModel):
 class Integration(CommonDBModel):
     vendor: Union[PyObjectId, Vendor]
     organization: Union[PyObjectId, Organization]
-    credentials: dict
+    credentials: Optional[dict] = None
     metadata: dict
 
 
