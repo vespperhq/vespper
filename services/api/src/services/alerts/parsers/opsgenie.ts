@@ -1,7 +1,15 @@
-import { OpsgenieClient, CoralogixClient } from "../../../clients";
+import {
+  OpsgenieClient,
+  CoralogixClient,
+  GrafanaClient,
+} from "../../../clients";
 import { populateCredentials } from "@merlinn/utils";
 import { integrationModel } from "@merlinn/db";
-import type { CoralogixIntegration, OpsgenieIntegration } from "@merlinn/db";
+import type {
+  CoralogixIntegration,
+  GrafanaIntegration,
+  OpsgenieIntegration,
+} from "@merlinn/db";
 import type { OpsgenieAlert } from "../../../types";
 import type { AlertEvent } from "../../../types/internal";
 
@@ -47,6 +55,9 @@ export const parseAlert = async (
       switch (alert.source) {
         case "Coralogix": {
           return getDataFromCoralogix(alert, organizationId);
+        }
+        case "Grafana": {
+          return getDataFromGrafana(alert, organizationId);
         }
         default:
           return null;
@@ -100,4 +111,51 @@ const getDataFromCoralogix = async (
     return null;
   }
   return { logs };
+};
+
+const getDataFromGrafana = async (
+  opsAlert: OpsgenieAlert,
+  organizationId: string,
+) => {
+  let grafanaIntegration = (await integrationModel.getIntegrationByName(
+    "Grafana",
+    {
+      organization: organizationId,
+    },
+  )) as GrafanaIntegration;
+  if (!grafanaIntegration) {
+    throw new Error(
+      `No coralogix integration for organization ${organizationId}`,
+    );
+  }
+
+  grafanaIntegration = (
+    await populateCredentials([grafanaIntegration])
+  )[0] as GrafanaIntegration;
+
+  const { token } = grafanaIntegration.credentials;
+  const { instanceURL } = grafanaIntegration.metadata;
+  const coralogixClient = new GrafanaClient(token, instanceURL);
+
+  const alertNameTag = opsAlert.tags.find((tag) => tag.includes("alertname:"));
+  if (!alertNameTag) {
+    throw new Error(`Could not find alert name in tags: ${opsAlert.tags}`);
+  }
+  const alertName = alertNameTag.split(":")[1].trim();
+
+  const alerts = await coralogixClient.getAlerts();
+  const alert = alerts.find((a) => a.labels.alertname === alertName);
+  if (!alert) {
+    throw new Error(`Could not find alert with name: ${alertName}`);
+  }
+
+  // TODO: fix this so we check other groups
+  const alertRules = await coralogixClient.getAlertsRules();
+  const firstGroup = alertRules.data.groups[0];
+  const alertRule = firstGroup.rules.find((rule) => rule.name === alertName);
+  if (!alertRule) {
+    throw new Error(`Could not find alert rule with name: ${alertName}`);
+  }
+
+  return { alert, alertRule };
 };

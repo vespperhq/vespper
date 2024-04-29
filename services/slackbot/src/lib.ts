@@ -12,7 +12,7 @@ export function extractEventId(message: MessageElement) {
 
   switch (botName) {
     case "Opsgenie for Alert Management": {
-      if (message.attachments || !message.attachments!.length) {
+      if (!message.attachments || !message.attachments!.length) {
         throw new Error("No attachments found");
       }
       const attachment = message.attachments![0];

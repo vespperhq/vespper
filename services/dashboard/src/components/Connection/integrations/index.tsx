@@ -8,3 +8,5 @@ export { ConnectNotionIntegration } from "./Notion";
 export { ConnectConfluenceIntegration } from "./Confluence";
 export { ConnectJiraIntegration } from "./Jira";
 export { ConnectMongoDBIntegration } from "./MongoDB";
+export { ConnectGrafanaIntegration } from "./Grafana";
+export { ConnectJaegerIntegration } from "./Jaeger";

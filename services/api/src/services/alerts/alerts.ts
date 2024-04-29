@@ -1,4 +1,4 @@
-import { semanticSearch } from "../../agent/rag";
+// import { semanticSearch } from "../../agent/rag";
 import type { AlertEvent, EventSource } from "../../types/internal";
 import { parseOpsgenieAlert, parsePagerDutyAlert } from "./parsers";
 import { buildPrompt } from "./utils";
@@ -9,13 +9,14 @@ export async function parseAlertToPrompt(
   organizationId: string,
 ) {
   const event = await parseAlert(eventId, eventSource, organizationId);
-  const context = (await semanticSearch(
-    event.message,
-    organizationId,
-    5,
-    true,
-  )) as string;
-  const prompt = buildPrompt(event, context);
+  // const context = (await semanticSearch(
+  //   event.message,
+  //   organizationId,
+  //   5,
+  //   true,
+  // )) as string;
+  // const prompt = buildPrompt(event, context);
+  const prompt = buildPrompt(event);
   return prompt;
 }
 

@@ -215,6 +215,15 @@ export interface DataDogIntegration extends BaseConnection {
   };
 }
 
+export interface GrafanaIntegration extends BaseConnection {
+  credentials: {
+    token: string;
+  };
+  metadata: {
+    instanceURL: string;
+  };
+}
+
 export interface GithubIntegration extends BaseConnection {
   credentials: {
     access_token: string;
@@ -256,16 +265,26 @@ export interface MongoDBIntegration extends BaseConnection {
   };
 }
 
+export interface JaegerIntegration extends BaseConnection {
+  // Jaegar don't have credentials (yet) so we keep an empty dict
+  credentials: Record<string, string>;
+  metadata: {
+    instanceUrl: string;
+  };
+}
+
 export type IIntegration =
   | SlackIntegration
   | PagerDutyIntegration
   | OpsgenieIntegration
   | CoralogixIntegration
   | DataDogIntegration
+  | GrafanaIntegration
   | GithubIntegration
   | NotionIntegration
   | AtlassianIntegration
-  | MongoDBIntegration;
+  | MongoDBIntegration
+  | JaegerIntegration;
 
 export interface IWebhook extends BaseConnection {
   secret: string;

@@ -5,11 +5,19 @@ import { FaGithub } from "react-icons/fa";
 import SlackLogo from "../../assets/logo-slack.png";
 import OpsgenieLogo from "../../assets/logo-opsgenie.png";
 import DataDogLogo from "../../assets/logo-datadog.png";
+import GrafanaLogo from "../../assets/logo-grafana.png";
+import JaegerLogo from "../../assets/logo-jaeger.png";
 import ConfluenceLogo from "../../assets/logo-confluence.png";
 import JiraLogo from "../../assets/logo-jira.png";
 import MongoDBLogo from "../../assets/logo-mongodb.png";
 
 export const icons = {
+  [ConnectionName.Jaeger]: ({ style = {} }: any) => (
+    <img src={JaegerLogo} style={style} />
+  ),
+  [ConnectionName.Grafana]: ({ style = {} }: any) => (
+    <img src={GrafanaLogo} style={style} />
+  ),
   [ConnectionName.DataDog]: ({ style = {} }: any) => (
     <img src={DataDogLogo} style={style} />
   ),

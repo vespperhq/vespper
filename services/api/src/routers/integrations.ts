@@ -44,11 +44,10 @@ router.post(
       throw new AppError("User is not a member of this organization", 403);
     }
 
-    const formattedCredentials = await createCredentials(
-      organizationId,
-      vendorName,
-      credentials,
-    );
+    const formattedCredentials =
+      credentials && Object.keys(credentials).length
+        ? await createCredentials(organizationId, vendorName, credentials)
+        : {};
 
     const integration = await integrationModel.create({
       vendor,

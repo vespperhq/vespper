@@ -20,6 +20,7 @@ import {
 import {
   ConnectDataDogIntegration,
   ConnectCoralogixIntegration,
+  ConnectGrafanaIntegration,
   ConnectGithubIntegration,
   ConnectPageDutyIntegration,
   ConnectSlackIntegration,
@@ -28,6 +29,7 @@ import {
   ConnectConfluenceIntegration,
   ConnectJiraIntegration,
   ConnectMongoDBIntegration,
+  ConnectJaegerIntegration,
 } from "./integrations";
 import { CustomPaper, Null } from "./styles";
 
@@ -43,6 +45,8 @@ const connectVendor = {
   [ConnectionType.Integration]: {
     [ConnectionName.Github]: ConnectGithubIntegration,
     [ConnectionName.Coralogix]: ConnectCoralogixIntegration,
+    [ConnectionName.Grafana]: ConnectGrafanaIntegration,
+    [ConnectionName.Jaeger]: ConnectJaegerIntegration,
     [ConnectionName.DataDog]: ConnectDataDogIntegration,
     [ConnectionName.Slack]: ConnectSlackIntegration,
     [ConnectionName.PagerDuty]: ConnectPageDutyIntegration,

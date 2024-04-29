@@ -7,12 +7,21 @@ import { sendFeedback } from "./api/feedback";
 import { CustomEventPayload } from "./types";
 import { authorize_api } from "./utils/install";
 
-// Initializes your app with your bot token and signing secret.
 const port = Number(process.env.PORT || 3000);
+
+// If we're in a local environment, it's preferred to use the socket mode since it works ok.
+// https://github.com/slackapi/bolt-js/issues/1151
+const envParams =
+  process.env.NODE_ENV === "development"
+    ? {
+        appToken: process.env.APP_TOKEN,
+        socketMode: true,
+      }
+    : {};
+
 const app = new App({
+  ...envParams,
   signingSecret: process.env.SLACK_SIGNING_SECRET,
-  // appToken: process.env.APP_TOKEN,
-  // socketMode: true, // enable the following to use socket mode
   scopes: SCOPES,
   port,
   authorize: authorize_api,

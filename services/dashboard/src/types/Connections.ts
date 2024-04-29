@@ -11,6 +11,8 @@ export enum ConnectionName {
   Confluence = "Confluence",
   Jira = "Jira",
   MongoDB = "MongoDB",
+  Grafana = "Grafana",
+  Jaeger = "Jaeger",
 }
 
 export enum ConnectionType {

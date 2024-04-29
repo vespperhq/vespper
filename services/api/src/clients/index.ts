@@ -5,3 +5,5 @@ export { SlackClient } from "./slack";
 export { SendGridClient } from "./sendgrid";
 export { PagerDutyClient } from "./pagerduty";
 export { AtlassianClient } from "./atlassian";
+export { GrafanaClient } from "./grafana";
+export { JaegerClient } from "./jaeger";

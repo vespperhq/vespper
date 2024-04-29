@@ -3,6 +3,7 @@ import type {
   DataDogIntegration,
   GithubIntegration,
   IIntegration,
+  JaegerIntegration,
   MongoDBIntegration,
 } from "@merlinn/db";
 import { toolLoaders as coralogixToolLoaders } from "./coralogix";
@@ -10,6 +11,7 @@ import { toolLoaders as githubToolLoaders } from "./github";
 import { toolLoaders as datadogToolLoaders } from "./datadog";
 import { toolLoaders as staticToolLoaders } from "./static";
 import { toolLoaders as mongodbToolLoaders } from "./mongodb";
+import { toolLoaders as jaegerToolLoaders } from "./jaeger";
 import { Tool } from "./types";
 import { RunContext } from "../types";
 
@@ -50,7 +52,7 @@ export const createTools = async (
   const tools = [] as Tool[];
 
   // Coralogix
-  const [coralogixTools, githubTools, datadogTools, mongodbTools] =
+  const [coralogixTools, githubTools, datadogTools, mongodbTools, jaegerTools] =
     await Promise.all([
       createToolsForVendor<CoralogixIntegration>(
         integrations,
@@ -72,6 +74,11 @@ export const createTools = async (
         "MongoDB",
         mongodbToolLoaders,
       ),
+      createToolsForVendor<JaegerIntegration>(
+        integrations,
+        "Jaeger",
+        jaegerToolLoaders,
+      ),
     ]);
 
   // Static tools
@@ -85,6 +92,7 @@ export const createTools = async (
     ...githubTools,
     ...datadogTools,
     ...mongodbTools,
+    ...jaegerTools,
     ...staticTools,
   );
 

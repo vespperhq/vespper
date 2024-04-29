@@ -112,6 +112,12 @@ const getSecretNames = (integrations: IIntegration[]) => {
   const secretNames: string[] = [];
 
   integrations.forEach((integration: IIntegration) => {
+    if (
+      !integration.credentials ||
+      !Object.keys(integration.credentials).length
+    ) {
+      return;
+    }
     secretNames.push(...Object.values(integration.credentials));
   });
 
@@ -124,6 +130,13 @@ export const populateCredentials = async (
   const secrets = await fetchSecrets(secretNames);
 
   const populated = integrations.map((integration: IIntegration) => {
+    if (
+      !integration.credentials ||
+      !Object.keys(integration.credentials).length
+    ) {
+      return integration;
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const newCredentials: any = {};
     const newIntegration = new Integration(integration);

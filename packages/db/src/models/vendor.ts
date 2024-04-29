@@ -56,6 +56,16 @@ export const seedVendors = async () => {
       description:
         "MongoDB is a document database that provides a flexible and scalable solution for storing and retrieving data",
     },
+    {
+      name: "Grafana",
+      description:
+        "Grafana is a cloud-based monitoring and analytics platform that provides visibility into the performance of applications, infrastructure, and networks through a unified dashboard.",
+    },
+    {
+      name: "Jaeger",
+      description:
+        "Jaeger is a tracing platform that helps monitoring and troubleshooting problems in distributed systems",
+    },
   ] as IVendor[];
 
   for (const vendor of vendorsData) {

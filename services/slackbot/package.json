@@ -12,7 +12,8 @@
     "build": "tsc -p .",
     "build:watch": "tsc -w -p .",
     "start": "node dist/src/app.js",
-    "deploy": "npx ts-node ../../tools/scripts/deploy.ts slackbot"
+    "deploy": "npx ts-node ../../tools/scripts/deploy.ts slackbot",
+    "tunnel": "source .env && ngrok http 3003 --domain=$TUNNEL_URL"
   },
   "dependencies": {
     "@slack/bolt": "^3.17.1",
