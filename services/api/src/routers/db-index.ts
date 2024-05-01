@@ -26,7 +26,7 @@ router.get(
     }
 
     const index = await indexModel.getOne({
-      name: String(req.user!.organization._id),
+      organization: req.user!.organization._id,
     });
 
     return res.status(200).json(index);
