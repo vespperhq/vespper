@@ -3,18 +3,21 @@ import { DynamicStructuredTool } from "langchain/tools";
 import { RunContext } from "../../types";
 import { nodesToText, semanticSearch } from "../../rag";
 import { buildOutput } from "../utils";
+import { indexModel } from "@merlinn/db";
 
 export default async function (context: RunContext) {
+  const index = await indexModel.getOne({
+    organization: context.organizationId,
+  });
   return Promise.resolve(
     new DynamicStructuredTool({
       name: "semantic_search",
       description: `Perform semantic search across multiple sources of information, and get top 5 results.`,
       func: async ({ query }) => {
         try {
-          const indexName = context.organizationId;
           const { nodes, similarities } = await semanticSearch(
             query,
-            indexName,
+            index!.name,
             3,
           );
           const text = nodesToText(nodes, similarities);
