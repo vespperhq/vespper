@@ -3,11 +3,11 @@ export const buildAnswer = (text: string, sources?: string[]) => {
   if (sources && sources.length) {
     const sourcesStr = sources
       .map((source) => {
-        return `• ${source}\n`;
+        return `• ${source.trim()}\n`;
       })
       .join("\n")
       .trim();
-    const sourcesSection = `\n\n*Sources :scroll:*\n ${sourcesStr}`;
+    const sourcesSection = `\n\n*Sources :scroll:*\n${sourcesStr}`;
     answer += sourcesSection;
   }
 

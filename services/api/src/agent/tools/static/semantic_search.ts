@@ -43,7 +43,7 @@ export default async function (context: RunContext) {
             const nSource = sourcesCounter[node.metadata.source];
 
             const suffix = nSource && nSource > 1 ? ` #${nSource}` : "";
-            const source = `<${url}|${node.metadata.source} Link${suffix}>`;
+            const source = `<${url}|${node.metadata.source.trim()} Link${suffix}>`;
             return source;
           });
           const output = buildOutput(text, sources);
