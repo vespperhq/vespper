@@ -4,12 +4,10 @@ WORKDIR /app
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
     build-essential
-RUN pip install poetry==1.7.1
-ENV POETRY_VIRTUALENVS_CREATE=false \
-    POETRY_CACHE_DIR=/tmp/poetry_cache
+RUN pip install --no-cache-dir poetry==1.7.1
 
 COPY pyproject.toml poetry.lock ./
 RUN poetry install --no-root --no-dev --no-interaction
 COPY . .
 
-CMD ["python", "src/main.py"]
+CMD ["poetry", "run", "python", "src/main.py"]
