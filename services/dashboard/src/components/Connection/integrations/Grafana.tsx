@@ -14,7 +14,7 @@ const fieldsConfigurations: FieldConfiguration[] = [
     type: "credentials",
     input: { type: "secret" },
   },
-  { key: "instanceURL", label: "Grafana URL", type: "metadata" },
+  { key: "instanceURL", label: "Grafana API URL", type: "metadata" },
 ];
 
 export const ConnectGrafanaIntegration = ({
