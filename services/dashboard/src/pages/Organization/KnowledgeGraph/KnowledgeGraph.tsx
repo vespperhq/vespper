@@ -119,13 +119,13 @@ export const OrganizationKnowledgeGraphPage = () => {
   const [isConfirmOpen, setConfirmOpen] = useState<boolean>(false);
 
   const seriesData = index?.data
-    ? connectedVendors
-        ?.map((vendor: string) => {
+    ? Object.entries(index.data.stats)
+        .map(([key, value]) => {
           return {
-            name: vendor,
-            value: index.data?.stats?.[vendor] || 0,
-            label: `${vendor}: ${index.data?.stats?.[vendor]}`,
-          };
+            name: key,
+            value: value || 0,
+            label: `${key}: ${value}`,
+          } as { name: string; value: number; label: string };
         })
         .filter((item: { value: number }) => item.value > 0) || emptySeries
     : emptySeries;
@@ -223,11 +223,10 @@ export const OrganizationKnowledgeGraphPage = () => {
                                       vendor.name,
                                     ]);
                                   } else {
-                                    setSelectedVendors(
-                                      (selectedVendors) =>
-                                        selectedVendors?.filter(
-                                          (item) => item !== vendor.name,
-                                        ),
+                                    setSelectedVendors((selectedVendors) =>
+                                      selectedVendors?.filter(
+                                        (item) => item !== vendor.name,
+                                      ),
                                     );
                                   }
                                 }}
