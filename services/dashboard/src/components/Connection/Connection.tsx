@@ -64,7 +64,7 @@ const connectVendor = {
 };
 
 // Put here integrations that are in beta
-const BETA = [];
+const BETA: ConnectionName[] = [];
 
 interface ConnectRequest {
   url?: string;
