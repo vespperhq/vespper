@@ -63,7 +63,8 @@ const connectVendor = {
   },
 };
 
-const BETA = [ConnectionName.Jaeger];
+// Put here integrations that are in beta
+const BETA = [];
 
 interface ConnectRequest {
   url?: string;
