@@ -1970,6 +1970,17 @@
     zod "^3.22.4"
     zod-to-json-schema "^3.22.3"
 
+"@litehex/node-vault@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@litehex/node-vault/-/node-vault-0.2.2.tgz#949da4caad830c39c67aa7d35dfd1a4bcb5e3029"
+  integrity sha512-tvXtkPuE4rWvyTAIICKsc1Q5TMHRbNXlN3riVPGaiL6ttx0ezoUf7mCVV4h4bLXlAA9CD2MVg2FAtxLAvMABtA==
+  dependencies:
+    lodash.omit "^4.5.0"
+    lodash.pick "^4.4.0"
+    undici "^6.12.0"
+    zod "^3.22.4"
+    zod-request "^0.2.2"
+
 "@llamaindex/cloud@0.0.4":
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/@llamaindex/cloud/-/cloud-0.0.4.tgz#18210b1e267137012b2e92ba038b3212d71eb16d"
@@ -8249,10 +8260,20 @@ lodash.merge@^4.6.2:
   resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
   integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
 
+lodash.omit@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.omit/-/lodash.omit-4.5.0.tgz#6eb19ae5a1ee1dd9df0b969e66ce0b7fa30b5e60"
+  integrity sha512-XeqSp49hNGmlkj2EJlfrQFIzQ6lXdNro9sddtQzcJY8QaoC2GO0DT7xaIokHeyM+mIT0mPMlPvkYzg2xCuHdZg==
+
 lodash.once@^4.0.0:
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/lodash.once/-/lodash.once-4.1.1.tgz#0dd3971213c7c56df880977d504c88fb471a97ac"
   integrity sha512-Sb487aTOCr9drQVL8pIxOzVhafOjZN9UU54hiN8PU3uAiSV7lx1yYNpbNmex2PK6dSJoNTSJUUswT651yww3Mg==
+
+lodash.pick@^4.4.0:
+  version "4.4.0"
+  resolved "https://registry.yarnpkg.com/lodash.pick/-/lodash.pick-4.4.0.tgz#52f05610fff9ded422611441ed1fc123a03001b3"
+  integrity sha512-hXt6Ul/5yWjfklSGvLQl8vM//l3FtyHZeuelpzK6mm99pNvN9yTDruNZPEJZD1oWrqo+izBmB7oUfWgcCX7s4Q==
 
 lodash@^4.17.15, lodash@^4.17.21, lodash@^4.17.4:
   version "4.17.21"
@@ -11082,6 +11103,11 @@ undici@^5.25.4, undici@~5.28.4:
   dependencies:
     "@fastify/busboy" "^2.0.0"
 
+undici@^6.12.0:
+  version "6.16.0"
+  resolved "https://registry.yarnpkg.com/undici/-/undici-6.16.0.tgz#3b2e3dc617c6bd51b6885f15d58c172cc8b6fc40"
+  integrity sha512-HQfVddOTb5PJtfLnJ1Px8bNGyIg/z7WTj1hjUSna1Itsv59Oca9JdclIU08ToNqvWWXjFLRzc9rqjnpfw5UWcQ==
+
 unicode-canonical-property-names-ecmascript@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/unicode-canonical-property-names-ecmascript/-/unicode-canonical-property-names-ecmascript-2.0.0.tgz#301acdc525631670d39f6146e0e77ff6bbdebddc"
@@ -11486,6 +11512,14 @@ yocto-queue@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
+
+zod-request@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/zod-request/-/zod-request-0.2.2.tgz#1f08083551bdbb4ae6fa4d87255bc1185db0cba2"
+  integrity sha512-pL9/t+YflOEVpUY0izbsYdkEk8FsQlO5PPLJiinx7m6ZnwzXu/eeLboIkVMghpdMKyaToxiSiy9hSl4fKH/plg==
+  dependencies:
+    mustache "^4.2.0"
+    zod "^3.22.4"
 
 zod-to-json-schema@3.20.3:
   version "3.20.3"

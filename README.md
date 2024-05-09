@@ -80,3 +80,12 @@ docker-compose up api
 ```bash
 nx run-many -t dev -p api dashboard slackbot
 ```
+
+## Running self-hosted
+
+1. Install google cli
+2. Authenticate to GCP (either with your account or using the artifact-downloader service account).
+   2.1 In case you use the service account key, download it and run `gcloud auth activate-service-account --key-file=/path/to/service-account-key.json`.
+3. Set GOOGLE_APPLICATION_CREDENTIALS: `export GOOGLE_APPLICATION_CREDENTIALS=/path/to/service-account-key.json`
+4. Run `gcloud auth configure-docker europe-west2-docker.pkg.dev`
+5. Run: `docker-compose -f docker-compose.sh.yml up api`

@@ -1,10 +1,11 @@
 import express, { Request, Response } from "express";
-import { integrationModel } from "@merlinn/db";
+import { MessageMetadata } from "@slack/bolt";
 import type {
   IIntegration,
   OpsgenieIntegration,
   SlackIntegration,
 } from "@merlinn/db";
+import { integrationModel } from "@merlinn/db";
 import { OpsgenieWebhookEvent } from "../../../types";
 import { SlackClient } from "../../../clients/slack";
 import { runAgent } from "../../../agent";
@@ -16,13 +17,12 @@ import {
 } from "../../../middlewares/webhooks";
 import { AnswerContext } from "../../../agent/callbacks";
 import { SystemEvent, EventType, events } from "../../../events";
-import { MessageMetadata } from "@slack/bolt";
 import { investigationTemplate } from "../../../agent/prompts";
 import { chatModel } from "../../../agent/model";
 import { catchAsync } from "../../../utils/errors";
 import { AppError, ErrorCode } from "../../../errors";
-import { populateCredentials } from "@merlinn/utils";
 import { RunContext } from "../../../agent/types";
+import { secretManager } from "../../../common/secrets";
 
 const router = express.Router();
 
@@ -57,7 +57,7 @@ router.post(
     }
 
     slackIntegration = (
-      await populateCredentials([slackIntegration])
+      await secretManager.populateCredentials([slackIntegration])
     )[0] as SlackIntegration;
 
     const { access_token } = slackIntegration.credentials;

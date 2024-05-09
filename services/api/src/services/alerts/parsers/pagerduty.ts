@@ -1,8 +1,8 @@
-import { PagerDutyClient } from "../../../clients";
-import { populateCredentials } from "@merlinn/utils";
 import { integrationModel, PagerDutyIntegration } from "@merlinn/db";
+import { PagerDutyClient } from "../../../clients";
 import { AlertEvent } from "../../../types/internal";
 import { refreshPagerDutyToken } from "../../oauth";
+import { secretManager } from "../../../common/secrets";
 
 export const parseAlert = async (
   incidentId: string,
@@ -24,7 +24,7 @@ export const parseAlert = async (
   await refreshPagerDutyToken(pagerdutyIntegration._id.toString());
 
   pagerdutyIntegration = (
-    await populateCredentials([pagerdutyIntegration])
+    await secretManager.populateCredentials([pagerdutyIntegration])
   )[0] as PagerDutyIntegration;
 
   const { access_token } = pagerdutyIntegration.credentials;

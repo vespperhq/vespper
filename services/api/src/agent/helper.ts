@@ -4,8 +4,8 @@ import { createAgent } from "./agent";
 import { createTools } from "./tools";
 import { LLMCallbacks } from "./callbacks";
 import { langfuse } from "../clients/langfuse";
-import { populateCredentials } from "@merlinn/utils";
 import { RunAgentParams, RunContext, RunModelParams } from "./types";
+import { secretManager } from "../common/secrets";
 
 function generateTrace(context: RunContext) {
   const trace = langfuse.trace({
@@ -49,7 +49,8 @@ export async function runAgent({
   context,
   messages,
 }: RunAgentParams) {
-  const populatedIntegrations = await populateCredentials(integrations);
+  const populatedIntegrations =
+    await secretManager.populateCredentials(integrations);
 
   const tools = await createTools(populatedIntegrations, context);
   const agent = await createAgent(tools, model, template, messages);

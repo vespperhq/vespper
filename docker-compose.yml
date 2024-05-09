@@ -1,4 +1,11 @@
-version: "3"
+version: "3.4"
+
+x-common-volumes: &common-volumes
+  - ~/.config/gcloud/application_default_credentials.json:/tmp/keys/application_default_credentials.json
+
+x-common-variables: &common-variables
+  MONGO_URI: mongodb://mongo:27017/merlinn-db
+  GOOGLE_APPLICATION_CREDENTIALS: /tmp/keys/application_default_credentials.json
 
 services:
   mongo:
@@ -15,11 +22,9 @@ services:
     env_file:
       - services/api/.env
     environment:
-      - MONGO_URI=mongodb://mongo:27017/merlinn-db
-      - GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/application_default_credentials.json
-    volumes:
-      # Google Cloud credentials file
-      - ~/.config/gcloud/application_default_credentials.json:/tmp/keys/application_default_credentials.json
+      <<: *common-variables
+      DATA_PROCESSOR_URL: http://data-processor:3002
+    volumes: *common-volumes
     ports:
       - "3000:3000"
     depends_on:
@@ -31,12 +36,9 @@ services:
     env_file:
       - services/slackbot/.env.prod
     environment:
-      # - MONGO_URI=mongodb://mongo:27017/merlinn-db
-      # - API_BASE_URL=http://api:3000
-      - GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/application_default_credentials.json
-    volumes:
-      # Google Cloud credentials file
-      - ~/.config/gcloud/application_default_credentials.json:/tmp/keys/application_default_credentials.json
+      <<: *common-variables
+      API_BASE_URL: http://api:3000
+    volumes: *common-volumes
     ports:
       - "3003:3003"
     depends_on:
@@ -46,12 +48,8 @@ services:
       context: "./services/data-processor"
     env_file:
       - services/data-processor/.env
-    environment:
-      - MONGO_URI=mongodb://mongo:27017/merlinn-db
-      - GOOGLE_APPLICATION_CREDENTIALS=/tmp/keys/application_default_credentials.json
-    volumes:
-      # Google Cloud credentials file
-      - ~/.config/gcloud/application_default_credentials.json:/tmp/keys/application_default_credentials.json
+    environment: *common-variables
+    volumes: *common-volumes
     ports:
       - "3002:3002"
     depends_on:

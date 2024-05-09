@@ -7,6 +7,7 @@ import {
   SlackIntegration,
   integrationModel,
 } from "@merlinn/db";
+import { MessageMetadata } from "@slack/bolt";
 import { PagerDutyWebhookEvent } from "../../../types";
 import { postInitialStatus } from "../utils";
 import {
@@ -17,13 +18,12 @@ import { checkPagerDutySignature } from "./utils";
 import { parseAlertToPrompt } from "../../../services/alerts";
 import { AnswerContext } from "../../../agent/callbacks";
 import { EventType, SystemEvent, events } from "../../../events";
-import { MessageMetadata } from "@slack/bolt";
 import { investigationTemplate } from "../../../agent/prompts";
 import { chatModel } from "../../../agent/model";
 import { catchAsync } from "../../../utils/errors";
 import { AppError, ErrorCode } from "../../../errors";
-import { populateCredentials } from "@merlinn/utils";
 import { RunContext } from "../../../agent/types";
+import { secretManager } from "../../../common/secrets";
 
 const router = express.Router();
 
@@ -60,7 +60,7 @@ router.post(
     }
 
     slackIntegration = (
-      await populateCredentials([slackIntegration])
+      await secretManager.populateCredentials([slackIntegration])
     )[0] as SlackIntegration;
 
     const { channel_id: channelId } =

@@ -12,9 +12,9 @@ import type {
 import { EventType, SystemEvent, events } from "../events";
 import { catchAsync } from "../utils/errors";
 import { AppError } from "../errors";
-import { populateCredentials } from "@merlinn/utils";
 import { refreshPagerDutyToken } from "../services/oauth";
 import { getPlanFieldState, incrementPlanFieldState } from "../services/plans";
+import { secretManager } from "../common/secrets";
 
 const router = express.Router();
 router.use(checkJWT);
@@ -53,7 +53,7 @@ router.get(
     switch (source) {
       case "Opsgenie": {
         integration = (
-          await populateCredentials([integration])
+          await secretManager.populateCredentials([integration])
         )[0] as IIntegration;
         const { region } = (integration as OpsgenieIntegration).metadata;
         const { apiKey } = (integration as OpsgenieIntegration).credentials;
@@ -69,7 +69,7 @@ router.get(
         // TODO: need to extract refresh tokens to a centralized place.
         await refreshPagerDutyToken(integration._id.toString());
         integration = (
-          await populateCredentials([integration])
+          await secretManager.populateCredentials([integration])
         )[0] as IIntegration;
         const { access_token } = (integration as PagerDutyIntegration)
           .credentials;

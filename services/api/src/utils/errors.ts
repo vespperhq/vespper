@@ -11,10 +11,10 @@ export const catchAsync = (
     fn(req, res, next).catch((error) => {
       if (error instanceof AppError) {
         next(error);
-      } else if (error.message) {
-        next(new AppError(error.message, 500));
       } else {
-        next(new AppError("Internal error", 500));
+        const newError = new AppError(error.message || "Internal error", 500);
+        newError.stack = error.stack;
+        next(newError);
       }
     });
   };

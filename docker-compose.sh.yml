@@ -1,0 +1,72 @@
+x-common-volumes: &common-volumes
+  - /Users/dudulasry/projects/scylla-demo/service-account-key.json:/tmp/keys/application_default_credentials.json
+
+x-common-variables: &common-variables
+  MONGO_URI: mongodb://mongo:27017/merlinn-db
+  GOOGLE_APPLICATION_CREDENTIALS: /tmp/keys/application_default_credentials.json
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+    volumes:
+      - ./data/dev/mongo:/data/db
+    ports:
+      - "27017:27017"
+  vault:
+    image: vault:1.13.3
+    environment:
+      - VAULT_ADDR=http://0.0.0.0:8200
+      - VAULT_API_ADDR=http://0.0.0.0:8200
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - ./data/dev/vault/file:/vault/file
+      - ./data/dev/vault/logs:/vault/logs
+      - ./data/dev/vault/data:/vault/data
+      - ./config/vault.hcl:/vault/config/vault.hcl
+    ports:
+      - "8200:8200"
+      - "8201:8201"
+      - "8202:8202"
+    entrypoint: vault server -config=/vault/config/vault.hcl -dev -dev-root-token-id=0ae9b045-a5a2-4c62-a698-88e1a7b9b7ce
+  api:
+    # image: europe-west2-docker.pkg.dev/merlinn/production/api:sha-51fd5da
+    build:
+      context: "."
+      dockerfile: services/api/Dockerfile
+    env_file:
+      - services/api/.env
+    environment:
+      <<: *common-variables
+      DATA_PROCESSOR_URL: http://data-processor:3002
+      HASHICORP_VAULT_TOKEN: 0ae9b045-a5a2-4c62-a698-88e1a7b9b7ce
+      HASHICORP_VAULT_URL: http://vault:8202
+    volumes: *common-volumes
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+      - vault
+  slackbot:
+    build: europe-west2-docker.pkg.dev/merlinn/production/slackbot:sha-dc083b3
+    env_file:
+      - services/slackbot/.env
+    environment:
+      <<: *common-variables
+      API_BASE_URL: http://api:3000
+    volumes: *common-volumes
+    ports:
+      - "3003"
+    depends_on:
+      - mongo
+  data-processor:
+    image: europe-west2-docker.pkg.dev/merlinn/production/data-processor:sha-dc083b3
+    env_file:
+      - services/data-processor/.env
+    environment: *common-variables
+    volumes: *common-volumes
+    ports:
+      - "3002"
+    depends_on:
+      - mongo

@@ -2,8 +2,8 @@ import { AxiosError } from "axios";
 import { integrationModel } from "@merlinn/db";
 import type { PagerDutyIntegration } from "@merlinn/db";
 import { PagerDutyClient } from "../../clients";
-import { populateCredentials, recreateCredentials } from "@merlinn/utils";
 import { AppError } from "../../errors";
+import { secretManager } from "../../common/secrets";
 
 export async function refreshToken(integrationId: string) {
   try {
@@ -14,7 +14,7 @@ export async function refreshToken(integrationId: string) {
       throw new AppError("Could not find the given integration.", 404);
     }
     const populatedIntegration = (
-      await populateCredentials([integration])
+      await secretManager.populateCredentials([integration])
     )[0] as PagerDutyIntegration;
 
     const clientId = process.env.PAGERDUTY_CLIENT_ID as string;
@@ -30,7 +30,7 @@ export async function refreshToken(integrationId: string) {
     const { access_token, refresh_token, token_type, scope, expires_in } =
       response.data;
 
-    await recreateCredentials(integration, {
+    await secretManager.recreateCredentials(integration, {
       access_token,
       refresh_token,
     });

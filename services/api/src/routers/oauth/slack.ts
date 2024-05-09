@@ -1,9 +1,9 @@
 import express, { Request, Response } from "express";
+import axios, { AxiosError } from "axios";
+import { vendorModel, integrationModel, organizationModel } from "@merlinn/db";
 import { catchAsync } from "../../utils/errors";
 import { AppError } from "../../errors";
-import { vendorModel, integrationModel, organizationModel } from "@merlinn/db";
-import { createCredentials } from "@merlinn/utils";
-import axios, { AxiosError } from "axios";
+import { secretManager } from "../../common/secrets";
 
 const router = express.Router();
 
@@ -66,11 +66,11 @@ router.get(
         throw new AppError("Could not find the given organization.", 404);
       }
 
-      const credentials = await createCredentials(
+      const credentials = (await secretManager.createCredentials(
         organization._id.toString(),
         vendor.name,
         { access_token },
-      );
+      )) as Record<string, string>;
 
       // Create the integration
       await integrationModel.create({

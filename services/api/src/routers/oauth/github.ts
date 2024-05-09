@@ -1,9 +1,9 @@
 import express, { Request, Response } from "express";
+import { vendorModel, organizationModel, integrationModel } from "@merlinn/db";
 import { catchAsync } from "../../utils/errors";
 import { AppError } from "../../errors";
 import axios, { AxiosError } from "axios";
-import { vendorModel, organizationModel, integrationModel } from "@merlinn/db";
-import { createCredentials } from "@merlinn/utils";
+import { secretManager } from "../../common/secrets";
 
 const router = express.Router();
 
@@ -52,11 +52,11 @@ router.get(
 
       const { access_token, ...metadata } = credentials;
 
-      const formattedCredentials = await createCredentials(
+      const formattedCredentials = (await secretManager.createCredentials(
         organization._id.toString(),
         vendor.name,
         { access_token },
-      );
+      )) as Record<string, string>;
 
       // Create the integration
       await integrationModel.create({

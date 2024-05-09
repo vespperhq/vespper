@@ -3,7 +3,6 @@ import {
   CoralogixClient,
   GrafanaClient,
 } from "../../../clients";
-import { populateCredentials } from "@merlinn/utils";
 import { integrationModel } from "@merlinn/db";
 import type {
   CoralogixIntegration,
@@ -12,6 +11,7 @@ import type {
 } from "@merlinn/db";
 import type { OpsgenieAlert } from "../../../types";
 import type { AlertEvent } from "../../../types/internal";
+import { secretManager } from "../../../common/secrets";
 
 export const parseAlert = async (
   alertId: string,
@@ -30,7 +30,7 @@ export const parseAlert = async (
   }
 
   opsgenieIntegration = (
-    await populateCredentials([opsgenieIntegration])
+    await secretManager.populateCredentials([opsgenieIntegration])
   )[0] as OpsgenieIntegration;
 
   const { apiKey } = opsgenieIntegration.credentials;
@@ -98,7 +98,7 @@ const getDataFromCoralogix = async (
   }
 
   coralogixIntegration = (
-    await populateCredentials([coralogixIntegration])
+    await secretManager.populateCredentials([coralogixIntegration])
   )[0] as CoralogixIntegration;
 
   const { logsKey, artKey } = coralogixIntegration.credentials;
@@ -130,7 +130,7 @@ const getDataFromGrafana = async (
   }
 
   grafanaIntegration = (
-    await populateCredentials([grafanaIntegration])
+    await secretManager.populateCredentials([grafanaIntegration])
   )[0] as GrafanaIntegration;
 
   const { token } = grafanaIntegration.credentials;

@@ -1,9 +1,9 @@
 import express, { Request, Response } from "express";
-import { catchAsync } from "../../utils/errors";
-import { AppError } from "../../errors";
 import axios, { AxiosError } from "axios";
 import { vendorModel, organizationModel, integrationModel } from "@merlinn/db";
-import { createCredentials } from "@merlinn/utils";
+import { catchAsync } from "../../utils/errors";
+import { AppError } from "../../errors";
+import { secretManager } from "../../common/secrets";
 
 const router = express.Router();
 
@@ -48,15 +48,7 @@ router.get(
         },
       );
 
-      const {
-        access_token,
-        bot_id,
-        duplicated_template_id,
-        owner,
-        workspace_icon,
-        workspace_id,
-        workspace_name,
-      } = response.data;
+      const { access_token, ...metadata } = response.data;
 
       const vendor = await vendorModel.getOne({ name: "Notion" });
       const organization = await organizationModel.getOneById(state as string);
@@ -69,25 +61,18 @@ router.get(
         throw new AppError("Could not find the given organization.", 404);
       }
 
-      const formattedCredentials = await createCredentials(
+      const formattedCredentials = (await secretManager.createCredentials(
         organization._id.toString(),
         vendor.name,
         { access_token },
-      );
+      )) as Record<string, string>;
 
       // Create the integration
       await integrationModel.create({
         vendor,
         organization,
         credentials: formattedCredentials,
-        metadata: {
-          bot_id,
-          duplicated_template_id,
-          owner,
-          workspace_icon,
-          workspace_id,
-          workspace_name,
-        },
+        metadata,
       });
 
       return res.send("App installed successfully");
