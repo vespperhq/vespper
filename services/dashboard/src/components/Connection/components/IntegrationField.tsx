@@ -20,7 +20,6 @@ const IntegrationField = ({ value, config, onChange }: Props) => {
       case "text": {
         return (
           <Input
-            disabled={!!value}
             value={value}
             onChange={(e) => {
               onChange(e.target.value);

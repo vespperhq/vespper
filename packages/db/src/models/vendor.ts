@@ -66,6 +66,11 @@ export const seedVendors = async () => {
       description:
         "Jaeger is a tracing platform that helps monitoring and troubleshooting problems in distributed systems",
     },
+    {
+      name: "Prometheus",
+      description:
+        "Prometheus is an open-source monitoring and alerting system that provides visibility into the performance of applications, infrastructure, and more.",
+    },
   ] as IVendor[];
 
   for (const vendor of vendorsData) {

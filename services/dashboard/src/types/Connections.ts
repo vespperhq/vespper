@@ -13,6 +13,7 @@ export enum ConnectionName {
   MongoDB = "MongoDB",
   Grafana = "Grafana",
   Jaeger = "Jaeger",
+  Prometheus = "Prometheus",
 }
 
 export enum ConnectionType {

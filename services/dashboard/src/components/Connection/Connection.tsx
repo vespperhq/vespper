@@ -31,6 +31,7 @@ import {
   ConnectJiraIntegration,
   ConnectMongoDBIntegration,
   ConnectJaegerIntegration,
+  ConnectPrometheusIntegration,
 } from "./integrations";
 import { CustomPaper, Null } from "./styles";
 
@@ -56,6 +57,7 @@ const connectVendor = {
     [ConnectionName.Confluence]: ConnectConfluenceIntegration,
     [ConnectionName.Jira]: ConnectJiraIntegration,
     [ConnectionName.MongoDB]: ConnectMongoDBIntegration,
+    [ConnectionName.Prometheus]: ConnectPrometheusIntegration,
   },
   [ConnectionType.Webhook]: {
     [ConnectionName.Opsgenie]: ConnectOpsgenieWebhook,

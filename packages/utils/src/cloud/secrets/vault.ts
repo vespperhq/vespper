@@ -26,7 +26,9 @@ export class HashiCorpVaultSecretManager extends SecretsBackend {
         })) as any;
 
         if (response.errors?.length > 0) {
-          throw new Error(`Could not found secret ${secretName}`);
+          throw new Error(
+            `Could not found secret ${secretName}. Errors: ${response.errors}`,
+          );
         }
 
         const value = response.data.data.value as string;

@@ -10,3 +10,4 @@ export { ConnectJiraIntegration } from "./Jira";
 export { ConnectMongoDBIntegration } from "./MongoDB";
 export { ConnectGrafanaIntegration } from "./Grafana";
 export { ConnectJaegerIntegration } from "./Jaeger";
+export { ConnectPrometheusIntegration } from "./Prometheus";

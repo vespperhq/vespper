@@ -273,6 +273,17 @@ export interface JaegerIntegration extends BaseConnection {
   };
 }
 
+export interface PrometheusIntegration extends BaseConnection {
+  // Prometheus supports basic auth. More information: https://prometheus.io/docs/guides/basic-auth/
+  credentials: {
+    username: string;
+    password: string;
+  };
+  metadata: {
+    instanceUrl: string;
+  };
+}
+
 export type IIntegration =
   | SlackIntegration
   | PagerDutyIntegration
@@ -284,7 +295,8 @@ export type IIntegration =
   | NotionIntegration
   | AtlassianIntegration
   | MongoDBIntegration
-  | JaegerIntegration;
+  | JaegerIntegration
+  | PrometheusIntegration;
 
 export interface IWebhook extends BaseConnection {
   secret: string;
