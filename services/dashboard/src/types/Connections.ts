@@ -14,6 +14,7 @@ export enum ConnectionName {
   Grafana = "Grafana",
   Jaeger = "Jaeger",
   Prometheus = "Prometheus",
+  AlertManager = "Alert Manager",
 }
 
 export enum ConnectionType {

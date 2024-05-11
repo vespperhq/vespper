@@ -2,12 +2,14 @@ import express, { Request, Response } from "express";
 import { webhookModel, vendorModel, organizationModel } from "@merlinn/db";
 import { router as pagerdutyRouter } from "./pagerduty";
 import { router as opsgenieRouter } from "./opsgenie";
+import { router as alertmanagerRouter } from "./alertmanager";
 import { checkJWT, getDBUser } from "../../middlewares/auth";
 
 const router = express.Router();
 
 router.use("/pagerduty", pagerdutyRouter);
 router.use("/opsgenie", opsgenieRouter);
+router.use("/alertmanager", alertmanagerRouter);
 
 router.use(checkJWT);
 router.use(getDBUser);

@@ -38,6 +38,7 @@ export interface RunContext {
     | "chat"
     | "trigger-pagerduty"
     | "trigger-opsgenie"
+    | "trigger-alertmanager"
     | "trigger-local-script";
 }
 

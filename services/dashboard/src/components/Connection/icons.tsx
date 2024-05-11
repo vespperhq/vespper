@@ -13,6 +13,9 @@ import MongoDBLogo from "../../assets/logo-mongodb.png";
 import PrometheusLogo from "../../assets/logo-prometheus.png";
 
 export const icons = {
+  [ConnectionName.AlertManager]: ({ style = {} }: any) => (
+    <img src={PrometheusLogo} style={style} />
+  ),
   [ConnectionName.Prometheus]: ({ style = {} }: any) => (
     <img src={PrometheusLogo} style={style} />
   ),

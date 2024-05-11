@@ -4,6 +4,7 @@ import type {
   GithubIntegration,
   IIntegration,
   JaegerIntegration,
+  PrometheusIntegration,
   MongoDBIntegration,
 } from "@merlinn/db";
 import { toolLoaders as coralogixToolLoaders } from "./coralogix";
@@ -12,6 +13,7 @@ import { toolLoaders as datadogToolLoaders } from "./datadog";
 import { toolLoaders as staticToolLoaders } from "./static";
 import { toolLoaders as mongodbToolLoaders } from "./mongodb";
 import { toolLoaders as jaegerToolLoaders } from "./jaeger";
+import { toolLoaders as prometheusToolLoaders } from "./prometheus";
 import { Tool } from "./types";
 import { RunContext } from "../types";
 
@@ -52,34 +54,45 @@ export const createTools = async (
   const tools = [] as Tool[];
 
   // Coralogix
-  const [coralogixTools, githubTools, datadogTools, mongodbTools, jaegerTools] =
-    await Promise.all([
-      createToolsForVendor<CoralogixIntegration>(
-        integrations,
-        "Coralogix",
-        coralogixToolLoaders,
-      ),
-      createToolsForVendor<GithubIntegration>(
-        integrations,
-        "Github",
-        githubToolLoaders,
-      ),
-      createToolsForVendor<DataDogIntegration>(
-        integrations,
-        "DataDog",
-        datadogToolLoaders,
-      ),
-      createToolsForVendor<MongoDBIntegration>(
-        integrations,
-        "MongoDB",
-        mongodbToolLoaders,
-      ),
-      createToolsForVendor<JaegerIntegration>(
-        integrations,
-        "Jaeger",
-        jaegerToolLoaders,
-      ),
-    ]);
+  const [
+    coralogixTools,
+    githubTools,
+    datadogTools,
+    mongodbTools,
+    jaegerTools,
+    prometheusTools,
+  ] = await Promise.all([
+    createToolsForVendor<CoralogixIntegration>(
+      integrations,
+      "Coralogix",
+      coralogixToolLoaders,
+    ),
+    createToolsForVendor<GithubIntegration>(
+      integrations,
+      "Github",
+      githubToolLoaders,
+    ),
+    createToolsForVendor<DataDogIntegration>(
+      integrations,
+      "DataDog",
+      datadogToolLoaders,
+    ),
+    createToolsForVendor<MongoDBIntegration>(
+      integrations,
+      "MongoDB",
+      mongodbToolLoaders,
+    ),
+    createToolsForVendor<JaegerIntegration>(
+      integrations,
+      "Jaeger",
+      jaegerToolLoaders,
+    ),
+    createToolsForVendor<PrometheusIntegration>(
+      integrations,
+      "Prometheus",
+      prometheusToolLoaders,
+    ),
+  ]);
 
   // Static tools
   const staticTools = await Promise.all(
@@ -93,6 +106,7 @@ export const createTools = async (
     ...datadogTools,
     ...mongodbTools,
     ...jaegerTools,
+    ...prometheusTools,
     ...staticTools,
   );
 

@@ -71,6 +71,11 @@ export const seedVendors = async () => {
       description:
         "Prometheus is an open-source monitoring and alerting system that provides visibility into the performance of applications, infrastructure, and more.",
     },
+    {
+      name: "Alert Manager",
+      description:
+        "Prometheus Alertmanager is the alerting component of the Prometheus monitoring system. It routes and manages alerts from Prometheus monitoring system to various receivers.",
+    },
   ] as IVendor[];
 
   for (const vendor of vendorsData) {

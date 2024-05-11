@@ -35,7 +35,11 @@ import {
 } from "./integrations";
 import { CustomPaper, Null } from "./styles";
 
-import { ConnectPageDutyWebhook, ConnectOpsgenieWebhook } from "./webhooks";
+import {
+  ConnectPageDutyWebhook,
+  ConnectOpsgenieWebhook,
+  ConnectAlertManagerWebhook,
+} from "./webhooks";
 import { Modal } from "../Modal";
 import {
   useCreateIntegration,
@@ -62,6 +66,7 @@ const connectVendor = {
   [ConnectionType.Webhook]: {
     [ConnectionName.Opsgenie]: ConnectOpsgenieWebhook,
     [ConnectionName.PagerDuty]: ConnectPageDutyWebhook,
+    [ConnectionName.AlertManager]: ConnectAlertManagerWebhook,
   },
 };
 

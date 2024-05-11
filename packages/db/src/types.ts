@@ -315,4 +315,10 @@ export enum VendorName {
   PagerDuty = "PagerDuty",
   DataDog = "DataDog",
   MongoDB = "MongoDB",
+  Grafana = "Grafana",
+  Notion = "Notion",
+  Atlassian = "Atlassian",
+  Jaeger = "Jaeger",
+  Prometheus = "Prometheus",
+  AlertManager = "Alert Manager",
 }

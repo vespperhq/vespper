@@ -4,13 +4,35 @@ import { catchAsync } from "../utils/errors";
 import { AppError } from "../errors";
 import { getPlanFieldState } from "../services/plans";
 
-export const checkWebhookSecret = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const claimedSecret = req.headers["x-merlinn-secret"];
-    if (!claimedSecret) {
-      throw new AppError("Request does not contain a secret header", 400);
+export function getSecretFromRequest(req: Request) {
+  const customHeaderSecret = req.headers["x-merlinn-secret"] as string;
+
+  if (customHeaderSecret) {
+    return customHeaderSecret;
+  } else {
+    const authHeader = req.headers["authorization"] as string;
+    if (!authHeader) {
+      throw new AppError(
+        "Request does not contain a secret header (either custom or auth header)",
+        400,
+      );
     }
 
+    // Check it's a valid Bearer token
+    if (!authHeader.startsWith("Bearer ")) {
+      throw new AppError("Request does not contain a valid Bearer token", 400);
+    }
+
+    const [, authHeaderSecret] = authHeader.split(" ");
+    return authHeaderSecret;
+  }
+}
+
+export const checkWebhookSecret = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const claimedSecret = getSecretFromRequest(req);
+
+    console.log("claimedSecret", claimedSecret);
     const webhook = await webhookModel
       .getOneByEncryptedField({
         secret: claimedSecret,

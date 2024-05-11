@@ -19,7 +19,7 @@ const fieldsConfigurations: FieldConfiguration[] = [
     type: "credentials",
     input: { type: "secret" },
   },
-  { key: "instanceURL", label: "Prometheus API URL", type: "metadata" },
+  { key: "instanceUrl", label: "Prometheus API URL", type: "metadata" },
 ];
 
 export const ConnectPrometheusIntegration = ({
