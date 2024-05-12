@@ -6,40 +6,12 @@ import { Box, IconButton, Input } from "@mui/joy";
 import SendIcon from "@mui/icons-material/Send";
 import { useColorScheme } from "@mui/joy/styles";
 
-const MESSAGES = [
-  {
-    role: "user",
-    content: "How are you?",
-  },
-  {
-    role: "assistant",
-    content: "I'm good. What about you?",
-  },
-  {
-    role: "user",
-    content: "Not much, thanks.",
-  },
-  {
-    role: "assistant",
-    content: "What happened? Do you want to talk about that?",
-  },
-  {
-    role: "assistant",
-    content: `Here is some JavaScript code:
-
-    ~~~py
-    def foo(x):
-      return x
-    ~~~
-    `,
-  },
-];
 export function Chat() {
   const { mode } = useColorScheme();
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
   const [input, setInput] = useState("");
 
-  const [messages, setMessages] = useState<ChatMessage[]>(MESSAGES);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const { mutateAsync: getCompletion } = useGetCompletions();
 
   const scrollToBottom = () => {
