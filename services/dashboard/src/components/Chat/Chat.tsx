@@ -5,6 +5,7 @@ import { Message } from "./Message";
 import { Box, IconButton, Input } from "@mui/joy";
 import SendIcon from "@mui/icons-material/Send";
 import { useColorScheme } from "@mui/joy/styles";
+import toast from "react-hot-toast";
 
 export function Chat() {
   const { mode } = useColorScheme();
@@ -29,9 +30,14 @@ export function Chat() {
     const newMessages = [...messages, { role: "user", content: input }];
     setMessages(newMessages);
 
-    getCompletion(newMessages).then(({ output }) => {
-      setMessages([...newMessages, { role: "assistant", content: output }]);
-    });
+    getCompletion(newMessages)
+      .then(({ output }) => {
+        setMessages([...newMessages, { role: "assistant", content: output }]);
+      })
+      .catch((error) => {
+        toast.error(error.response.data.message);
+        setMessages(newMessages.slice(0, -1));
+      });
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -77,9 +83,7 @@ export function Chat() {
             value={input}
             onChange={handleInputChange}
             onKeyUp={({ key }) => {
-              if (input === "") {
-                return;
-              } else if (key !== "Enter") {
+              if (input === "" || key !== "Enter") {
                 return;
               }
               handleSubmit();
