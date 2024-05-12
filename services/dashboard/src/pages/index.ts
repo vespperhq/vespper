@@ -1,5 +1,6 @@
 export { CallbackPage } from "./Callback";
 export { HomePage } from "./Home";
+export { ChatPage } from "./Chat";
 export { LoginPage } from "./Login";
 export { OrganizationGeneralPage } from "./Organization/General";
 export { OrganizationMembersPage } from "./Organization/Members";

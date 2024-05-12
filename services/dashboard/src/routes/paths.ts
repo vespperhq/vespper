@@ -1,5 +1,6 @@
 export const HOME_PATH = "/";
 export const LOGIN_PATH = "/login";
+export const CHAT_PATH = "/chat";
 export const CALLBACK_PATH = "/callback";
 export const INTEGRATIONS_PATH = "/integrations";
 export const PROFILE_PATH = "/profile";

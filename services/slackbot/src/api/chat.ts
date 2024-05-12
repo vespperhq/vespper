@@ -14,7 +14,7 @@ export async function getCompletion({
   metadata,
 }: CompletionParams) {
   const response = await axios.post(
-    `${process.env.API_BASE_URL}/chat/completions`,
+    `${process.env.API_BASE_URL}/chat/completions/slack`,
     {
       messages,
       metadata,

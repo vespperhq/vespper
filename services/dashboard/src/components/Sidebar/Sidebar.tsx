@@ -13,6 +13,7 @@ import Sheet from "@mui/joy/Sheet";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import HelpIcon from "@mui/icons-material/Help";
+import MessageIcon from "@mui/icons-material/Message";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import LogoImage from "../../assets/logo-wizard.svg";
 import { ColorSchemeToggle } from "../ColorSchemeToggle";
@@ -169,6 +170,25 @@ export const Sidebar = () => {
                 </ListItemDecorator>
                 <ListItemContent>
                   <Typography level="title-sm">Home</Typography>
+                </ListItemContent>
+              </Link>
+            </ListItemButton>
+          </ListItem>
+          <ListItem>
+            <ListItemButton>
+              <Link
+                to="/chat"
+                style={{
+                  display: "flex",
+                  width: "100%",
+                  textDecoration: "none",
+                }}
+              >
+                <ListItemDecorator>
+                  <MessageIcon />
+                </ListItemDecorator>
+                <ListItemContent>
+                  <Typography level="title-sm">Chat</Typography>
                 </ListItemContent>
               </Link>
             </ListItemButton>
