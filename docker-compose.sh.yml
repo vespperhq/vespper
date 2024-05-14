@@ -8,6 +8,7 @@ x-common-variables: &common-variables
 services:
   mongo:
     image: mongo
+    container_name: mongo
     restart: always
     volumes:
       - ./data/dev/mongo:/data/db
@@ -15,6 +16,7 @@ services:
       - "27017:27017"
   vault:
     image: vault:1.13.3
+    container_name: vault
     environment:
       - VAULT_ADDR=http://0.0.0.0:8200
       - VAULT_API_ADDR=http://0.0.0.0:8200
@@ -32,6 +34,7 @@ services:
     entrypoint: vault server -config=/vault/config/vault.hcl -dev -dev-root-token-id=0ae9b045-a5a2-4c62-a698-88e1a7b9b7ce
   api:
     # image: europe-west2-docker.pkg.dev/merlinn/production/api:sha-51fd5da
+    container_name: api
     build:
       context: "."
       dockerfile: services/api/Dockerfile
@@ -48,8 +51,14 @@ services:
     depends_on:
       - mongo
       - vault
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
   slackbot:
-    build: europe-west2-docker.pkg.dev/merlinn/production/slackbot:sha-dc083b3
+    # image: europe-west2-docker.pkg.dev/merlinn/production/slackbot:sha-dc083b3
+    container_name: slackbot
+    build:
+      context: "."
+      dockerfile: services/slackbot/Dockerfile
     env_file:
       - services/slackbot/.env
     environment:
@@ -57,16 +66,28 @@ services:
       API_BASE_URL: http://api:3000
     volumes: *common-volumes
     ports:
-      - "3003"
+      - "3003:3003"
     depends_on:
       - mongo
+      
   data-processor:
-    image: europe-west2-docker.pkg.dev/merlinn/production/data-processor:sha-dc083b3
+    # image: europe-west2-docker.pkg.dev/merlinn/production/data-processor:sha-dc083b3
+    container_name: data-processor
+    build: 
+      context: services/data-processor
     env_file:
       - services/data-processor/.env
     environment: *common-variables
     volumes: *common-volumes
     ports:
-      - "3002"
+      - "3002:3002"
     depends_on:
       - mongo
+  dashboard:
+    # image: europe-west2-docker.pkg.dev/merlinn/production/data-processor:sha-dc083b3
+    container_name: dashboard
+    build: 
+      context: "."
+      dockerfile: services/dashboard/Dockerfile
+    ports:
+      - "5173:80"
