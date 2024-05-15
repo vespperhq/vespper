@@ -32,5 +32,8 @@ export async function parseAlert(
     case "PagerDuty": {
       return parsePagerDutyAlert(eventId, organizationId);
     }
+    default: {
+      throw new Error("Unsupported event source.");
+    }
   }
 }

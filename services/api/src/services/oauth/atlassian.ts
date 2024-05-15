@@ -1,9 +1,9 @@
 import { AxiosError } from "axios";
 import { integrationModel } from "@merlinn/db";
 import type { AtlassianIntegration } from "@merlinn/db";
-import { populateCredentials, recreateCredentials } from "@merlinn/utils";
 import { AtlassianClient } from "../../clients";
 import { AppError } from "../../errors";
+import { secretManager } from "../../common/secrets";
 
 export async function refreshToken(integrationId: string) {
   try {
@@ -14,7 +14,7 @@ export async function refreshToken(integrationId: string) {
       throw new AppError("Could not find the given integration.", 404);
     }
     const populatedIntegration = (
-      await populateCredentials([integration])
+      await secretManager.populateCredentials([integration])
     )[0] as AtlassianIntegration;
 
     const clientId = process.env.ATLASSIAN_CLIENT_ID as string;
@@ -29,7 +29,10 @@ export async function refreshToken(integrationId: string) {
 
     const { access_token, refresh_token, expires_in, scope } = response.data;
 
-    await recreateCredentials(integration, { access_token, refresh_token });
+    await secretManager.recreateCredentials(integration, {
+      access_token,
+      refresh_token,
+    });
 
     // Update the metadata of the integration
     await integrationModel.getOneByIdAndUpdate(integration._id, {

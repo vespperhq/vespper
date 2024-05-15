@@ -3,8 +3,8 @@ import { catchAsync } from "../../utils/errors";
 import { AppError } from "../../errors";
 import { AxiosError } from "axios";
 import { vendorModel, integrationModel, organizationModel } from "@merlinn/db";
-import { createCredentials } from "@merlinn/utils";
 import { PagerDutyClient } from "../../clients";
+import { secretManager } from "../../common/secrets";
 
 const router = express.Router();
 
@@ -44,17 +44,10 @@ router.get(
         throw new AppError("Could not find the given organization.", 404);
       }
 
-      const {
-        id_token,
-        access_token,
-        refresh_token,
-        client_info,
-        token_type,
-        scope,
-        expires_in,
-      } = response.data;
+      const { id_token, access_token, refresh_token, ...metadata } =
+        response.data;
 
-      const formattedCredentials = await createCredentials(
+      const formattedCredentials = (await secretManager.createCredentials(
         organization._id.toString(),
         vendor.name,
         {
@@ -62,14 +55,14 @@ router.get(
           access_token,
           refresh_token,
         },
-      );
+      )) as Record<string, string>;
 
       // Create the integration
       await integrationModel.create({
         vendor,
         organization,
         credentials: formattedCredentials,
-        metadata: { client_info, token_type, scope, expires_in },
+        metadata,
       });
 
       return res.status(200).send("Successfully integrated PagerDuty!");

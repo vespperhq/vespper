@@ -31,10 +31,15 @@ import {
   ConnectJiraIntegration,
   ConnectMongoDBIntegration,
   ConnectJaegerIntegration,
+  ConnectPrometheusIntegration,
 } from "./integrations";
 import { CustomPaper, Null } from "./styles";
 
-import { ConnectPageDutyWebhook, ConnectOpsgenieWebhook } from "./webhooks";
+import {
+  ConnectPageDutyWebhook,
+  ConnectOpsgenieWebhook,
+  ConnectAlertManagerWebhook,
+} from "./webhooks";
 import { Modal } from "../Modal";
 import {
   useCreateIntegration,
@@ -56,10 +61,12 @@ const connectVendor = {
     [ConnectionName.Confluence]: ConnectConfluenceIntegration,
     [ConnectionName.Jira]: ConnectJiraIntegration,
     [ConnectionName.MongoDB]: ConnectMongoDBIntegration,
+    [ConnectionName.Prometheus]: ConnectPrometheusIntegration,
   },
   [ConnectionType.Webhook]: {
     [ConnectionName.Opsgenie]: ConnectOpsgenieWebhook,
     [ConnectionName.PagerDuty]: ConnectPageDutyWebhook,
+    [ConnectionName.AlertManager]: ConnectAlertManagerWebhook,
   },
 };
 

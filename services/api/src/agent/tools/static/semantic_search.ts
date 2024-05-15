@@ -36,7 +36,16 @@ export default async function (context: RunContext) {
                   return `${workspace_url}/archives/${channel_id}/p${ts}`;
                 }
                 case "Github": {
-                  return node.metadata.url;
+                  const { url, repo_path, file_path, commit_sha } =
+                    node.metadata;
+                  if (url) {
+                    return url;
+                  }
+
+                  const [owner, repo] = repo_path.split("/");
+                  const filePath = file_path.split(`${repo}/`)[1];
+                  const manualUrl = `https://github.com/${owner}/${repo}/tree/${commit_sha}/${filePath}`;
+                  return manualUrl;
                 }
               }
             })();
@@ -46,7 +55,10 @@ export default async function (context: RunContext) {
             const nSource = sourcesCounter[node.metadata.source];
 
             const suffix = nSource && nSource > 1 ? ` #${nSource}` : "";
-            const source = `<${url}|${node.metadata.source.trim()} Link${suffix}>`;
+            const source =
+              context.context !== "chat-github"
+                ? `<${url}|${node.metadata.source.trim()} Link${suffix}>`
+                : `[${node.metadata.source.trim()} Link${suffix}](${url})`;
             return source;
           });
           const output = buildOutput(text, sources);

@@ -9,11 +9,7 @@ import type { IIntegration } from "@merlinn/db";
 import { checkJWT, getDBUser } from "../middlewares/auth";
 import { catchAsync } from "../utils/errors";
 import { AppError } from "../errors";
-import {
-  createCredentials,
-  populateCredentials,
-  deleteCredentials,
-} from "@merlinn/utils";
+import { secretManager } from "../common/secrets";
 
 const router = express.Router();
 router.use(checkJWT);
@@ -46,14 +42,18 @@ router.post(
 
     const formattedCredentials =
       credentials && Object.keys(credentials).length
-        ? await createCredentials(organizationId, vendorName, credentials)
+        ? await secretManager.createCredentials(
+            organizationId,
+            vendorName,
+            credentials,
+          )
         : {};
 
     const integration = await integrationModel.create({
       vendor,
       organization,
       metadata,
-      credentials: formattedCredentials,
+      credentials: formattedCredentials as Record<string, string>,
     });
 
     return res.status(200).json({ integration });
@@ -102,7 +102,9 @@ router.get(
     }
     const integrations = await integrationModel.get(query).populate("vendor");
 
-    const populated = await populateCredentials(integrations as IIntegration[]);
+    const populated = await secretManager.populateCredentials(
+      integrations as IIntegration[],
+    );
 
     return res.status(200).json(populated);
   }),
@@ -129,7 +131,7 @@ router.delete(
       throw new AppError("User is not a member of this organization", 403);
     }
 
-    await deleteCredentials([integration]);
+    await secretManager.deleteCredentials([integration]);
 
     await integrationModel.deleteOneById(req.params.id);
 

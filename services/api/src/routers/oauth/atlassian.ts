@@ -3,7 +3,7 @@ import { catchAsync } from "../../utils/errors";
 import { AppError } from "../../errors";
 import { AxiosError } from "axios";
 import { vendorModel, organizationModel, integrationModel } from "@merlinn/db";
-import { createCredentials } from "@merlinn/utils";
+import { secretManager } from "../../common/secrets";
 import { AtlassianClient } from "../../clients";
 
 const router = express.Router();
@@ -36,12 +36,14 @@ router.get(
         redirect_uri,
       });
 
-      const { access_token, refresh_token, expires_in, scope } = response.data;
+      const { access_token, refresh_token, ...metadata } = response.data;
 
       // TODO: Determine if this is a JIRA connection or a Confluence connection in a better way.
       // Right now, we simply check whether the scope contains jira scopes or not.
       // It's kinda dumb but works. Need to find a better way though
-      const vendorName = scope.includes("jira") ? "Jira" : "Confluence";
+      const vendorName = metadata.scope.includes("jira")
+        ? "Jira"
+        : "Confluence";
       const vendor = await vendorModel.getOne({
         name: vendorName,
       });
@@ -57,21 +59,18 @@ router.get(
         throw new AppError("Could not find the given organization.", 404);
       }
 
-      const formattedCredentials = await createCredentials(
+      const formattedCredentials = (await secretManager.createCredentials(
         organization._id.toString(),
         vendor.name,
         { access_token, refresh_token },
-      );
+      )) as Record<string, string>;
 
       // Create the integration
       await integrationModel.create({
         vendor,
         organization,
         credentials: formattedCredentials,
-        metadata: {
-          expires_in,
-          scope,
-        },
+        metadata,
       });
 
       return res.send("App installed successfully");

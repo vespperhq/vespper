@@ -11,6 +11,7 @@ import asyncio
 import base64
 import binascii
 import enum
+import json
 import logging
 import os
 import pathlib
@@ -133,6 +134,45 @@ class GithubRepositoryReader(BaseReader):
 
         self._file_readers: Dict[str, BaseReader] = {}
         self._supported_suffix = list(DEFAULT_FILE_READER_CLS.keys())
+
+    # Ignoring submodules
+    async def get_tree_custom(
+        self,
+        owner: str,
+        repo: str,
+        tree_sha: str,
+        timeout: Optional[int] = 5,
+        retries: int = 0,
+    ) -> GitTreeResponseModel:
+        """
+        Get information about a tree. (Github API endpoint: getTree).
+
+        Args:
+            - `owner (str)`: Owner of the repository.
+            - `repo (str)`: Name of the repository.
+            - `tree_sha (str)`: SHA of the tree.
+            - `timeout (int or None)`: Timeout for the request in seconds. Default is 5.
+            - `retries (int)`: Number of retries for the request. Default is 0.
+
+        Returns:
+            - `tree_info (GitTreeResponseModel)`: Information about the tree.
+
+        Examples:
+            >>> tree_info = client.get_tree("owner", "repo", "tree_sha")
+        """
+        root = (
+            await self._github_client.request(
+                "getTree",
+                "GET",
+                owner=owner,
+                repo=repo,
+                tree_sha=tree_sha,
+                timeout=timeout,
+                retries=retries,
+            )
+        ).json()
+        root["tree"] = [path for path in root["tree"] if path.get("url") is not None]
+        return GitTreeResponseModel.from_json(json.dumps(root))
 
     def _check_filter_directories(self, tree_obj_path: str) -> bool:
         """
@@ -325,7 +365,7 @@ class GithubRepositoryReader(BaseReader):
             "\t" * current_depth + f"current path: {current_path}",
         )
 
-        tree_data: GitTreeResponseModel = await self._github_client.get_tree(
+        tree_data: GitTreeResponseModel = await self.get_tree_custom(
             self._owner, self._repo, tree_sha, timeout=self._timeout
         )
         print_if_verbose(

@@ -52,7 +52,13 @@ function App() {
         <CssVarsProvider>
           <CssBaseline />
           <Box sx={{ display: "flex", height: "100%" }}>
-            <Toaster />
+            <Toaster
+              toastOptions={{
+                style: {
+                  maxWidth: 500,
+                },
+              }}
+            />
             <RouterProvider router={router} />
           </Box>
         </CssVarsProvider>

@@ -36,8 +36,10 @@ export interface RunContext {
   organizationId: string;
   context:
     | "chat"
+    | "chat-github"
     | "trigger-pagerduty"
     | "trigger-opsgenie"
+    | "trigger-alertmanager"
     | "trigger-local-script";
 }
 

@@ -28,6 +28,14 @@ export const prefix = {
   
   Begin!
   `,
+  conversationIssues: `
+  You are a smart AI assistant called Merlinn, living inside Github. Your mission is to help developers find answers to their issues & questions.
+  You can use the tools at your disposal to fetch information about the subject, if needed.
+
+  IMPORTANT: Be concise with your answers. Don't write messages that are too long. Try to say more with less words.
+  
+  Begin!
+  `,
   summarizeReadme: `
   Summarize this repository's README.md into a few words (10 words max). 
   Ignore technical stuff and focus on the core purpose of this repo.
@@ -53,6 +61,13 @@ export const investigationTemplate = ChatPromptTemplate.fromMessages([
 
 export const conversationTemplate = ChatPromptTemplate.fromMessages([
   ["ai", prefix.conversation],
+  new MessagesPlaceholder("history"),
+  ["human", "{input}"],
+  new MessagesPlaceholder("agent_scratchpad"),
+]);
+
+export const conversationIssuesTemplate = ChatPromptTemplate.fromMessages([
+  ["ai", prefix.conversationIssues],
   new MessagesPlaceholder("history"),
   ["human", "{input}"],
   new MessagesPlaceholder("agent_scratchpad"),

@@ -1,9 +1,9 @@
 import express, { Request, Response } from "express";
+import { vendorModel, organizationModel, integrationModel } from "@merlinn/db";
 import { catchAsync } from "../../utils/errors";
 import { AppError } from "../../errors";
 import axios, { AxiosError } from "axios";
-import { vendorModel, organizationModel, integrationModel } from "@merlinn/db";
-import { createCredentials } from "@merlinn/utils";
+import { secretManager } from "../../common/secrets";
 
 const router = express.Router();
 
@@ -52,18 +52,34 @@ router.get(
 
       const { access_token, ...metadata } = credentials;
 
-      const formattedCredentials = await createCredentials(
+      // Get installation id
+      const {
+        data: { installations },
+      } = await axios.get("https://api.github.com/user/installations", {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          Accept: "application/vnd.github+json",
+          "X-GitHub-Api-Version": "2022-11-28",
+        },
+      });
+      // TODO: possible bug in case there are multiple organizations/accounts that Merlinn is installed on
+      const installation = installations[0];
+      const formattedCredentials = (await secretManager.createCredentials(
         organization._id.toString(),
         vendor.name,
         { access_token },
-      );
+      )) as Record<string, string>;
 
       // Create the integration
       await integrationModel.create({
         vendor,
         organization,
         credentials: formattedCredentials,
-        metadata,
+        metadata: {
+          ...metadata,
+          installationId: installation.id,
+          githubOrgId: installation.account.id,
+        },
       });
 
       return res.send("App installed successfully");

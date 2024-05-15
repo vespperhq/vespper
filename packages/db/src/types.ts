@@ -231,6 +231,8 @@ export interface GithubIntegration extends BaseConnection {
   metadata: {
     scope: string;
     token_type: string;
+    installationId: number;
+    githubOrgId: number;
   };
 }
 
@@ -273,6 +275,17 @@ export interface JaegerIntegration extends BaseConnection {
   };
 }
 
+export interface PrometheusIntegration extends BaseConnection {
+  // Prometheus supports basic auth. More information: https://prometheus.io/docs/guides/basic-auth/
+  credentials: {
+    username: string;
+    password: string;
+  };
+  metadata: {
+    instanceUrl: string;
+  };
+}
+
 export type IIntegration =
   | SlackIntegration
   | PagerDutyIntegration
@@ -284,7 +297,8 @@ export type IIntegration =
   | NotionIntegration
   | AtlassianIntegration
   | MongoDBIntegration
-  | JaegerIntegration;
+  | JaegerIntegration
+  | PrometheusIntegration;
 
 export interface IWebhook extends BaseConnection {
   secret: string;
@@ -303,4 +317,10 @@ export enum VendorName {
   PagerDuty = "PagerDuty",
   DataDog = "DataDog",
   MongoDB = "MongoDB",
+  Grafana = "Grafana",
+  Notion = "Notion",
+  Atlassian = "Atlassian",
+  Jaeger = "Jaeger",
+  Prometheus = "Prometheus",
+  AlertManager = "Alert Manager",
 }

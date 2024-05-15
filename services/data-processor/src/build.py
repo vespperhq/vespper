@@ -1,3 +1,4 @@
+import traceback
 import nest_asyncio
 
 from db.plan_field import get_plan_field_by_code
@@ -109,6 +110,7 @@ async def build_index(
         print("Build index completed")
     except Exception as e:
         print(e)
+        traceback.print_exc()
         await db.index.update_one(
             {"_id": index_id}, {"$set": {"state.status": "failed"}}
         )

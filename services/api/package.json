@@ -29,7 +29,8 @@
     "mongoose": "^8.0.2",
     "mongoose-field-encryption": "^7.0.1",
     "node-cron": "^3.0.3",
-    "octokit": "^3.1.2"
+    "octokit": "^3.1.2",
+    "prometheus-query": "^3.4.0"
   },
   "scripts": {
     "start": "node dist/src/server.js",

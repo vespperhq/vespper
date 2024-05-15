@@ -1,5 +1,5 @@
 import { Types } from "mongoose";
-export type EventSource = "Opsgenie" | "PagerDuty";
+export type EventSource = "Opsgenie" | "PagerDuty" | "Alert Manager";
 
 export interface AlertEvent {
   message: string;

@@ -9,7 +9,7 @@ import { zip } from "../../../utils/arrays";
 export default async function (integration: GithubIntegration) {
   const { access_token } = integration.credentials;
 
-  const githubClient = new GithubClient(access_token);
+  const githubClient = GithubClient.fromToken(access_token);
   const orgs = await githubClient.getOrgs();
   const repos = (
     await Promise.all(orgs.map((org) => githubClient.getRepos(org.login)))
