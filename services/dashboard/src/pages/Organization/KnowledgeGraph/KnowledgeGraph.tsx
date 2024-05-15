@@ -118,7 +118,7 @@ export const OrganizationKnowledgeGraphPage = () => {
   }, [index.data]);
   const [isConfirmOpen, setConfirmOpen] = useState<boolean>(false);
 
-  const seriesData = index?.data
+  const seriesData = index?.data?.stats
     ? Object.entries(index.data.stats)
         .map(([key, value]) => {
           return {

@@ -52,6 +52,18 @@ router.get(
 
       const { access_token, ...metadata } = credentials;
 
+      // Get installation id
+      const {
+        data: { installations },
+      } = await axios.get("https://api.github.com/user/installations", {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          Accept: "application/vnd.github+json",
+          "X-GitHub-Api-Version": "2022-11-28",
+        },
+      });
+      // TODO: possible bug in case there are multiple organizations/accounts that Merlinn is installed on
+      const installation = installations[0];
       const formattedCredentials = (await secretManager.createCredentials(
         organization._id.toString(),
         vendor.name,
@@ -63,7 +75,11 @@ router.get(
         vendor,
         organization,
         credentials: formattedCredentials,
-        metadata,
+        metadata: {
+          ...metadata,
+          installationId: installation.id,
+          githubOrgId: installation.account.id,
+        },
       });
 
       return res.send("App installed successfully");

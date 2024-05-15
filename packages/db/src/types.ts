@@ -231,6 +231,8 @@ export interface GithubIntegration extends BaseConnection {
   metadata: {
     scope: string;
     token_type: string;
+    installationId: number;
+    githubOrgId: number;
   };
 }
 

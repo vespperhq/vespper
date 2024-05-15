@@ -4,6 +4,14 @@
   "projectType": "application",
   "sourceRoot": "./src",
   "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "cwd": "services/data-processor",
+        "commands": ["poetry run python src/main.py"]
+      }
+    },
     "deploy": {
       "executor": "nx:run-commands",
       "options": {

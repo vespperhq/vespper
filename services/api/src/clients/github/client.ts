@@ -1,16 +1,33 @@
-import { Octokit } from "octokit";
+import { Octokit, App } from "octokit";
 // octokit documentation:
 // https://docs.github.com/en/rest/orgs/orgs?apiVersion=2022-11-28#list-organizations-for-the-authenticated-user
 
 export class GithubClient {
-  token: string;
   octokit: Octokit;
 
-  constructor(token: string) {
-    this.token = token;
-    this.octokit = new Octokit({
+  constructor(octokit: Octokit) {
+    this.octokit = octokit;
+  }
+
+  static fromToken(token: string) {
+    const octokit = new Octokit({
       auth: token,
     });
+    return new this(octokit);
+  }
+
+  static async fromInstallation(
+    appId: string,
+    privateKey: string,
+    installationId: number,
+  ) {
+    const app = new App({
+      appId,
+      privateKey,
+    });
+    const octokit = await app.getInstallationOctokit(installationId);
+
+    return new this(octokit);
   }
 
   async getOrgs() {
@@ -148,5 +165,41 @@ export class GithubClient {
     );
 
     return combinedPatches;
+  }
+
+  async getIssueComments({
+    owner,
+    repo,
+    issue_number,
+  }: {
+    owner: string;
+    repo: string;
+    issue_number: number;
+  }) {
+    const { data } = await this.octokit.rest.issues.listComments({
+      owner,
+      repo,
+      issue_number,
+    });
+    return data;
+  }
+  async createNewIssueComment({
+    owner,
+    repo,
+    issue_number,
+    body,
+  }: {
+    owner: string;
+    repo: string;
+    issue_number: number;
+    body: string;
+  }) {
+    const { data } = await this.octokit.rest.issues.createComment({
+      owner,
+      repo,
+      issue_number,
+      body,
+    });
+    return data;
   }
 }

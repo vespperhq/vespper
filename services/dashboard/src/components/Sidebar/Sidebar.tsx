@@ -13,7 +13,7 @@ import Sheet from "@mui/joy/Sheet";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import HelpIcon from "@mui/icons-material/Help";
-import MessageIcon from "@mui/icons-material/Message";
+// import MessageIcon from "@mui/icons-material/Message";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import LogoImage from "../../assets/logo-wizard.svg";
 import { ColorSchemeToggle } from "../ColorSchemeToggle";
@@ -174,7 +174,7 @@ export const Sidebar = () => {
               </Link>
             </ListItemButton>
           </ListItem>
-          <ListItem>
+          {/* <ListItem>
             <ListItemButton>
               <Link
                 to="/chat"
@@ -192,7 +192,7 @@ export const Sidebar = () => {
                 </ListItemContent>
               </Link>
             </ListItemButton>
-          </ListItem>
+          </ListItem> */}
 
           {isOwner || !organization ? (
             !organization ? (

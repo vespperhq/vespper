@@ -60,10 +60,12 @@
     {
       "name": "Data Processor: Debug Current File",
       "type": "debugpy",
+      "justMyCode": false,
       "request": "launch",
       "program": "${file}",
       "console": "integratedTerminal",
-      "cwd": "${workspaceFolder}/services/data-processor/"
+      "cwd": "${workspaceFolder}/services/data-processor/",
+      "envFile": "${workspaceFolder}/services/data-processor/.env"
     },
     {
       "name": "Data Processor: Debug build index",

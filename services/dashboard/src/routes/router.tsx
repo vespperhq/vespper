@@ -3,7 +3,7 @@ import {
   LoginPage,
   HomePage,
   CallbackPage,
-  ChatPage,
+  // ChatPage,
   OrganizationGeneralPage,
   OrganizationMembersPage,
   OrganizationIntegrationsPage,
@@ -25,10 +25,10 @@ export const router = createBrowserRouter([
         path: paths.HOME_PATH,
         element: <AuthenticationGuard component={HomePage} />,
       },
-      {
-        path: paths.CHAT_PATH,
-        element: <AuthenticationGuard component={ChatPage} />,
-      },
+      // {
+      //   path: paths.CHAT_PATH,
+      //   element: <AuthenticationGuard component={ChatPage} />,
+      // },
       {
         path: paths.SUPPORT_PATH,
         element: <AuthenticationGuard component={SupportPage} />,

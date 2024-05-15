@@ -1,9 +1,12 @@
+import os
 import asyncio
 from typing import List, Optional
+import numpy as np
 from tqdm.auto import tqdm
 from db.integrations import get_integrations_by_organization_id, populate_secrets
 from loaders import loaders
-from llama_index.core.ingestion import run_transformations
+from llama_index.core.node_parser import SentenceSplitter
+from llama_index.core.ingestion import IngestionPipeline
 from llama_index.core.settings import (
     Settings,
 )
@@ -52,13 +55,20 @@ async def get_documents(
         else:
             docs = loader(integration)
 
-        docs = run_transformations(
-            docs,
-            Settings.transformations,
+        progress_bar.set_description(f"Transforming {vendor_name}")
+        pipeline = IngestionPipeline(
+            transformations=[SentenceSplitter(chunk_size=1024)],
         )
+        num_cpus = os.cpu_count()
+        num_workers = min(4, num_cpus) if num_cpus > 1 else 1
+
+        # counts = [len(doc.text) for doc in docs]
+        # limit = np.percentile(counts, [99])[0]
+        # docs = [doc for doc in docs if len(doc.text) < limit]
+        docs = pipeline.run(documents=docs, num_workers=num_workers)
 
         # Limit the number of documents per source
-        docs = docs[:limit_per_source]
+        # docs = docs[:limit_per_source]
 
         documents.extend(docs)
         stats[integration.vendor.name] = len(docs)
