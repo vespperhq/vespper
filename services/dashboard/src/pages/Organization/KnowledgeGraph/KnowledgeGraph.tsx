@@ -268,7 +268,7 @@ export const OrganizationKnowledgeGraphPage = () => {
                         <Card style={{ marginLeft: "20px", display: "inline" }}>
                           {name}:{" "}
                           <span style={{ fontWeight: "bold" }}>
-                            {formattedValue}
+                            {formattedValue.toLocaleString()}
                           </span>{" "}
                           Documents
                         </Card>

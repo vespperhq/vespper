@@ -2,7 +2,6 @@ import express, { Request, Response } from "express";
 import { integrationModel, indexModel, PlanFieldCode } from "@merlinn/db";
 import { IIntegration } from "@merlinn/db";
 import { runAgent } from "../agent";
-import { AnswerContext } from "../agent/callbacks";
 import { getInteractionUser } from "../middlewares/slack";
 import { langfuse } from "../clients/langfuse";
 import { parseMessages } from "../agent/parse";
@@ -105,25 +104,30 @@ const getCompletions = async (req: Request, res: Response) => {
       typeof message.content === "string"
         ? message.content
         : (message.content[0] as TextBlock).text;
-    const callback = async (answer: string, context: AnswerContext) => {
-      output = answer;
-      traceId = context.getTraceId()!;
-      observationId = context.getObservationId()!;
-      traceURL = context.getTraceURL()!;
-    };
+
     try {
-      await runAgent({
+      const { answer, answerContext } = await runAgent({
         prompt,
         model: chatModel,
         template: conversationTemplate,
         integrations,
-        callback,
         messages: chatMessages,
         context: runContext,
       });
+
+      output = answer.output;
+      traceId = answerContext.getTraceId()!;
+      observationId = answerContext.getObservationId()!;
+      traceURL = answerContext.getTraceURL()!;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      throw new AppError(error.message, 500, ErrorCode.AGENT_RUN_FAILED);
+      console.error(error);
+      throw new AppError(
+        error.message,
+        500,
+        ErrorCode.AGENT_RUN_FAILED,
+        error.stack,
+      );
     }
   } else {
     try {
@@ -208,7 +212,7 @@ router.post(
       return res.status(200).json({ message: "Feedback has been sent" });
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      throw new AppError(error.message, 500);
+      throw new AppError(error.message, 500, error.stack);
     }
   }),
 );

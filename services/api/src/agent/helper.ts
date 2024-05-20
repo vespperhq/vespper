@@ -2,7 +2,7 @@ import CallbackHandler from "langfuse-langchain";
 import { v4 as uuid } from "uuid";
 import { createAgent } from "./agent";
 import { createTools } from "./tools";
-import { LLMCallbacks } from "./callbacks";
+import { AnswerContext, LLMCallbacks } from "./callbacks";
 import { langfuse } from "../clients/langfuse";
 import { RunAgentParams, RunContext, RunModelParams } from "./types";
 import { secretManager } from "../common/secrets";
@@ -45,7 +45,6 @@ export async function runAgent({
   model,
   template,
   integrations,
-  callback,
   context,
   messages,
 }: RunAgentParams) {
@@ -59,8 +58,10 @@ export async function runAgent({
   const { callback: langfuseCallbacks, trace } = generateLFCallback(context);
 
   // Custom logic for aggregating citations and sources from tools' activations
-  const globalCallbacks = new LLMCallbacks(callback, trace);
+  const answerContext = new AnswerContext(trace);
+  const globalCallbacks = new LLMCallbacks(answerContext);
 
   const callbacks = [langfuseCallbacks, globalCallbacks];
-  await agent.call({ input: prompt }, { callbacks });
+  const answer = await agent.call({ input: prompt }, { callbacks });
+  return { answer, answerContext };
 }

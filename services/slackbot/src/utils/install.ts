@@ -66,6 +66,10 @@ export async function authorize_api({
   }
   console.log("Fetching integration...");
   const integration = await getIntegration(query);
+  if (!integration) {
+    throw new Error("No integration found for query: " + JSON.stringify(query));
+  }
+
   console.log("Integration fetched!");
 
   return {
