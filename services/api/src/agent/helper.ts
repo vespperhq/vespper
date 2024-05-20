@@ -6,6 +6,7 @@ import { AnswerContext, LLMCallbacks } from "./callbacks";
 import { langfuse } from "../clients/langfuse";
 import { RunAgentParams, RunContext, RunModelParams } from "./types";
 import { secretManager } from "../common/secrets";
+import { buildAnswer } from "./utils";
 
 function generateTrace(context: RunContext) {
   const trace = langfuse.trace({
@@ -62,6 +63,8 @@ export async function runAgent({
   const globalCallbacks = new LLMCallbacks(answerContext);
 
   const callbacks = [langfuseCallbacks, globalCallbacks];
-  const answer = await agent.call({ input: prompt }, { callbacks });
+  const { output } = await agent.call({ input: prompt }, { callbacks });
+
+  const answer = buildAnswer(output, answerContext.getSources());
   return { answer, answerContext };
 }

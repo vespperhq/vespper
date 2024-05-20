@@ -159,7 +159,7 @@ router.post(
       context: runContext,
     });
 
-    const output = answer.output;
+    const output = answer;
     const traceId = answerContext.getTraceId()!;
     const observationId = answerContext.getObservationId()!;
     const traceURL = answerContext.getTraceURL()!;

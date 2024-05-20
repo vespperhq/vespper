@@ -4,12 +4,12 @@ import { checkJWT, getDBUser } from "../middlewares/auth";
 import { catchAsync } from "../utils/errors";
 import { AppError, ErrorCode } from "../errors";
 import { indexModel, integrationModel, PlanFieldCode } from "@merlinn/db";
-import { pinecone } from "../clients/pinecone";
 import { refreshAtlassianToken } from "../services/oauth";
 import type { AtlassianIntegration, IIntegration } from "@merlinn/db";
 import { zip } from "../utils/arrays";
 import { getTimestamp } from "../utils/dates";
 import { getPlanFieldState } from "../services/plans";
+import { getVectorStore } from "../agent/rag";
 
 const ATLASSIAN_DATA_SOURCES = ["Confluence", "Jira"];
 
@@ -123,7 +123,8 @@ router.delete(
     }
 
     // Delete pinecone index
-    await pinecone.deleteIndex(index.name);
+    const vectorStore = getVectorStore(index.name, index.type);
+    await vectorStore.deleteIndex();
 
     // Delete internal index
     await indexModel.deleteOneById(id);

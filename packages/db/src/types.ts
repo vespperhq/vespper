@@ -90,6 +90,7 @@ export interface IVendor {
 export interface IIndex {
   _id: Types.ObjectId;
   name: string;
+  type: "pinecone" | "chromadb";
   organization: Types.ObjectId | IOrganization;
   dataSources: VendorName[];
   state: {

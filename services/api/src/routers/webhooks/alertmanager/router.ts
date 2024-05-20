@@ -125,7 +125,7 @@ router.post(
       const response = await slackClient.postReply({
         channelId,
         ts: amMessage?.ts as string,
-        text: answer.output,
+        text: answer,
         metadata,
       });
       const { ok, ts } = response;

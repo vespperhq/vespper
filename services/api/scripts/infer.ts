@@ -85,10 +85,6 @@ New alert has been triggered! Details:
   
   `;
 
-  const callback = async (answer: string) => {
-    console.log(answer);
-  };
-
   const context: RunContext = {
     organizationName: organization!.name,
     organizationId,
@@ -102,7 +98,6 @@ New alert has been triggered! Details:
     template: investigationTemplate,
     model: chatModel,
     integrations,
-    callback,
     context,
   });
 })();

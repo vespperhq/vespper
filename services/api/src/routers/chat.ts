@@ -115,7 +115,7 @@ const getCompletions = async (req: Request, res: Response) => {
         context: runContext,
       });
 
-      output = answer.output;
+      output = answer;
       traceId = answerContext.getTraceId()!;
       observationId = answerContext.getObservationId()!;
       traceURL = answerContext.getTraceURL()!;
