@@ -13,7 +13,7 @@ import Sheet from "@mui/joy/Sheet";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import HelpIcon from "@mui/icons-material/Help";
-// import MessageIcon from "@mui/icons-material/Message";
+import MessageIcon from "@mui/icons-material/Message";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import LogoImage from "../../assets/logo-wizard.svg";
 import { ColorSchemeToggle } from "../ColorSchemeToggle";
@@ -26,6 +26,7 @@ import Stack from "@mui/joy/Stack";
 import ListItemDecorator from "@mui/joy/ListItemDecorator";
 import { Usage } from "../Usages";
 import { useMe } from "../../api/queries/auth";
+import { SHOW_CHAT_PAGE } from "../../constants";
 
 function Toggler({
   defaultExpanded = false,
@@ -174,25 +175,27 @@ export const Sidebar = () => {
               </Link>
             </ListItemButton>
           </ListItem>
-          {/* <ListItem>
-            <ListItemButton>
-              <Link
-                to="/chat"
-                style={{
-                  display: "flex",
-                  width: "100%",
-                  textDecoration: "none",
-                }}
-              >
-                <ListItemDecorator>
-                  <MessageIcon />
-                </ListItemDecorator>
-                <ListItemContent>
-                  <Typography level="title-sm">Chat</Typography>
-                </ListItemContent>
-              </Link>
-            </ListItemButton>
-          </ListItem> */}
+          {SHOW_CHAT_PAGE && (
+            <ListItem>
+              <ListItemButton>
+                <Link
+                  to="/chat"
+                  style={{
+                    display: "flex",
+                    width: "100%",
+                    textDecoration: "none",
+                  }}
+                >
+                  <ListItemDecorator>
+                    <MessageIcon />
+                  </ListItemDecorator>
+                  <ListItemContent>
+                    <Typography level="title-sm">Chat</Typography>
+                  </ListItemContent>
+                </Link>
+              </ListItemButton>
+            </ListItem>
+          )}
 
           {isOwner || !organization ? (
             !organization ? (

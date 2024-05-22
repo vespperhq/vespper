@@ -15,7 +15,7 @@
     "auth0": "^4.2.0",
     "axios": "^1.6.2",
     "body-parser": "^1.19.0",
-    "chromadb": "^1.8.1",
+    "chromadb": "1.9.1",
     "coralogix-logger": "^1.1.28",
     "cors": "^2.8.5",
     "date-fns": "^3.0.6",
