@@ -30,7 +30,7 @@ export default async function (context: RunContext) {
             return "Knowledge base is not set up. Tool is not available.";
           }
           const vectorStore = getVectorStore(index.name, index.type);
-          const documents = await vectorStore.query(query, 5);
+          const documents = await vectorStore.query({ query, topK: 5 });
           const text = nodesToText(documents);
 
           // Create sources
@@ -57,6 +57,9 @@ export default async function (context: RunContext) {
                   const filePath = file_path.split(`${repo}/`)[1];
                   const manualUrl = `https://github.com/${owner}/${repo}/tree/${commit_sha}/${filePath}`;
                   return manualUrl;
+                }
+                case "PagerDuty": {
+                  return document.metadata.link;
                 }
               }
             })();

@@ -1,4 +1,4 @@
-import { VectorStore, Document } from "./types";
+import { VectorStore, Document, QueryOptions } from "./types";
 import {
   Pinecone,
   QueryResponse,
@@ -16,11 +16,15 @@ export class PineconeVectorStore implements VectorStore {
     this.indexName = indexName;
   }
 
-  async query(query: string, topK: number = 5): Promise<Document[]> {
+  async query({
+    query,
+    topK = 5,
+    metadata = {},
+  }: QueryOptions): Promise<Document[]> {
     const vector = await embedModel.getTextEmbedding(query);
     const response = await this.pinecone
       .index(this.indexName)
-      .query({ topK, vector, includeMetadata: true });
+      .query({ topK, vector, filter: metadata, includeMetadata: true });
 
     return responseToDocuments(response);
   }

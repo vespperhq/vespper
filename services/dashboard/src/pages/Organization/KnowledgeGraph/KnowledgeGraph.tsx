@@ -46,7 +46,14 @@ const emptySeries = [
   },
 ];
 
-const INDEXABLE_VENDORS = ["Slack", "Github", "Notion", "Confluence", "Jira"];
+const INDEXABLE_VENDORS = [
+  "Slack",
+  "Github",
+  "Notion",
+  "Confluence",
+  "Jira",
+  "PagerDuty",
+];
 
 export const OrganizationKnowledgeGraphPage = () => {
   const integrationsQuery = useIntegrations();

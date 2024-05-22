@@ -44,7 +44,7 @@ async def start_build_index(
     if existing_index:
         await delete_index_by_id(existing_index["_id"])
 
-    index = await create_index(organization_id, data_sources)
+    index = await create_index(organization_id, data_sources, "pinecone")
 
     background_tasks.add_task(
         build_index,

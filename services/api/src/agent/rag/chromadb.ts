@@ -1,5 +1,5 @@
 import { ChromaClient, IncludeEnum } from "chromadb";
-import { VectorStore, Document } from "./types";
+import { VectorStore, Document, QueryOptions } from "./types";
 import { embedModel } from "../model";
 
 export class ChromaDBVectorStore implements VectorStore {
@@ -18,7 +18,11 @@ export class ChromaDBVectorStore implements VectorStore {
     this.collectionName = collectionName;
   }
 
-  async query(query: string, topK: number = 5): Promise<Document[]> {
+  async query({
+    query,
+    topK = 5,
+    metadata = {},
+  }: QueryOptions): Promise<Document[]> {
     const vector = await embedModel.getTextEmbedding(query);
 
     const collection = await this.chroma.getCollection({
@@ -29,6 +33,8 @@ export class ChromaDBVectorStore implements VectorStore {
       queryEmbeddings: vector,
       nResults: topK,
       include: [IncludeEnum.Metadatas],
+      // TODO: haven't checked this
+      where: metadata,
     });
 
     if (!response.documents) {
@@ -65,13 +71,13 @@ export class ChromaDBVectorStore implements VectorStore {
   }
 }
 
-(async () => {
-  const host = "http://localhost:8000";
-  const apiKey = "secret-token";
-  const indexName = "664c47cebe04f2cb1b630e30";
-  const chromaDB = new ChromaDBVectorStore(host, apiKey, indexName);
+// (async () => {
+//   const host = "http://localhost:8000";
+//   const apiKey = "secret-token";
+//   const indexName = "664c47cebe04f2cb1b630e30";
+//   const chromaDB = new ChromaDBVectorStore(host, apiKey, indexName);
 
-  const query = "What are our KPIs?";
-  const documents = await chromaDB.query(query, 5);
-  console.log(documents);
-})();
+//   const query = "What are our KPIs?";
+//   const documents = await chromaDB.query(query, 5);
+//   console.log(documents);
+// })();

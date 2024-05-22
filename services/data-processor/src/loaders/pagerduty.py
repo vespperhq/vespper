@@ -57,7 +57,8 @@ async def fetch_pagerduty_documents(integration: Integration):
         )
         metadata = {
             "source": "PagerDuty",
-            "incident_id": incident["id"],
+            "id": incident["id"],
+            "link": incident["html_url"],
             "status": incident["status"],
             "urgency": incident["urgency"],
             "service_id": service.get("id", "Unknown"),
