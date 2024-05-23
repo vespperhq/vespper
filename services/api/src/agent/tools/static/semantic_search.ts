@@ -36,27 +36,45 @@ export default async function (context: RunContext) {
           // Create sources
           const sourcesCounter: Record<string, number> = {};
           const sources = documents.map((document) => {
-            const url = (() => {
+            const { url, title = "" } = (() => {
               switch (document.metadata.source) {
                 case "Notion": {
                   const { workspace_name, page_id } = document.metadata;
-                  return `https://www.notion.so/${workspace_name}/${page_id.replaceAll("-", "")}`;
+                  const url = `https://www.notion.so/${workspace_name}/${page_id.replaceAll("-", "")}`;
+                  return { url };
                 }
                 case "Slack": {
                   const { workspace_url, channel_id, ts } = document.metadata;
-                  return `${workspace_url}/archives/${channel_id}/p${ts}`;
+                  const url = `${workspace_url}/archives/${channel_id}/p${ts}`;
+                  return { url };
                 }
                 case "Github": {
-                  const { url, repo_path, file_path, commit_sha } =
-                    document.metadata;
+                  const {
+                    url,
+                    repo_path,
+                    file_path,
+                    file_name,
+                    commit_sha,
+                    doc_type,
+                  } = document.metadata;
+                  const title =
+                    doc_type === "code_file"
+                      ? file_name
+                      : doc_type === "issue"
+                        ? `Issue #${url.split("/").pop()}`
+                        : null;
                   if (url) {
-                    return url;
+                    const formattedUrl = url.replace(
+                      /api\.github\.com\/[^/]+/,
+                      "github.com",
+                    );
+                    return { url: formattedUrl, title };
                   }
 
                   const [owner, repo] = repo_path.split("/");
                   const filePath = file_path.split(`${repo}/`)[1];
                   const manualUrl = `https://github.com/${owner}/${repo}/tree/${commit_sha}/${filePath}`;
-                  return manualUrl;
+                  return { url: manualUrl, title };
                 }
                 case "PagerDuty": {
                   return document.metadata.link;
@@ -69,7 +87,9 @@ export default async function (context: RunContext) {
             const nSource = sourcesCounter[document.metadata.source];
 
             const suffix = nSource && nSource > 1 ? ` #${nSource}` : "";
-            const source = `[${document.metadata.source.trim()} Link${suffix}](${url})`;
+            const sourceName =
+              title || `${document.metadata.source.trim()} Link${suffix}`;
+            const source = `[${sourceName}](${url})`;
             return source;
           });
           const output = buildOutput(text, sources);
