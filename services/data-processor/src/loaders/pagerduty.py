@@ -65,6 +65,7 @@ async def fetch_pagerduty_documents(integration: Integration):
             "first_trigger_log_entry_id": incident.get(
                 "first_trigger_log_entry", {}
             ).get("id", "Unknown"),
+            "created_at": incident["created_at"],
         }
 
         document = Document(doc_id=incident["id"], text=text, metadata=metadata)
