@@ -1,4 +1,11 @@
 import os
+
+if os.getenv("OS_ENV") == "linux":
+    import pysqlite3  # type: ignore
+    import sys
+
+    sys.modules["sqlite3"] = sys.modules.pop("pysqlite3")
+
 from dotenv import load_dotenv, find_dotenv
 from pydantic import BaseModel
 import uvicorn
