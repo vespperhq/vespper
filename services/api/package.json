@@ -15,6 +15,7 @@
     "auth0": "^4.2.0",
     "axios": "^1.6.2",
     "body-parser": "^1.19.0",
+    "chromadb": "1.9.1",
     "coralogix-logger": "^1.1.28",
     "cors": "^2.8.5",
     "date-fns": "^3.0.6",
@@ -30,7 +31,8 @@
     "mongoose-field-encryption": "^7.0.1",
     "node-cron": "^3.0.3",
     "octokit": "^3.1.2",
-    "prometheus-query": "^3.4.0"
+    "prometheus-query": "^3.4.0",
+    "slackify-markdown": "^4.4.0"
   },
   "scripts": {
     "start": "node dist/src/server.js",

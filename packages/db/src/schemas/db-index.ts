@@ -10,6 +10,11 @@ export const IndexSchema = new Schema<IIndex>(
       type: Schema.Types.ObjectId,
       ref: "Organization",
     },
+    type: {
+      type: String,
+      enum: ["pinecone", "chromadb"],
+      default: "pinecone",
+    },
     dataSources: [
       {
         type: String,

@@ -15,7 +15,6 @@ import {
   checkAlertsQuota,
   checkWebhookSecret,
 } from "../../../middlewares/webhooks";
-import { AnswerContext } from "../../../agent/callbacks";
 import { SystemEvent, EventType, events } from "../../../events";
 import { investigationTemplate } from "../../../agent/prompts";
 import { chatModel } from "../../../agent/model";
@@ -77,10 +76,26 @@ router.post(
       String(organization._id),
     );
 
-    const callback = async (answer: string, context: AnswerContext) => {
-      const traceId = context.getTraceId()!;
-      const traceURL = context.getTraceURL()!;
-      const observationId = context.getObservationId()!;
+    const context: RunContext = {
+      organizationName,
+      organizationId,
+      env: process.env.NODE_ENV as string,
+      eventId: alertId,
+      context: "trigger-opsgenie",
+    };
+
+    try {
+      const { answer, answerContext } = await runAgent({
+        prompt,
+        template: investigationTemplate,
+        model: chatModel,
+        integrations,
+        context,
+      });
+
+      const traceId = answerContext.getTraceId()!;
+      const traceURL = answerContext.getTraceURL()!;
+      const observationId = answerContext.getObservationId()!;
       const event: SystemEvent = {
         type: EventType.answer_created,
         payload: {
@@ -110,31 +125,12 @@ router.post(
         await slackClient.addFeedbackReactions(channelId, ts!);
       }
       events.emit(event.type, event);
-    };
 
-    const context: RunContext = {
-      organizationName,
-      organizationId,
-      env: process.env.NODE_ENV as string,
-      eventId: alertId,
-      context: "trigger-opsgenie",
-    };
-
-    try {
-      await runAgent({
-        prompt,
-        template: investigationTemplate,
-        model: chatModel,
-        integrations,
-        callback,
-        context,
-      });
+      return res.status(200).send("ok");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       throw new AppError(error.message, 500, ErrorCode.AGENT_RUN_FAILED);
     }
-
-    return res.status(200).send("ok");
   }),
 );
 

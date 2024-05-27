@@ -129,8 +129,7 @@ export default async function (integration: JaegerIntegration) {
         const stats = calculateSpanStatistics(tree);
 
         const link = `${instanceUrl}/trace/${trace.traceID}`;
-        const traceLink = `<${link}|Jaeger Trace Link>`;
-        const sources = [traceLink];
+        const sources = [`[Jaeger Trace Link](${link})`];
         const output = buildOutput(JSON.stringify(stats), sources);
 
         return output;

@@ -20,19 +20,11 @@ load_dotenv(find_dotenv())
 
 import os
 from typing import List, Optional
-from pinecone import Pinecone, ServerlessSpec
+from rag.utils import get_vector_store
 from llama_index.core import VectorStoreIndex, StorageContext
-from llama_index.vector_stores.pinecone import PineconeVectorStore
+
 
 from db import db
-
-
-def is_index_alive(pc: Pinecone, index_name: str):
-    try:
-        pc.describe_index(index_name)
-        return True
-    except Exception:
-        return False
 
 
 async def build_index(
@@ -40,29 +32,20 @@ async def build_index(
     index_id: ObjectId,
     data_sources: Optional[List[str]] = None,
 ):
-    pinecone_api_key = os.getenv("PINECONE_API_KEY")
     openai_api_key = os.getenv("OPENAI_API_KEY")
 
     try:
         index = await db.index.find_one({"_id": index_id})
         index_name = index["name"]
+        index_type = index["type"]
         plan_state = await get_plan_state_by_organization_id(organization_id)
 
-        pc = Pinecone(api_key=pinecone_api_key)
+        store = get_vector_store(index_name, index_type)
 
-        pc_index_exists = is_index_alive(pc, index_name)
-        if pc_index_exists:
+        if await store.is_index_live():
             print("Index exists. Delete old one...")
-            pc.delete_index(index_name)
-
-        pc.create_index(
-            name=index_name,
-            dimension=768,
-            metric="cosine",
-            spec=ServerlessSpec(cloud="aws", region="us-west-2"),
-        )
-
-        pc_index = pc.Index(name=index_name)
+            await store.delete_index()
+        await store.create_index()
 
         async def update_status(vendor_name: str, status: str):
             await db.index.update_one(
@@ -77,7 +60,7 @@ async def build_index(
             on_complete=partial(update_status, status="completed"),
         )
 
-        vector_store = PineconeVectorStore(pinecone_index=pc_index)
+        vector_store = store.get_llama_index_store()
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         embed_model = OpenAIEmbedding(
             api_key=openai_api_key,
@@ -87,7 +70,7 @@ async def build_index(
 
         VectorStoreIndex(
             documents,
-            vector_store=pc_index,
+            vector_store=vector_store,
             show_progress=True,
             embed_model=embed_model,
             storage_context=storage_context,

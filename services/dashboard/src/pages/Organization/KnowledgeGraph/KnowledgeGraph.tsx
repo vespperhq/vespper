@@ -46,7 +46,14 @@ const emptySeries = [
   },
 ];
 
-const INDEXABLE_VENDORS = ["Slack", "Github", "Notion", "Confluence", "Jira"];
+const INDEXABLE_VENDORS = [
+  "Slack",
+  "Github",
+  "Notion",
+  "Confluence",
+  "Jira",
+  "PagerDuty",
+];
 
 export const OrganizationKnowledgeGraphPage = () => {
   const integrationsQuery = useIntegrations();
@@ -268,7 +275,7 @@ export const OrganizationKnowledgeGraphPage = () => {
                         <Card style={{ marginLeft: "20px", display: "inline" }}>
                           {name}:{" "}
                           <span style={{ fontWeight: "bold" }}>
-                            {formattedValue}
+                            {formattedValue.toLocaleString()}
                           </span>{" "}
                           Documents
                         </Card>

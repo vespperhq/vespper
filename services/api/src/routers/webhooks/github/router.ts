@@ -2,7 +2,6 @@ import * as crypto from "crypto";
 import express, { NextFunction, Request, Response } from "express";
 import { GithubIntegration, integrationModel } from "@merlinn/db";
 import { runAgent } from "../../../agent";
-import { AnswerContext } from "../../../agent/callbacks";
 import { SystemEvent, EventType, events } from "../../../events";
 import { conversationIssuesTemplate } from "../../../agent/prompts";
 import { chatModel } from "../../../agent/model";
@@ -116,11 +115,6 @@ router.post(
       };
     }
 
-    let output: string | null = null;
-    let traceId = "";
-    let traceURL = "";
-    let observationId = "";
-
     // Prepare history and last message
     const chatMessages = parseMessages(history);
 
@@ -155,26 +149,20 @@ router.post(
       typeof message.content === "string"
         ? message.content
         : (message.content[0] as TextBlock).text;
-    const callback = async (answer: string, context: AnswerContext) => {
-      output = answer;
-      traceId = context.getTraceId()!;
-      observationId = context.getObservationId()!;
-      traceURL = context.getTraceURL()!;
-    };
-    try {
-      await runAgent({
-        prompt,
-        model: chatModel,
-        template: conversationIssuesTemplate,
-        integrations: [],
-        callback,
-        messages: chatMessages,
-        context: runContext,
-      });
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      throw new AppError(error.message, 500, ErrorCode.AGENT_RUN_FAILED);
-    }
+
+    const { answer, answerContext } = await runAgent({
+      prompt,
+      model: chatModel,
+      template: conversationIssuesTemplate,
+      integrations: [],
+      messages: chatMessages,
+      context: runContext,
+    });
+
+    const output = answer;
+    const traceId = answerContext.getTraceId()!;
+    const observationId = answerContext.getObservationId()!;
+    const traceURL = answerContext.getTraceURL()!;
 
     const event: SystemEvent = {
       type: EventType.answer_created,

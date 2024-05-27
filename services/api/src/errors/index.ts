@@ -15,8 +15,14 @@ export class AppError extends Error {
   public readonly statusCode: number;
   public readonly status: "fail" | "error";
   public readonly internalCode?: ErrorCode;
-  constructor(message: string, statusCode: number, internalCode?: ErrorCode) {
+  constructor(
+    message: string,
+    statusCode: number,
+    internalCode?: ErrorCode,
+    stack?: string,
+  ) {
     super(message);
+    this.stack = stack;
     this.message = message;
     this.statusCode = statusCode;
     this.status = `${statusCode}`.startsWith("4") ? "fail" : "error";

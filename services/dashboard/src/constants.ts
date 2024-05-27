@@ -17,3 +17,6 @@ export const PAGER_DUTY_CLIENT_ID = import.meta.env
 export const SHOULD_MOCK_API = import.meta.env.VITE_MOCK_API_CALLS
   ? JSON.parse(import.meta.env.VITE_MOCK_API_CALLS)
   : false;
+
+// Turn this on in order to show the chat page.
+export const SHOW_CHAT_PAGE = false;

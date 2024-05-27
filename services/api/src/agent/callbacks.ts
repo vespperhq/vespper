@@ -2,9 +2,8 @@ import {
   BaseCallbackHandler,
   BaseCallbackHandlerInput,
 } from "langchain/callbacks";
-import { BaseMessage, LLMResult } from "langchain/schema";
+import { BaseMessage } from "langchain/schema";
 import { extractSources } from "./tools/utils";
-import { buildAnswer } from "./utils";
 import { Serialized } from "langchain/load/serializable";
 import { LangfuseTraceClient } from "langfuse";
 
@@ -53,23 +52,13 @@ export class AnswerContext {
   }
 }
 
-export type AnswerHandler = (
-  text: string,
-  context: AnswerContext,
-) => Promise<void>;
 export class LLMCallbacks extends BaseCallbackHandler {
   readonly name: string = "LLM Callbacks";
   private context: AnswerContext;
-  private onAnswer: AnswerHandler;
 
-  constructor(
-    onAnswer: AnswerHandler,
-    trace: LangfuseTraceClient,
-    input?: BaseCallbackHandlerInput,
-  ) {
+  constructor(context: AnswerContext, input?: BaseCallbackHandlerInput) {
     super(input);
-    this.onAnswer = onAnswer;
-    this.context = new AnswerContext(trace);
+    this.context = context;
   }
 
   override async handleToolEnd(output: string) {
@@ -85,23 +74,5 @@ export class LLMCallbacks extends BaseCallbackHandler {
     runId: string,
   ) {
     this.context.setObservationId(runId);
-  }
-
-  override async handleLLMEnd(output: LLMResult) {
-    const { text } = output.generations[0][0];
-    if (text) {
-      // Check & add sources section
-      let answer;
-      if (this.context!.getSources().length > 0) {
-        answer = buildAnswer(text, this.context!.getSources());
-      } else {
-        answer = buildAnswer(text);
-      }
-
-      await this.onAnswer(answer, this.context);
-
-      // Clear context
-      this.context!.clear();
-    }
   }
 }

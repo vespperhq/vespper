@@ -107,7 +107,7 @@ export default async function (integration: CoralogixIntegration) {
           const link = `${domainURL}/#/query-new/logs?query=${encodeURIComponent(
             dataprimeQuery,
           )}&time=from:${startDate},to:${endDate}&page=0&querySyntax=dataprime&permalink=true`;
-          const markdownLink = `<${link}|Coralogix Logs Link>`;
+          const markdownLink = `[Coralogix Logs Link](${link})`;
           const sources = [markdownLink];
           output = buildOutput(logsStr, sources);
         } else {

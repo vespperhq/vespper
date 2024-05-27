@@ -2,7 +2,6 @@ import { ChatOpenAI } from "langchain/chat_models/openai";
 import { ChatPromptTemplate } from "langchain/prompts";
 import { AIMessage, HumanMessage, MessageContent } from "langchain/schema";
 import type { IIntegration } from "@merlinn/db";
-import { AnswerHandler } from "./callbacks";
 
 // Langchain helper types
 export type ChatMessage = AIMessage | HumanMessage;
@@ -48,7 +47,6 @@ export interface RunAgentParams {
   model: ChatOpenAI;
   template: ChatPromptTemplate;
   integrations: IIntegration[];
-  callback: AnswerHandler;
   context: RunContext;
   messages?: ChatMessage[];
 }

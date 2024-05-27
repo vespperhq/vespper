@@ -14,7 +14,9 @@ async def delete_index_by_id(id: str):
     await db.index.delete_one({"_id": id})
 
 
-async def create_index(organization_id: str, data_sources: List[str]) -> Index:
+async def create_index(
+    organization_id: str, data_sources: List[str], type: str
+) -> Index:
     current_timestamp = datetime.now()
     initial_state = {
         "status": "pending",
@@ -25,6 +27,7 @@ async def create_index(organization_id: str, data_sources: List[str]) -> Index:
             "name": organization_id,
             "organization": ObjectId(organization_id),
             "dataSources": data_sources,
+            "type": type,
             "state": initial_state,
             "createdAt": current_timestamp,
             "updatedAt": current_timestamp,
