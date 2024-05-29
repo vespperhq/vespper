@@ -1,5 +1,4 @@
 import axios from "axios";
-import { getAccessToken } from "./auth0";
 
 export async function getIntegration({
   teamId,
@@ -8,15 +7,15 @@ export async function getIntegration({
   teamId?: string;
   enterpriseId?: string;
 }) {
-  const token = await getAccessToken();
+  const serviceKey = process.env.SLACKBOT_SERVICE_KEY as string;
   const queryString = teamId
     ? `metadata.team.id=${teamId}`
     : `metadata.enterprise.id=${enterpriseId}`;
   const { data } = await axios.get(
-    `${process.env.API_BASE_URL}/integrations?${queryString}`,
+    `${process.env.API_BASE_URL}/integrations/slack?${queryString}`,
     {
       headers: {
-        Authorization: `Bearer ${token}`,
+        "x-slackbot-service-key": serviceKey,
       },
     },
   );

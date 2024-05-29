@@ -1,10 +1,5 @@
 import express, { Request, Response } from "express";
-import {
-  vendorModel,
-  organizationModel,
-  integrationModel,
-  userModel,
-} from "@merlinn/db";
+import { vendorModel, organizationModel, integrationModel } from "@merlinn/db";
 import type { IIntegration } from "@merlinn/db";
 import { checkJWT, getDBUser } from "../middlewares/auth";
 import { catchAsync } from "../utils/errors";
@@ -12,10 +7,10 @@ import { AppError } from "../errors";
 import { secretManager } from "../common/secrets";
 
 const router = express.Router();
-router.use(checkJWT);
 
 router.post(
   "/",
+  checkJWT,
   getDBUser,
   catchAsync(async (req: Request, res: Response) => {
     const {
@@ -62,6 +57,7 @@ router.post(
 
 router.put(
   "/:id",
+  checkJWT,
   getDBUser,
   catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
@@ -86,21 +82,33 @@ router.put(
 
 router.get(
   "/",
+  checkJWT,
+  getDBUser,
   catchAsync(async (req: Request, res: Response) => {
-    const query = req.query;
-    const { sub: auth0Id } = req.auth!.payload;
-    // Get the user that performs the request and get their organization
-    const user = await userModel.getOne({ auth0Id }).populate({
-      path: "organization",
-      populate: {
-        path: "plan",
-      },
-    });
+    const integrations = await integrationModel
+      .get(req.query)
+      .populate("vendor");
 
-    if (user) {
-      query.organization = String(user.organization._id);
+    const populated = await secretManager.populateCredentials(
+      integrations as IIntegration[],
+    );
+
+    return res.status(200).json(populated);
+  }),
+);
+
+router.get(
+  "/slack",
+  catchAsync(async (req: Request, res: Response) => {
+    const actualServiceKey = req.headers["x-slackbot-service-key"];
+    const expectedServiceKey = process.env.SLACKBOT_SERVICE_KEY as string;
+    if (actualServiceKey !== expectedServiceKey) {
+      throw new AppError("Unauthorized", 403);
     }
-    const integrations = await integrationModel.get(query).populate("vendor");
+
+    const integrations = await integrationModel
+      .get(req.query)
+      .populate("vendor");
 
     const populated = await secretManager.populateCredentials(
       integrations as IIntegration[],
