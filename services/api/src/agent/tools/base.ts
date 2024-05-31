@@ -7,12 +7,22 @@ import {
   OpenAIToolsAgentOutputParser,
   ToolsAgentStep,
 } from "langchain/agents/openai/output_parser";
-import { Tool } from "../../tools/types";
+import { Tool } from "../tools/types";
 import { ChatPromptTemplate } from "langchain/prompts";
 import { ChatOpenAI } from "langchain/chat_models/openai";
-import { ModelName } from "../../model";
+import { ModelName } from "../model";
+import CallbackHandler from "langfuse-langchain";
 
-const createAgent = async (tools: Tool[], template: ChatPromptTemplate) => {
+export const lfCallback = new CallbackHandler({
+  secretKey: process.env.LANGFUSE_SECRET_KEY as string,
+  publicKey: process.env.LANGFUSE_PUBLIC_KEY as string,
+  baseUrl: process.env.LANGFUSE_HOST as string,
+});
+
+export const createAgent = async (
+  tools: Tool[],
+  template: ChatPromptTemplate,
+) => {
   const apiKey = process.env.OPENAI_API_KEY;
 
   const model = new ChatOpenAI({
@@ -51,5 +61,3 @@ const createAgent = async (tools: Tool[], template: ChatPromptTemplate) => {
     maxIterations: 10,
   });
 };
-
-export { createAgent };

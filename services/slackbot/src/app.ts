@@ -5,7 +5,7 @@ import { extractEventId, parseMessage } from "./lib";
 import { BotNames, SCOPES } from "./constants";
 import { sendFeedback } from "./api/feedback";
 import { CustomEventPayload } from "./types";
-import { authorize_api } from "./utils/install";
+import { authorize } from "./utils/install";
 
 const port = Number(process.env.PORT || 3000);
 
@@ -24,9 +24,11 @@ const app = new App({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
   scopes: SCOPES,
   port,
-  authorize: authorize_api,
+  authorize,
   developerMode: false,
   customRoutes: [
+    // This route is served as a health check for the
+    // slackbot service in Google Cloud Run
     {
       path: "/",
       method: ["GET"],

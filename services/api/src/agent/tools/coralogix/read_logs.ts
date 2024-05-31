@@ -3,7 +3,6 @@ import { z } from "zod";
 import { DynamicStructuredTool } from "langchain/tools";
 import type { CoralogixIntegration } from "@merlinn/db";
 import type { CoralogixRegionKey } from "../../../types";
-// import { textToQuery } from "./utils";
 import { Timescale, getTimestamp } from "../../../utils/dates";
 import { buildOutput } from "../utils";
 import { CoralogixClient } from "../../../clients";
@@ -25,46 +24,21 @@ const timeframe2values = {
   "Last 7 days": [7, "days"],
 } as Record<string, [number, Timescale]>;
 
-const MAX_ATTEMPTS = 3;
-
-export const tryToFetch = async (
+export const fetchLogs = async (
   query: string,
   startDate: string,
   endDate: string,
   apiKey: string,
   region: CoralogixRegionKey,
-  attempts: number,
-  // fields?: string[],
 ) => {
-  const feedback = [];
-
-  for (let i = 0; i < attempts; i++) {
-    // const query = await textToQuery(apiKey, region, text, feedback, fields);
-    // if (!query) {
-    //   return null;
-    // }
-
-    try {
-      const client = new CoralogixClient({ logsKey: apiKey }, region);
-      const result = await client.getLogs({
-        syntax: "QUERY_SYNTAX_DATAPRIME",
-        query,
-        startDate,
-        endDate,
-      });
-      return { query, result };
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      let message;
-      if (error instanceof AxiosError) {
-        message = error.response?.data;
-      } else {
-        message = error.message;
-      }
-      feedback.push(`${query}:&:${message}`);
-    }
-  }
-  return null;
+  const client = new CoralogixClient({ logsKey: apiKey }, region);
+  const result = await client.getLogs({
+    syntax: "QUERY_SYNTAX_DATAPRIME",
+    query,
+    startDate,
+    endDate,
+  });
+  return result;
 };
 
 export default async function (integration: CoralogixIntegration) {
@@ -75,27 +49,24 @@ export default async function (integration: CoralogixIntegration) {
   return new DynamicStructuredTool({
     name: "read_coralogix_logs",
     description: `Read logs from Coralogix`,
-    func: async ({ query: luceneQuery, timeframe }) => {
+    func: async ({ query, timeframe }) => {
       try {
         const [amount, scale] = timeframe2values[timeframe];
         const startDate = getTimestamp({ amount, scale });
         const endDate = new Date().toISOString();
-        const dataprimeQuery = `source logs | lucene '${luceneQuery}' | limit 20`;
-        const response = await tryToFetch(
-          dataprimeQuery,
+        // const dataprimeQuery = `source logs | lucene '${luceneQuery}' | limit 20`;
+
+        const client = new CoralogixClient({ logsKey }, region);
+        const result = await client.getLogs({
+          syntax: "QUERY_SYNTAX_DATAPRIME",
+          query,
           startDate,
           endDate,
-          logsKey,
-          region,
-          MAX_ATTEMPTS,
-        );
-        if (!response) {
-          return "Failed to fetch logs";
-        }
-        const { result } = response;
+        });
+
         if (!result.result?.results) {
           return `Coraloigx returned empty result. Information: ${JSON.stringify(
-            response,
+            result,
           )}`;
         }
 
@@ -105,7 +76,7 @@ export default async function (integration: CoralogixIntegration) {
         let output: string;
         if (logsExist) {
           const link = `${domainURL}/#/query-new/logs?query=${encodeURIComponent(
-            dataprimeQuery,
+            query,
           )}&time=from:${startDate},to:${endDate}&page=0&querySyntax=dataprime&permalink=true`;
           const markdownLink = `[Coralogix Logs Link](${link})`;
           const sources = [markdownLink];
@@ -129,14 +100,16 @@ export default async function (integration: CoralogixIntegration) {
     schema: z.object({
       query: z
         .string()
-        .describe("Query to run. Should be a valid Lucene syntax query."),
+        .describe(
+          "Query to run. Should be a valid Coralogix DataPrime syntax query.",
+        ),
       timeframe: z
         .enum([
-          // "Last 1 minute",
-          // "Last 2 minutes",
-          // "Last 5 minutes",
-          // "Last 15 minutes",
-          // "Last 30 minutes",
+          "Last 1 minute",
+          "Last 2 minutes",
+          "Last 5 minutes",
+          "Last 15 minutes",
+          "Last 30 minutes",
           "Last 1 hour",
           "Last 2 hours",
           "Last 6 hours",

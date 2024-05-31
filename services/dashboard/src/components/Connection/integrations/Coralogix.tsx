@@ -29,7 +29,12 @@ const fieldsConfigurations: FieldConfiguration[] = [
       options: ["EU1", "AP1", "US1", "EU2", "AP2", "US2"],
     },
   },
-  { key: "domainURL", label: "Domain Endpoint", type: "metadata" },
+  {
+    key: "domainURL",
+    label:
+      "Domain Endpoint (for example: https://example.app.eu2.coralogix.com)",
+    type: "metadata",
+  },
 ];
 
 export const ConnectCoralogixIntegration = ({

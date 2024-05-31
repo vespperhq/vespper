@@ -32,7 +32,7 @@ export const getCommonLogFields = async (
 
   const client = new CoralogixClient({ logsKey: apiKey }, region);
   const { result } = await client.getLogs({
-    query: "source logs | limit 100",
+    query: "source logs | limit 1000",
     startDate,
     endDate,
   });

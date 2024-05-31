@@ -10,9 +10,9 @@ interface CollectionInfo {
 }
 
 const ANSWER_FORMAT = `Here is a summary of the MongoDB database:
-DB name: {}
+DB name: %s
 Collections Information:
-{}
+%s
 `;
 
 export default async function (integration: MongoDBIntegration) {

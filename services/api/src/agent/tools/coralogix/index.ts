@@ -1,3 +1,3 @@
-import { default as readLogs } from "./read_logs";
+import { default as coralogixExpertTool } from "./expert";
 
-export const toolLoaders = [readLogs];
+export const toolLoaders = [coralogixExpertTool];
