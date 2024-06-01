@@ -23,6 +23,7 @@ import { RunContext } from "../../../agent/types";
 import { secretManager } from "../../../common/secrets";
 import { AlertEvent } from "../../../types/internal";
 import { buildPrompt } from "../../../services/alerts/utils";
+import { generateTrace } from "../../../agent/helper";
 
 const router = express.Router();
 
@@ -90,6 +91,8 @@ router.post(
       eventId: alertName,
       context: "trigger-alertmanager",
     };
+    const trace = generateTrace({ ...context });
+    context.trace = trace;
 
     try {
       const { answer, answerContext } = await runAgent({

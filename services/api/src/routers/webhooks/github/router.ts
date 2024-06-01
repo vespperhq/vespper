@@ -12,6 +12,7 @@ import { secretManager } from "../../../common/secrets";
 import { validateModeration } from "../../../utils/moderation";
 import { parseMessages } from "../../../agent/parse";
 import { GithubClient } from "../../../clients";
+import { generateTrace } from "../../../agent/helper";
 
 const router = express.Router();
 
@@ -144,6 +145,8 @@ router.post(
       organizationId: String(organization._id),
       context: "chat-github",
     };
+    const trace = generateTrace({ ...runContext });
+    runContext.trace = trace;
 
     const prompt =
       typeof message.content === "string"

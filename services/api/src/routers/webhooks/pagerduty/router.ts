@@ -23,6 +23,7 @@ import { catchAsync } from "../../../utils/errors";
 import { AppError, ErrorCode } from "../../../errors";
 import { RunContext } from "../../../agent/types";
 import { secretManager } from "../../../common/secrets";
+import { generateTrace } from "../../../agent/helper";
 
 const router = express.Router();
 
@@ -90,6 +91,9 @@ router.post(
       eventId: event.data.id,
       context: "trigger-pagerduty",
     };
+    const trace = generateTrace({ ...context });
+    context.trace = trace;
+
     try {
       const { answer, answerContext } = await runAgent({
         prompt,
