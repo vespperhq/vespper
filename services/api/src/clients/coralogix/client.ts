@@ -52,7 +52,10 @@ export class CoralogixClient {
           .filter((obj: string) => !!obj) as string[];
         const results = objects.map((obj) => JSON.parse(obj));
         const logs = results
-          .reduce((total, current) => [...total, ...current.result.results], [])
+          .reduce(
+            (total, current) => [...total, ...(current.result?.results || [])],
+            [],
+          )
           .map((o: CoralogixLogRecord) => ({
             ...o,
             userData: JSON.stringify(flatten(JSON.parse(o.userData))),

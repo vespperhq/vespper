@@ -8,7 +8,7 @@ import { RunAgentParams, RunContext, RunModelParams } from "./types";
 import { secretManager } from "../common/secrets";
 import { buildAnswer } from "./utils";
 
-function generateTrace(context: RunContext) {
+export function generateTrace(context: RunContext) {
   const trace = langfuse.trace({
     sessionId: context.eventId || uuid(),
   });
@@ -20,25 +20,18 @@ function generateTrace(context: RunContext) {
   return trace;
 }
 
-function generateLFCallback(context: RunContext) {
-  const trace = generateTrace(context);
+export async function runModel({ model, context, messages }: RunModelParams) {
   const callback = new CallbackHandler({
-    root: trace,
+    root: context.trace,
     secretKey: process.env.LANGFUSE_SECRET_KEY as string,
     publicKey: process.env.LANGFUSE_PUBLIC_KEY as string,
     baseUrl: process.env.LANGFUSE_HOST as string,
   });
-
-  return { callback, trace };
-}
-
-export async function runModel({ model, context, messages }: RunModelParams) {
-  const { callback, trace } = generateLFCallback(context);
   const response = await model.invoke(messages, { callbacks: [callback] });
   const output = response.content as string;
   const traceId = callback.getTraceId();
   const observationId = callback.getLangchainRunId();
-  return { output, traceId, observationId, trace };
+  return { output, traceId, observationId, trace: context.trace };
 }
 
 export async function runAgent({
@@ -56,13 +49,17 @@ export async function runAgent({
   const agent = await createAgent(tools, model, template, messages);
 
   // Langfuse monitoring
-  const { callback: langfuseCallbacks, trace } = generateLFCallback(context);
-
+  const lfCallback = new CallbackHandler({
+    root: context.trace,
+    secretKey: process.env.LANGFUSE_SECRET_KEY as string,
+    publicKey: process.env.LANGFUSE_PUBLIC_KEY as string,
+    baseUrl: process.env.LANGFUSE_HOST as string,
+  });
   // Custom logic for aggregating citations and sources from tools' activations
-  const answerContext = new AnswerContext(trace);
+  const answerContext = new AnswerContext(context.trace!);
   const globalCallbacks = new LLMCallbacks(answerContext);
 
-  const callbacks = [langfuseCallbacks, globalCallbacks];
+  const callbacks = [lfCallback, globalCallbacks];
   const { output } = await agent.call({ input: prompt }, { callbacks });
 
   const answer = buildAnswer(output, answerContext.getSources());

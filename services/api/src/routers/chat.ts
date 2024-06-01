@@ -8,7 +8,7 @@ import { parseMessages } from "../agent/parse";
 import { RunContext, TextBlock } from "../agent/types";
 import { conversationTemplate } from "../agent/prompts";
 import { chatModel, visionModel } from "../agent/model";
-import { runModel } from "../agent/helper";
+import { generateTrace, runModel } from "../agent/helper";
 import { AppError, ErrorCode } from "../errors";
 import { EventType, SystemEvent, events } from "../events";
 import { catchAsync } from "../utils/errors";
@@ -92,6 +92,10 @@ const getCompletions = async (req: Request, res: Response) => {
     organizationId: String(req.user.organization._id),
     context: "chat",
   };
+  // Create trace
+  const trace = generateTrace({ ...runContext });
+  runContext.trace = trace;
+
   if (requestMetadata.eventId) {
     runContext.eventId = requestMetadata.eventId;
   }

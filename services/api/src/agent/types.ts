@@ -2,6 +2,7 @@ import { ChatOpenAI } from "langchain/chat_models/openai";
 import { ChatPromptTemplate } from "langchain/prompts";
 import { AIMessage, HumanMessage, MessageContent } from "langchain/schema";
 import type { IIntegration } from "@merlinn/db";
+import { LangfuseTraceClient } from "langfuse";
 
 // Langchain helper types
 export type ChatMessage = AIMessage | HumanMessage;
@@ -27,6 +28,7 @@ export interface BaseMessage {
 
 // Run Agent/Model types
 export interface RunContext {
+  trace?: LangfuseTraceClient;
   email?: string;
   userId?: string;
   eventId?: string;

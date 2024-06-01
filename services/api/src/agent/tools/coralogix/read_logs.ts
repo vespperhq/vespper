@@ -54,7 +54,6 @@ export default async function (integration: CoralogixIntegration) {
         const [amount, scale] = timeframe2values[timeframe];
         const startDate = getTimestamp({ amount, scale });
         const endDate = new Date().toISOString();
-        // const dataprimeQuery = `source logs | lucene '${luceneQuery}' | limit 20`;
 
         const client = new CoralogixClient({ logsKey }, region);
         const result = await client.getLogs({

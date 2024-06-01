@@ -11,13 +11,6 @@ import { Tool } from "../tools/types";
 import { ChatPromptTemplate } from "langchain/prompts";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { ModelName } from "../model";
-import CallbackHandler from "langfuse-langchain";
-
-export const lfCallback = new CallbackHandler({
-  secretKey: process.env.LANGFUSE_SECRET_KEY as string,
-  publicKey: process.env.LANGFUSE_PUBLIC_KEY as string,
-  baseUrl: process.env.LANGFUSE_HOST as string,
-});
 
 export const createAgent = async (
   tools: Tool[],
@@ -27,6 +20,7 @@ export const createAgent = async (
 
   const model = new ChatOpenAI({
     modelName: ModelName.GPT_3_5_TURBO_0125,
+    // modelName: ModelName.GPT_4o,
     temperature: 0,
     openAIApiKey: apiKey,
     verbose: true,
@@ -58,6 +52,6 @@ export const createAgent = async (
     agent: agentSeq,
     tools,
     memory,
-    maxIterations: 10,
+    maxIterations: 3,
   });
 };

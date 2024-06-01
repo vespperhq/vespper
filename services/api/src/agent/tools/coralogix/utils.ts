@@ -1,7 +1,4 @@
-import { DATAPRIME_CHEATSHEET } from "./constants";
 import { getTimestamp } from "../../../utils/dates";
-import { chatModel } from "../../model";
-import { replaceSuccessiveQuotes } from "../../../utils/strings";
 import { CoralogixRegionKey } from "../../../types";
 import { CoralogixClient } from "../../../clients";
 
@@ -47,64 +44,65 @@ export const getCommonLogFields = async (
   return Array.from(fields) as string[];
 };
 
-function extractQuery(text: string): string | null {
-  // Regular expression to match the Query line and capture its value
-  const queryRegex = /Query:(.*)/s;
-
-  const match = text.match(queryRegex);
-
-  if (match && match[1]) {
-    return match[1].trim();
-  } else {
-    return null;
-  }
-}
-
-export const textToQuery = async (
+export const getCommonLogValues = async (
+  field: string,
   apiKey: string,
   region: CoralogixRegionKey,
-  text: string,
-  feedback?: string[],
-  fields?: string[],
 ) => {
-  // If custom fields are not given, we use all the fields based on
-  // log sample
-  const _fields: string[] =
-    fields || (await getCommonLogFields(apiKey, region));
+  const startDate = String(getTimestamp({ amount: 7, scale: "days" }));
+  const endDate = String(getTimestamp({}));
 
-  let prompt = `
-  The following is a Cheatsheet of Coralogix's DataPrime query language:
-  ----------------------------------------------------------------------
-  ${DATAPRIME_CHEATSHEET}
-  ----------------------------------------------------------------------
+  const client = new CoralogixClient({ logsKey: apiKey }, region);
+  const query = `source logs | distinct ${field} | limit 100`;
+  const { result } = await client.getLogs({
+    query,
+    startDate,
+    endDate,
+  });
 
-  Given the following Coralogix log fields:
-  ${_fields}
-    
-  Can you please generate a DataPrime query from the following description:
-  ${text}
+  const values = result.results.map(
+    (obj) => Object.values(JSON.parse(obj.userData))[0],
+  );
+  return values;
+};
 
-  Return your answer as:
-  Query: "your query"
-  `;
+export const getLogSample = async (
+  logsKey: string,
+  region: "EU1" | "AP1" | "US1" | "EU2" | "AP2" | "US2",
+  amount: number = 5,
+) => {
+  const startDate = getTimestamp({ amount: 7, scale: "days" });
+  const endDate = new Date().toISOString();
 
-  if (feedback && feedback.length > 0) {
-    prompt += feedback
-      .map((f) => {
-        const [query, result] = f.split(":&:");
-        return `Your previous attempt was failed. query: ${query}, result: ${result}.`;
-      })
-      .join(",");
+  const client = new CoralogixClient({ logsKey }, region);
+  const query = `source logs | limit ${amount}`;
+  const result = await client.getLogs({
+    syntax: "QUERY_SYNTAX_DATAPRIME",
+    query,
+    startDate,
+    endDate,
+  });
+  if (!result.result?.results) {
+    return [];
   }
-  const output = await chatModel.invoke(prompt);
 
-  let query = extractQuery(output.content as string);
-  if (!query) {
-    return null;
-  }
-  query = query.replaceAll("\n", ""); // ChatGPT sometimes add new lines because it is shown in the cheatsheet
-  query = query.replaceAll('"', "'"); // Replace double quotes with single quotes
-  query = replaceSuccessiveQuotes(query);
+  const rows = result.result?.results.map((o) => JSON.parse(o.userData));
+  return rows;
+};
 
-  return query;
+export const getPrettyLogSample = async (
+  logsKey: string,
+  region: "EU1" | "AP1" | "US1" | "EU2" | "AP2" | "US2",
+  amount: number = 5,
+) => {
+  const logSample = await getLogSample(logsKey, region, amount);
+  const formattedLogSample = logSample
+    .map((log) =>
+      Object.entries(log)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join("\n"),
+    )
+    .join("\n\n--------------------------------------\n\n");
+
+  return formattedLogSample;
 };

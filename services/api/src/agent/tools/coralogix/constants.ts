@@ -16,6 +16,7 @@ DataPrime is a powerful query language for transforming data, especially JSON lo
 
 **Operators**: Commands to transform JSON data streams. Examples include \`filter\`, \`extract\`, \`sortby\`, \`groupby\`, \`orderby\`, \`find\`, \`choose\`.
 
+**Binary Operators**: You can use logical AND: && and logical OR: ||
 **Query Format**
 
 \`\`\`
@@ -104,6 +105,14 @@ Whitespace between operators is ignored, supporting multiline queries.
 - **Fetch all logs for the last 24 hours**
   \`\`\`shell
   source logs
+  \`\`\`
+- **Fetch all logs that contain 500 in their msg **
+  \`\`\`shell
+  source logs | filter msg.contains('500')
+  \`\`\`
+- **Fetch all logs that contain 500 and AuthError in their message **
+  \`\`\`shell
+  source logs | filter msg.contains('500') && msg.contains('AuthError')
   \`\`\`
 - **Filter logs for success and duration greater than 2 seconds**
   \`\`\`shell

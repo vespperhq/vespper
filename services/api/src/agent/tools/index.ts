@@ -17,14 +17,18 @@ import { toolLoaders as prometheusToolLoaders } from "./prometheus";
 import { Tool } from "./types";
 import { RunContext } from "../types";
 
-type ToolLoader<T extends IIntegration> = (integration: T) => Promise<Tool>;
+type ToolLoader<T extends IIntegration> = (
+  integration: T,
+  context: RunContext,
+) => Promise<Tool>;
 
 export const compileTools = async <T extends IIntegration>(
   toolLoaders: ToolLoader<T>[],
   integration: T,
+  context: RunContext,
 ): Promise<Tool[]> => {
   const tools = await Promise.all(
-    toolLoaders.map((loader) => loader(integration)),
+    toolLoaders.map((loader) => loader(integration, context)),
   );
   return tools;
 };
@@ -33,6 +37,7 @@ export const createToolsForVendor = async <T extends IIntegration>(
   integrations: IIntegration[],
   vendor: string,
   toolLoaders: ToolLoader<T>[],
+  context: RunContext,
 ) => {
   const tools = [] as Tool[];
 
@@ -40,7 +45,11 @@ export const createToolsForVendor = async <T extends IIntegration>(
     (integration) => integration.vendor.name === vendor,
   );
   if (integration) {
-    const vendorTools = await compileTools<T>(toolLoaders, integration as T);
+    const vendorTools = await compileTools<T>(
+      toolLoaders,
+      integration as T,
+      context,
+    );
     tools.push(...vendorTools);
   }
 
@@ -66,31 +75,37 @@ export const createTools = async (
       integrations,
       "Coralogix",
       coralogixToolLoaders,
+      context,
     ),
     createToolsForVendor<GithubIntegration>(
       integrations,
       "Github",
       githubToolLoaders,
+      context,
     ),
     createToolsForVendor<DataDogIntegration>(
       integrations,
       "DataDog",
       datadogToolLoaders,
+      context,
     ),
     createToolsForVendor<MongoDBIntegration>(
       integrations,
       "MongoDB",
       mongodbToolLoaders,
+      context,
     ),
     createToolsForVendor<JaegerIntegration>(
       integrations,
       "Jaeger",
       jaegerToolLoaders,
+      context,
     ),
     createToolsForVendor<PrometheusIntegration>(
       integrations,
       "Prometheus",
       prometheusToolLoaders,
+      context,
     ),
   ]);
 

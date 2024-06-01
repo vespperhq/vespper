@@ -1,9 +1,11 @@
 import { z } from "zod";
 import { DynamicStructuredTool } from "langchain/tools";
+import CallbackHandler from "langfuse-langchain";
 import { ChatPromptTemplate, MessagesPlaceholder } from "langchain/prompts";
 import { CoralogixIntegration } from "@merlinn/db";
 import { default as logsExpertTool } from "./logs_expert";
-import { createAgent, lfCallback } from "../base";
+import { createAgent } from "../base";
+import { RunContext } from "../../../agent/types";
 
 const TOOL_LOADERS = [logsExpertTool];
 
@@ -12,6 +14,9 @@ You are a Coralogix expert. Your mission is to answer users' requests and provid
 Given a request from users, you should try to find the most relevant information from Coralogix.
 
 At your disposal, you have several tools that can fetch data from Coralogix.
+
+Notes:
+- You have two types of tools: expert tools and general tools. When using expert tools, please propagate their results to the user.
 
 If you can't find the answer, please ask clarifying questions and get some help.
 `;
@@ -24,9 +29,12 @@ Here are some examples that you can use:
 - Are there any active alerts for service Z?
 `;
 
-export default async function (integration: CoralogixIntegration) {
+export default async function (
+  integration: CoralogixIntegration,
+  context: RunContext,
+) {
   const tools = await Promise.all(
-    TOOL_LOADERS.map((loader) => loader(integration)),
+    TOOL_LOADERS.map((loader) => loader(integration, context)),
   );
   const template = ChatPromptTemplate.fromMessages([
     ["ai", PROMPT],
@@ -34,6 +42,12 @@ export default async function (integration: CoralogixIntegration) {
     ["human", "{input}"],
     new MessagesPlaceholder("agent_scratchpad"),
   ]);
+  const lfCallback = new CallbackHandler({
+    root: context.trace!.span({}),
+    secretKey: process.env.LANGFUSE_SECRET_KEY as string,
+    publicKey: process.env.LANGFUSE_PUBLIC_KEY as string,
+    baseUrl: process.env.LANGFUSE_HOST as string,
+  });
 
   const agent = await createAgent(tools, template);
 
