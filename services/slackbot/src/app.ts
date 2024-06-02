@@ -1,12 +1,12 @@
+import util from "util";
 import { App, GenericMessageEvent } from "@slack/bolt";
 import { getMyId, addFeedbackReactions, addReaction } from "./utils/slack";
 import { getCompletion } from "./api/chat";
 import { extractEventId, parseMessage } from "./lib";
-import { BotNames, SCOPES } from "./constants";
+import { BotNames, HELP_MESSAGE, SCOPES, WELCOME_MESSAGE } from "./constants";
 import { sendFeedback } from "./api/feedback";
 import { CustomEventPayload } from "./types";
 import { authorize } from "./utils/install";
-
 const port = Number(process.env.PORT || 3000);
 
 // If we're in a local environment, it's preferred to use the socket mode since it works ok.
@@ -38,6 +38,18 @@ const app = new App({
       },
     },
   ],
+});
+
+app.event("app_home_opened", async ({ event, say, client }) => {
+  // Fetch the first message in the conversation
+  const response = await client.conversations.history({
+    channel: event.channel,
+    inclusive: true,
+    limit: 1,
+  });
+  if (!response.messages?.length) {
+    await say(util.format(WELCOME_MESSAGE, event.user));
+  }
 });
 
 app.event("reaction_added", async ({ event, client }) => {
@@ -82,6 +94,33 @@ app.event("reaction_added", async ({ event, client }) => {
     });
   } catch (error) {
     console.log(error);
+  }
+});
+
+app.command("/merlinn", async ({ ack, say, command, client }) => {
+  await ack();
+
+  switch (command.text) {
+    case "help": {
+      await say(util.format(HELP_MESSAGE, command.user_id));
+      break;
+    }
+    case "new-chat": {
+      const message =
+        command.channel_name !== "directmessage"
+          ? "You cannot reset chat history when you're outside of direct messaging."
+          : "Chat history has been reset. You can now start a new conversation!";
+      await client.chat.postEphemeral({
+        channel: command.channel_id,
+        user: command.user_id,
+        text: message,
+      });
+      break;
+    }
+    default:
+      await say(
+        "Invalid command 😕 You can run `/merlinn help` to see all the available commands",
+      );
   }
 });
 
@@ -181,6 +220,7 @@ app.message(async ({ message: msg, say, client }) => {
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
+    // TODO: Need to organize this mess of error handling
     console.error("error: ", error);
     let messageText;
     if (error.response?.status === 404 && error.response?.data.code === 37) {

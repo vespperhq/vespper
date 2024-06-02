@@ -22,3 +22,24 @@ export const SCOPES = [
   "users:read",
   "users:read.email",
 ];
+
+export const WELCOME_MESSAGE = `
+Hello, <@%s>! :wave: How can I help you?
+
+**Tip**: use \`/help\` if you need assistance.
+`;
+
+export const HELP_MESSAGE = `
+Hi <@%s>! I'm Merlinn 🧙‍♂️, your AI assistant for all your production questions.
+You can simply talk to me in this chat and I'll do my best to help you out.
+
+For example, you can ask me questions like:
+- "Do you see any errors in the logs?"
+- "What's the status of the X service?"
+- "Can you fetch the logs for service Y from the staging environment and check if there are any errors?"
+
+Moreover, here are some pre-defined commands you can use:
+- ❓ \`/help\`: Shows this help message
+- 📜\`/new-chat\`: Resets the chat history
+- 🎯\`/actions\`: Shows available, pre-defined actions
+`;

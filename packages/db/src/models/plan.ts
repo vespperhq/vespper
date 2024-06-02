@@ -76,7 +76,7 @@ export const seedPlans = async () => {
     values: {
       [String(seatsField._id)]: 4,
       [String(alertsField._id)]: 20,
-      [String(queriesField._id)]: 20,
+      [String(queriesField._id)]: 50,
       [String(indexingAttemptsField._id)]: 5,
       [String(indexingDocumentsField._id)]: 10000,
     },

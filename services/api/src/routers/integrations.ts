@@ -120,6 +120,7 @@ router.get(
 
 router.delete(
   "/:id",
+  checkJWT,
   getDBUser,
   catchAsync(async (req: Request, res: Response) => {
     if (req.user!.role !== "owner") {

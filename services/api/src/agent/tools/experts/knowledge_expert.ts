@@ -2,7 +2,7 @@ import { z } from "zod";
 import { DynamicStructuredTool } from "langchain/tools";
 import { ChatPromptTemplate, MessagesPlaceholder } from "langchain/prompts";
 import { default as semanticSearch } from "../static/semantic_search";
-import { createAgent } from "./base";
+import { createAgent } from "../base";
 import { RunContext } from "../../../agent/types";
 
 const TOOL_LOADERS = [semanticSearch];
