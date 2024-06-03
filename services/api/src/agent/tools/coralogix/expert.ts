@@ -6,6 +6,8 @@ import { CoralogixIntegration } from "@merlinn/db";
 import { default as logsExpertTool } from "./logs_expert";
 import { createAgent } from "../base";
 import { RunContext } from "../../../agent/types";
+import { AnswerContext, LLMCallbacks } from "../../../agent/callbacks";
+import { buildOutput } from "../utils";
 
 const TOOL_LOADERS = [logsExpertTool];
 
@@ -56,11 +58,15 @@ export default async function (
     description: DESCRIPTION,
     func: async ({ request }) => {
       try {
-        const result = await agent.call(
+        const answerContext = new AnswerContext(context.trace!);
+        const globalCallbacks = new LLMCallbacks(answerContext);
+
+        const { output: answer } = await agent.call(
           { input: request },
-          { callbacks: [lfCallback] },
+          { callbacks: [globalCallbacks, lfCallback] },
         );
-        return result.output;
+        const output = buildOutput(answer, answerContext.getSources());
+        return output;
       } catch (error) {
         return JSON.stringify(error);
       }

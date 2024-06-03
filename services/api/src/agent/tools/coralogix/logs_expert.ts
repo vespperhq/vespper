@@ -10,6 +10,8 @@ import { getCommonLogFields, getPrettyLogSample } from "./utils";
 import { default as readLogs } from "./read_logs";
 import { default as getFieldsValues } from "./get_fields_values";
 import { RunContext } from "../../../agent/types";
+import { AnswerContext, LLMCallbacks } from "../../../agent/callbacks";
+import { buildOutput } from "../utils";
 
 const TOOL_LOADERS = [readLogs, getFieldsValues];
 
@@ -79,11 +81,15 @@ export default async function (
     description: TOOL_DESCRIPTION,
     func: async ({ request }) => {
       try {
-        const result = await agent.call(
+        const answerContext = new AnswerContext(context.trace!);
+        const globalCallbacks = new LLMCallbacks(answerContext);
+
+        const { output: answer } = await agent.call(
           { input: request },
-          { callbacks: [lfCallback] },
+          { callbacks: [globalCallbacks, lfCallback] },
         );
-        return result.output;
+        const output = buildOutput(answer, answerContext.getSources());
+        return output;
       } catch (error) {
         console.error(error);
         return JSON.stringify(error);

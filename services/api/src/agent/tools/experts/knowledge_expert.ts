@@ -4,6 +4,9 @@ import { ChatPromptTemplate, MessagesPlaceholder } from "langchain/prompts";
 import { default as semanticSearch } from "../static/semantic_search";
 import { createAgent } from "../base";
 import { RunContext } from "../../../agent/types";
+import { AnswerContext, LLMCallbacks } from "../../../agent/callbacks";
+import CallbackHandler from "langfuse-langchain";
+import { buildOutput } from "../utils";
 
 const TOOL_LOADERS = [semanticSearch];
 
@@ -35,8 +38,21 @@ export default async function (context: RunContext) {
     description: `This tool serves as a knowledge base expert. Given a question/query, it will try to find the most relevant information from the knowledge base.`,
     func: async ({ query }) => {
       try {
-        const result = await agent.call({ input: query });
-        return result.output;
+        const answerContext = new AnswerContext(context.trace!);
+        const globalCallbacks = new LLMCallbacks(answerContext);
+        const lfCallback = new CallbackHandler({
+          root: context.trace!.span({}),
+          secretKey: process.env.LANGFUSE_SECRET_KEY as string,
+          publicKey: process.env.LANGFUSE_PUBLIC_KEY as string,
+          baseUrl: process.env.LANGFUSE_HOST as string,
+        });
+
+        const { output: answer } = await agent.call(
+          { input: query },
+          { callbacks: [globalCallbacks, lfCallback] },
+        );
+        const output = buildOutput(answer, answerContext.getSources());
+        return output;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         return JSON.stringify(error);
