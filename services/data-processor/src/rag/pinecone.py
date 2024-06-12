@@ -29,7 +29,7 @@ class PineconeVectorStore(BaseVectorStore):
             name=self.index_name,
             dimension=768,
             metric="cosine",
-            spec=ServerlessSpec(cloud="aws", region="us-west-2"),
+            spec=ServerlessSpec(cloud="aws", region="us-east-1"),
         )
 
     async def delete_index(self) -> None:
