@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import { vendorModel, organizationModel, integrationModel } from "@merlinn/db";
 import type { IIntegration } from "@merlinn/db";
-import { checkJWT, getDBUser } from "../middlewares/auth";
+import { checkAuth, getDBUser } from "../middlewares/auth";
 import { catchAsync } from "../utils/errors";
 import { AppError } from "../errors";
 import { secretManager } from "../common/secrets";
@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.post(
   "/",
-  checkJWT,
+  checkAuth,
   getDBUser,
   catchAsync(async (req: Request, res: Response) => {
     const {
@@ -57,7 +57,7 @@ router.post(
 
 router.put(
   "/:id",
-  checkJWT,
+  checkAuth,
   getDBUser,
   catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
@@ -82,7 +82,7 @@ router.put(
 
 router.get(
   "/",
-  checkJWT,
+  checkAuth,
   getDBUser,
   catchAsync(async (req: Request, res: Response) => {
     const integrations = await integrationModel
@@ -120,7 +120,7 @@ router.get(
 
 router.delete(
   "/:id",
-  checkJWT,
+  checkAuth,
   getDBUser,
   catchAsync(async (req: Request, res: Response) => {
     if (req.user!.role !== "owner") {

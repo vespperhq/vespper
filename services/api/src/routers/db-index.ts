@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import axios from "axios";
-import { checkJWT, getDBUser } from "../middlewares/auth";
+import { checkAuth, getDBUser } from "../middlewares/auth";
 import { catchAsync } from "../utils/errors";
 import { AppError, ErrorCode } from "../errors";
 import { indexModel, integrationModel, PlanFieldCode } from "@merlinn/db";
@@ -14,7 +14,7 @@ import { getVectorStore } from "../agent/rag";
 const ATLASSIAN_DATA_SOURCES = ["Confluence", "Jira"];
 
 const router = express.Router();
-router.use(checkJWT);
+router.use(checkAuth);
 router.use(getDBUser);
 // TODO: remove once we finish with beta testing ang do public!
 

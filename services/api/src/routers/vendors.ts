@@ -1,10 +1,10 @@
 import express, { Request, Response } from "express";
 import { vendorModel } from "@merlinn/db";
-import { checkJWT, getDBUser } from "../middlewares/auth";
+import { checkAuth, getDBUser } from "../middlewares/auth";
 import { catchAsync } from "../utils/errors";
 
 const router = express.Router();
-router.use(checkJWT);
+router.use(checkAuth);
 router.use(getDBUser);
 
 router.get(

@@ -1,9 +1,9 @@
 import express, { Request, Response } from "express";
-import { checkJWT, getDBUser } from "../middlewares/auth";
+import { checkAuth, getDBUser } from "../middlewares/auth";
 import { userModel, PlanFieldCode } from "@merlinn/db";
 import type { IUser } from "@merlinn/db";
 import { FilterQuery } from "mongoose";
-import { deleteAuth0User, getAuth0User } from "../clients/auth0";
+import { deleteOryIdentity, getOryIdentity } from "../clients/ory";
 import { EventType, events } from "../events";
 import type { SystemEvent } from "../events";
 import { catchAsync } from "../utils/errors";
@@ -14,16 +14,22 @@ import type { EnrichedUser } from "../types/internal";
 // Helper function to get users and their auth0 info
 const getEnrichedUsers = async (filters: FilterQuery<IUser>) => {
   const users = await userModel.get(filters);
-  const auth0Users = await Promise.all(
-    users.map((user) => getAuth0User(user.auth0Id)),
+  const oryUsers = await Promise.all(
+    users.map((user) => getOryIdentity(user.oryId)),
   );
   const enrichedUsers = [] as EnrichedUser[];
   for (let i = 0; i < users.length; i++) {
     const { _id, status, role } = users[i];
-    const { email, name, picture, user_id } = auth0Users[i];
+    const { id: oryId, traits } = oryUsers[i];
 
+    const email = traits.email;
+    const { first, last } = traits.name;
+    const name = `${first} ${last}`;
+
+    // TODO: get the picture from the ory user
+    const picture = "";
     enrichedUsers.push({
-      auth0Id: user_id,
+      oryId,
       _id,
       status,
       email,
@@ -36,18 +42,18 @@ const getEnrichedUsers = async (filters: FilterQuery<IUser>) => {
 };
 
 const router = express.Router();
-router.use(checkJWT);
+router.use(checkAuth);
 
 router.get(
   "/",
   catchAsync(async (req: Request, res: Response) => {
     // TODO: prevent users from viewing other org users!
-    // This endpoint serves Auth0 custom action. Need to find a way
-    // to add a role to their request.
-    const { auth0Id, organizationId } = req.query;
+    // This endpoint is a remnant from Auth0. It served their custom action. Need to check whether we need it
+    // Need to find a way to add a role to their request.
+    const { oryId, organizationId } = req.query;
     const filters: FilterQuery<IUser> = {};
-    if (auth0Id) {
-      filters["auth0Id"] = auth0Id as string;
+    if (oryId) {
+      filters["oryId"] = oryId as string;
     }
     if (organizationId) {
       filters["organization"] = organizationId;
@@ -61,17 +67,17 @@ router.get(
 router.post(
   "/",
   catchAsync(async (req: Request, res: Response) => {
-    const { auth0Id, email } = req.body;
-    if (!auth0Id || !email) {
-      throw new AppError("Payload must contain the Auth0 ID", 400);
+    const { oryId, email } = req.body;
+    if (!oryId || !email) {
+      throw new AppError("Payload must contain the Ory ID", 400);
     }
-    const existingUser = await userModel.getOne({ auth0Id });
+    const existingUser = await userModel.getOne({ oryId });
 
     if (existingUser) {
       throw new AppError("user already exists", 400);
     } else {
       const user = await userModel.create({
-        auth0Id,
+        oryId,
         email,
         status: "activated",
       });
@@ -164,7 +170,7 @@ router.delete(
     }
 
     await userModel.deleteOneById(id);
-    await deleteAuth0User(user.auth0Id);
+    await deleteOryIdentity(user.oryId);
 
     // Decrease the seats count in the plan state
     await decrementPlanFieldState({

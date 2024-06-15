@@ -10,7 +10,7 @@ export interface AlertEvent {
 
 export interface EnrichedUser {
   _id: Types.ObjectId;
-  auth0Id: string;
+  oryId: string;
   status: "activated" | "invited";
   role: "owner" | "member";
   email: string;

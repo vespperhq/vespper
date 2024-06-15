@@ -105,7 +105,7 @@ export interface IIndex {
 // User
 export interface IUser {
   _id: Types.ObjectId;
-  auth0Id: string;
+  oryId: string;
   email: string;
   status: "activated" | "invited";
   role: "owner" | "member";

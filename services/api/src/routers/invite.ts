@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
-import { checkJWT, getDBUser } from "../middlewares/auth";
-import { createAuth0User, createResetTicket } from "../clients/auth0";
+import { checkAuth, getDBUser } from "../middlewares/auth";
+import { createOryIdentity, createRecoveryLink } from "../clients/ory";
 import { SendGridClient, OpsgenieClient, PagerDutyClient } from "../clients";
 import { userModel, integrationModel, PlanFieldCode } from "@merlinn/db";
 import type {
@@ -17,7 +17,7 @@ import { getPlanFieldState, incrementPlanFieldState } from "../services/plans";
 import { secretManager } from "../common/secrets";
 
 const router = express.Router();
-router.use(checkJWT);
+router.use(checkAuth);
 router.use(getDBUser);
 
 router.get(
@@ -108,12 +108,11 @@ router.post(
       email: string,
       organization: IOrganization,
     ) => {
-      const auth0User = await createAuth0User(email);
-      const { ticket } = await createResetTicket(auth0User.user_id);
-
+      const oryIdentity = await createOryIdentity(email);
+      const { recovery_link } = await createRecoveryLink(oryIdentity.id);
       // Create an internal user
       const internalUser = await userModel.create({
-        auth0Id: auth0User.user_id,
+        oryId: oryIdentity.id,
         status: "invited",
         role: "member",
         organization,
@@ -123,7 +122,7 @@ router.post(
       // Send Email
       const subject = "Invitation to Merlinn";
       const html = `You have been invited to Merlinn. 
-    Please click the following link to join: <a href=${ticket}>Click here</a>.
+    Please click the following link to join: <a href=${recovery_link}>Click here</a>.
     Once you are registered, you can sign in to https://app.merlinn.co or start using the Slack bot!`;
 
       const client = new SendGridClient(process.env.SENDGRID_API_KEY as string);

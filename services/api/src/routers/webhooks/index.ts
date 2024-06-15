@@ -4,8 +4,7 @@ import { router as pagerdutyRouter } from "./pagerduty";
 import { router as opsgenieRouter } from "./opsgenie";
 import { router as alertmanagerRouter } from "./alertmanager";
 import { router as githubRouter } from "./github";
-import { router as auth0Router } from "./auth0";
-import { checkJWT, getDBUser } from "../../middlewares/auth";
+import { checkAuth, getDBUser } from "../../middlewares/auth";
 
 const router = express.Router();
 
@@ -16,9 +15,9 @@ router.use("/github", githubRouter);
 
 // TODO: auth0 is not related to the business logic, of investigating incidents.
 // It is used as a post-login hook by Auth0. Maybe we should move it to somewhere else.
-router.use("/auth0", auth0Router);
+// router.use("/auth0", auth0Router);
 
-router.use(checkJWT);
+router.use(checkAuth);
 router.use(getDBUser);
 
 router.get("/", async (req: Request, res: Response) => {

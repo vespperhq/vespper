@@ -12,12 +12,12 @@ router.post("/validate-user", async (req: Request, res: Response) => {
     throw new AppError("Unauthorized", 403);
   }
 
-  const { auth0Id, email } = req.body;
+  const { oryId, email } = req.body;
 
-  const user = await userModel.getOne({ auth0Id });
+  const user = await userModel.getOne({ oryId });
   if (!user) {
     const newUser = await userModel.create({
-      auth0Id,
+      oryId,
       email,
       status: "activated",
     });

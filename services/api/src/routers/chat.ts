@@ -14,7 +14,7 @@ import { EventType, SystemEvent, events } from "../events";
 import { catchAsync } from "../utils/errors";
 import { validateModeration } from "../utils/moderation";
 import { getPlanFieldState, incrementPlanFieldState } from "../services/plans";
-import { checkJWT, getDBUser } from "../middlewares/auth";
+import { checkAuth, getDBUser } from "../middlewares/auth";
 
 const router = express.Router();
 
@@ -189,7 +189,7 @@ router.post(
 
 router.post(
   "/completions/general",
-  checkJWT,
+  checkAuth,
   getDBUser,
   catchAsync(async (req: Request, res: Response) => {
     return getCompletions(req, res);

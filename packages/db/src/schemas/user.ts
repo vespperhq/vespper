@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 export const UserSchema = new Schema<IUser>(
   {
-    auth0Id: String,
+    oryId: String,
     email: String,
     organization: {
       type: Schema.Types.ObjectId,

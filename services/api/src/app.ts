@@ -16,7 +16,12 @@ import { errorHandler, invalidPathHandler } from "./middlewares/errors";
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    credentials: true,
+    origin: process.env.APP_URL,
+  }),
+);
 
 app.use(bodyParser.json({ limit: "1mb" }));
 app.use(express.static("public"));

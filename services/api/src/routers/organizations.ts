@@ -9,7 +9,7 @@ import {
   indexModel,
   planStateModel,
 } from "@merlinn/db";
-import { checkJWT, getDBUser } from "../middlewares/auth";
+import { checkAuth, getDBUser } from "../middlewares/auth";
 import { catchAsync } from "../utils/errors";
 import { AppError } from "../errors";
 import { getPlanFieldState } from "../services/plans";
@@ -17,7 +17,7 @@ import { EventType, events } from "../events";
 
 const router = express.Router();
 
-router.use(checkJWT);
+router.use(checkAuth);
 router.use(getDBUser);
 
 router.post(
