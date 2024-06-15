@@ -14,7 +14,7 @@ export async function sendFeedback({
   team: string;
 }) {
   const response = await axios.post(
-    `${process.env.API_BASE_URL}/chat/feedback`,
+    `${process.env.API_URL}/chat/feedback`,
     {
       traceId,
       observationId,

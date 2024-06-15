@@ -12,7 +12,7 @@ export async function getIntegration({
     ? `metadata.team.id=${teamId}`
     : `metadata.enterprise.id=${enterpriseId}`;
   const { data } = await axios.get(
-    `${process.env.API_BASE_URL}/integrations/slack?${queryString}`,
+    `${process.env.API_URL}/integrations/slack?${queryString}`,
     {
       headers: {
         "x-slackbot-service-key": serviceKey,

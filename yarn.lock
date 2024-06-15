@@ -2741,6 +2741,13 @@
     "@octokit/webhooks-types" "7.4.0"
     aggregate-error "^3.1.0"
 
+"@ory/client@^1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@ory/client/-/client-1.9.0.tgz#a4ee292e3a3cebdeb3934a67ae4e6bf0633b78ce"
+  integrity sha512-O4a1ijgJtMNIA+ZmWUmCodxX13ID72hOaCB0b9FQGQBzuFgF2x/Yq5D43nrMYZaDtvDvja8J1XIXhUkjz1TDOw==
+  dependencies:
+    axios "^1.6.1"
+
 "@phenomnomnominal/tsquery@~5.0.1":
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/@phenomnomnominal/tsquery/-/tsquery-5.0.1.tgz#a2a5abc89f92c01562a32806655817516653a388"
@@ -4453,6 +4460,15 @@ axios@^1.4.0, axios@^1.6.0, axios@^1.6.2, axios@^1.6.3, axios@^1.6.5, axios@^1.6
   version "1.6.8"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.8.tgz#66d294951f5d988a00e87a0ffb955316a619ea66"
   integrity sha512-v/ZHtJDU39mDpyBoFVkETcd/uNdxrWRrg3bKpOKzXFA6Bvqopts6ALSMU3y6ijYxbw2B+wPrIv46egTzJXCLGQ==
+  dependencies:
+    follow-redirects "^1.15.6"
+    form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
+
+axios@^1.6.1:
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.7.2.tgz#b625db8a7051fbea61c35a3cbb3a1daa7b9c7621"
+  integrity sha512-2A8QhOMrbomlDuiLeK9XibIBzuHeRcqqNOHp0Cyp5EoJ1IFDh+XZH3A6BkXtv0K4gFGCI0Y4BM7B1wOEi0Rmgw==
   dependencies:
     follow-redirects "^1.15.6"
     form-data "^4.0.0"
