@@ -2,13 +2,13 @@ import Card from "@mui/joy/Card";
 import Box from "@mui/joy/Box";
 import { useMe } from "../../api/queries/auth";
 import { Loader } from "../../components/Loader";
-import { useAuth0 } from "@auth0/auth0-react";
+import { useSession } from "../../hooks/useSession";
 
 function HomePage() {
   const meQuery = useMe();
-  const auth0 = useAuth0();
+  const { loading: authLoading, name } = useSession();
 
-  const isPending = meQuery.isPending || auth0.isLoading;
+  const isPending = meQuery.isPending || authLoading;
   const organizationId = meQuery.data?.organization?._id;
 
   const message = (() => {
@@ -16,7 +16,7 @@ function HomePage() {
       if (!organizationId) {
         return "Welcome! Create an organization to get started 🚀";
       } else {
-        return `Welcome back ${auth0.user?.name} 😊`;
+        return `Welcome back ${name} 😊`;
       }
     }
   })();

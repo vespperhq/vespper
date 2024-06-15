@@ -1,17 +1,22 @@
-import { withAuthenticationRequired } from "@auth0/auth0-react";
 import React from "react";
 import { Loader } from "../components/Loader";
+import { useSession } from "../hooks/useSession";
+import { Navigate } from "react-router-dom";
 
 interface Props {
   component: React.ComponentType<object>;
 }
 
-function AuthenticationGuard({ component }: Props) {
-  const AuthWrapped = withAuthenticationRequired(component, {
-    onRedirecting: Loader,
-  });
+function AuthenticationGuard({ component: Component, ...props }: Props) {
+  const { session, loading } = useSession();
 
-  return <AuthWrapped />;
+  if (loading) {
+    return <Loader />;
+  } else if (!session) {
+    return <Navigate to="/login" />;
+  }
+
+  return <Component {...props} />;
 }
 
 export { AuthenticationGuard };

@@ -1,8 +1,8 @@
 import { Avatar, Box, Typography } from "@mui/joy";
 import { ChatMessage } from "../../types/chat";
-import { useAuth0 } from "@auth0/auth0-react";
 import LogoImage from "../../assets/logo-wizard.svg";
 import Markdown from "react-markdown";
+import { useSession } from "../../hooks/useSession";
 // import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 // import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
@@ -18,7 +18,8 @@ const getInitials = (text: string) => {
 };
 
 export function Message({ message }: Props) {
-  const { user } = useAuth0();
+  const { name } = useSession();
+
   const text = message.content as string;
   const role = message.role;
   const isBot = role === "assistant";
@@ -26,7 +27,7 @@ export function Message({ message }: Props) {
   return (
     <Box display="flex" py={4} width="100%">
       <Avatar size="sm" src={isBot ? LogoImage : undefined} sx={{ mr: 2 }}>
-        {getInitials(user!.name!)}
+        {name ? getInitials(name!) : "You"}
       </Avatar>
       <Box display="flex" flexDirection="column">
         <Typography level="title-md">{isBot ? "Merlinn" : "You"}</Typography>

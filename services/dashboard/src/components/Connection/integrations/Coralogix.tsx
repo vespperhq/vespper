@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback } from "react";
-import { API_SERVER_URL, AUTH0_AUDIENCE } from "../../../constants";
-import { useAuth0 } from "@auth0/auth0-react";
+import { API_SERVER_URL } from "../../../constants";
 import { ConnectionProps, ConnectionName } from "../../../types/Connections";
 import { ConnectionWrapper } from "../styles";
 import { FieldConfiguration, IntegrationPayload } from "../types";
@@ -44,13 +43,8 @@ export const ConnectCoralogixIntegration = ({
   setRequestData,
   data,
 }: ConnectionProps) => {
-  const auth0 = useAuth0();
-
   const updateState = useCallback(
     async ({ key, value, type }: any) => {
-      const accessToken = await auth0.getAccessTokenSilently({
-        authorizationParams: { audience: AUTH0_AUDIENCE },
-      });
       setRequestData((prev: any) => {
         const body: IntegrationPayload = {
           vendor: ConnectionName.Coralogix,
@@ -63,16 +57,11 @@ export const ConnectCoralogixIntegration = ({
 
         return {
           url: `${API_SERVER_URL}/integrations`,
-          config: {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          },
           body,
         };
       });
     },
-    [orgId, auth0, setRequestData],
+    [orgId, setRequestData],
   );
 
   // https://coralogix.com/docs/coralogix-endpoints/#management

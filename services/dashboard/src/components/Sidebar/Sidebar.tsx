@@ -19,7 +19,6 @@ import LogoImage from "../../assets/logo-wizard.svg";
 import { ColorSchemeToggle } from "../ColorSchemeToggle";
 import { closeSidebar } from "../../utils";
 import { Link, useLocation } from "react-router-dom";
-import { useAuth0 } from "@auth0/auth0-react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import * as paths from "../../routes/paths";
 import Stack from "@mui/joy/Stack";
@@ -27,6 +26,7 @@ import ListItemDecorator from "@mui/joy/ListItemDecorator";
 import { Usage } from "../Usages";
 import { useMe } from "../../api/queries/auth";
 import { SHOW_CHAT_PAGE } from "../../constants";
+import { useSession } from "../../hooks/useSession";
 
 function Toggler({
   defaultExpanded = false,
@@ -66,15 +66,10 @@ export const Sidebar = () => {
 
   const organization = user?.organization;
   const isOwner = user?.role === "owner";
-
-  const auth0 = useAuth0();
+  const { logout, name, email } = useSession();
 
   const handleLogout = () => {
-    auth0.logout({
-      logoutParams: {
-        returnTo: window.location.origin,
-      },
-    });
+    logout();
   };
   return (
     <Sheet
@@ -328,7 +323,8 @@ export const Sidebar = () => {
         )}
         <Divider sx={{ margin: "20px 0" }} />
         <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
-          <Avatar variant="outlined" size="sm" src={auth0.user?.picture} />
+          {/* TODO: Fix the picture maybe */}
+          <Avatar variant="outlined" size="sm" />
           <Box sx={{ minWidth: 0, flex: 1 }}>
             <Typography
               level="title-sm"
@@ -338,7 +334,7 @@ export const Sidebar = () => {
                 overflow: "hidden",
               }}
             >
-              {auth0.user?.name}
+              {name}
             </Typography>
             <Typography
               level="body-xs"
@@ -348,7 +344,7 @@ export const Sidebar = () => {
                 overflow: "hidden",
               }}
             >
-              {auth0.user?.email}
+              {email}
             </Typography>
           </Box>
 

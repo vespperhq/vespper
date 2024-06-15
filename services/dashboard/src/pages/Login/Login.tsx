@@ -1,22 +1,15 @@
-import { useAuth0 } from "@auth0/auth0-react";
-import { useCallback, useEffect } from "react";
+import { Loader } from "../../components/Loader";
+import { useSession } from "../../hooks/useSession";
 
 const LoginPage = () => {
-  const { loginWithRedirect } = useAuth0();
+  const { session, loading } = useSession();
 
-  const handleLogin = useCallback(() => {
-    return loginWithRedirect({
-      appState: {
-        returnTo: "/",
-      },
-    });
-  }, [loginWithRedirect]);
-
-  useEffect(() => {
-    handleLogin();
-  }, [handleLogin]);
-
-  return null;
+  if (loading) {
+    return <Loader />;
+  } else if (!session) {
+    return <div>not authenticated</div>;
+  }
+  return <Loader />;
 };
 
 export { LoginPage };

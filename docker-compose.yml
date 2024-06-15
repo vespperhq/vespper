@@ -43,6 +43,10 @@ services:
     restart: on-failure
     depends_on:
       - postgres
+  ory-proxy:
+    image: oryd/ory
+    container_name: ory-proxy
+    entrypoint: ory proxy http://host.docker.internal:${DASHBOARD_PORT}  --dev
   ory-kratos:
     image: oryd/kratos:v1.2.0
     container_name: ory-kratos
