@@ -63,18 +63,27 @@ services:
         target: /etc/config/kratos
     depends_on:
       - ory-kratos-migrate
-  ory-kratos-ui:
-    image: oryd/kratos-selfservice-ui-node:v1.2.0
-    container_name: ory-kratos-ui
+  ory-kratos-admin-ui:
+    image: ghcr.io/dfoxg/kratos-admin-ui:v2.3.2
+    container_name: ory-kratos-admin-ui
     ports:
-      - "${KRATOS_UI_PORT}:${KRATOS_UI_PORT}"
+      - '${KRATOS_ADMIN_UI_PORT}:8080'
+    restart: unless-stopped
     environment:
-      - PORT=${KRATOS_UI_PORT}
-      - KRATOS_PUBLIC_URL=${KRATOS_UI_PUBLIC_URL}
-      - KRATOS_BROWSER_URL=${KRATOS_UI_BROWSER_URL}
-      - COOKIE_SECRET=${KRATOS_UI_COOKIE_SECRET}
-      - CSRF_COOKIE_NAME=${KRATOS_UI_CSRF_COOKIE_NAME}
-      - CSRF_COOKIE_SECRET=${KRATOS_UI_CSRF_COOKIE_SECRET}
+      - KRATOS_ADMIN_URL=${KRATOS_ADMIN_URL}
+      - KRATOS_PUBLIC_URL=${KRATOS_PUBLIC_URL}
+  ory-kratos-self-serve-ui:
+    image: oryd/kratos-selfservice-ui-node:v1.2.0
+    container_name: ory-kratos-self-serve-ui
+    ports:
+      - "${KRATOS_SELF_SERVE_UI_PORT}:${KRATOS_SELF_SERVE_UI_PORT}"
+    environment:
+      - PORT=${KRATOS_SELF_SERVE_UI_PORT}
+      - KRATOS_PUBLIC_URL=${KRATOS_PUBLIC_URL}
+      - KRATOS_BROWSER_URL=${KRATOS_SELF_SERVE_UI_BROWSER_URL}
+      - COOKIE_SECRET=${KRATOS_SELF_SERVE_UI_COOKIE_SECRET}
+      - CSRF_COOKIE_NAME=${KRATOS_SELF_SERVE_UI_CSRF_COOKIE_NAME}
+      - CSRF_COOKIE_SECRET=${KRATOS_SELF_SERVE_UI_CSRF_COOKIE_SECRET}
     restart: on-failure
   # vault:
   #   image: vault:1.13.3

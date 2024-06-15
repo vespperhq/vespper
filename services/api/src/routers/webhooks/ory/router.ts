@@ -5,15 +5,20 @@ import { EventType, SystemEvent, events } from "../../../events";
 
 const router = express.Router();
 
-router.post("/validate-user", async (req: Request, res: Response) => {
-  const actualServiceKey = req.headers["x-auth0-service-key"];
-  const expectedServiceKey = process.env.AUTH0_SERVICE_KEY as string;
-  if (actualServiceKey !== expectedServiceKey) {
+router.post("/after-signup", async (req: Request, res: Response) => {
+  const actualKey = req.headers["authorization"];
+  const expectedKey = process.env.ORY_WEBHOOK_SECRET as string;
+  if (actualKey !== expectedKey) {
     throw new AppError("Unauthorized", 403);
   }
 
-  const { oryId, email } = req.body;
-
+  const {
+    userId: oryId,
+    traits: { email },
+  } = req.body;
+  if (!oryId || !email) {
+    throw new AppError("Missing required fields: oryId, email", 400);
+  }
   const user = await userModel.getOne({ oryId });
   if (!user) {
     const newUser = await userModel.create({
