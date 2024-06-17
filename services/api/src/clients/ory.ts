@@ -13,7 +13,7 @@ function isJsonMime(mime: string): boolean {
 }
 
 const identityClient = new sdk.IdentityApi({
-  basePath: process.env.ORY_URL,
+  basePath: process.env.ORY_ADMIN_URL,
   isJsonMime,
 });
 
@@ -25,7 +25,7 @@ export const getOryIdentity = async (id: string) => {
 export const createOryIdentity = async (email: string) => {
   const response = await identityClient.createIdentity({
     createIdentityBody: {
-      schema_id: "preset://email",
+      schema_id: "default",
       traits: { email },
     },
   });

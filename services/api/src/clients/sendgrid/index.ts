@@ -1,1 +1,0 @@
-export { SendGridClient } from "./client";

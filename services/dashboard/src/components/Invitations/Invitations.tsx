@@ -232,7 +232,6 @@ const Invitations = () => {
                         <td style={{ display: "flex", alignItems: "center" }}>
                           <Avatar
                             src={row.picture}
-                            alt={row.email}
                             sx={{
                               marginRight: "8px",
                               width: "25px",

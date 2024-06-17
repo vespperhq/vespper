@@ -7,7 +7,7 @@ const sdk = require("@ory/client"); // For some reason, import crashes here. usi
 
 const ory = new sdk.FrontendApi(
   new sdk.Configuration({
-    basePath: process.env.ORY_URL,
+    basePath: process.env.ORY_PUBLIC_URL,
   }),
 );
 

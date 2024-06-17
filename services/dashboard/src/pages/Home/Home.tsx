@@ -6,7 +6,7 @@ import { useSession } from "../../hooks/useSession";
 
 function HomePage() {
   const meQuery = useMe();
-  const { loading: authLoading, name } = useSession();
+  const { loading: authLoading, name, email } = useSession();
 
   const isPending = meQuery.isPending || authLoading;
   const organizationId = meQuery.data?.organization?._id;
@@ -16,7 +16,7 @@ function HomePage() {
       if (!organizationId) {
         return "Welcome! Create an organization to get started 🚀";
       } else {
-        return `Welcome back ${name} 😊`;
+        return `Welcome back ${name || email} 😊`;
       }
     }
   })();

@@ -70,13 +70,6 @@ router.get(
 router.get(
   "/:id/usage",
   catchAsync(async (req: Request, res: Response) => {
-    if (req.user!.role !== "owner") {
-      throw new AppError(
-        "Only owners are allowed to view usage statistics",
-        403,
-      );
-    }
-
     const seatsState = await getPlanFieldState({
       organizationId: String(req.user!.organization._id),
       fieldCode: PlanFieldCode.seats,

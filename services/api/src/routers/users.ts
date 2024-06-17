@@ -23,8 +23,9 @@ const getEnrichedUsers = async (filters: FilterQuery<IUser>) => {
     const { id: oryId, traits } = oryUsers[i];
 
     const email = traits.email;
-    const { first, last } = traits.name;
-    const name = `${first} ${last}`;
+    const name = traits.name
+      ? `${traits.name.first} ${traits.name.last}`
+      : email;
 
     // TODO: get the picture from the ory user
     const picture = "";

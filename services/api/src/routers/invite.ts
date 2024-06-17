@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import { checkAuth, getDBUser } from "../middlewares/auth";
 import { createOryIdentity, createRecoveryLink } from "../clients/ory";
-import { SendGridClient, OpsgenieClient, PagerDutyClient } from "../clients";
+import { EmailClient, OpsgenieClient, PagerDutyClient } from "../clients";
 import { userModel, integrationModel, PlanFieldCode } from "@merlinn/db";
 import type {
   IIntegration,
@@ -94,7 +94,7 @@ router.post(
       throw new AppError("Only owners can invite members", 403);
     }
 
-    const { emails } = req.body;
+    const emails = req.body.emails as string[];
     const seatsState = await getPlanFieldState({
       fieldCode: PlanFieldCode.seats,
       organizationId: String(req.user!.organization._id),
@@ -107,7 +107,7 @@ router.post(
     const sendInvitation = async (
       email: string,
       organization: IOrganization,
-    ) => {
+    ): Promise<{ email: string; recovery_link: string }> => {
       const oryIdentity = await createOryIdentity(email);
       const { recovery_link } = await createRecoveryLink(oryIdentity.id);
       // Create an internal user
@@ -120,13 +120,15 @@ router.post(
       });
 
       // Send Email
-      const subject = "Invitation to Merlinn";
-      const html = `You have been invited to Merlinn. 
+      const smtpConnectionUrl = process.env.SMTP_CONNECTION_URL as string;
+      if (smtpConnectionUrl) {
+        const subject = "Invitation to Merlinn";
+        const html = `You have been invited to Merlinn.
     Please click the following link to join: <a href=${recovery_link}>Click here</a>.
     Once you are registered, you can sign in to https://app.merlinn.co or start using the Slack bot!`;
-
-      const client = new SendGridClient(process.env.SENDGRID_API_KEY as string);
-      await client.sendEmail({ recipient: email, subject, html });
+        const client = new EmailClient(smtpConnectionUrl);
+        await client.sendEmail({ to: email, subject, html });
+      }
 
       const event: SystemEvent = {
         type: EventType.invitation_sent,
@@ -138,9 +140,11 @@ router.post(
         },
       };
       events.emit(EventType.invitation_sent, event);
+
+      return { email, recovery_link };
     };
 
-    await Promise.all(
+    const invitations = await Promise.all(
       emails.map((email: string) =>
         sendInvitation(email, req.user!.organization),
       ),
@@ -152,7 +156,7 @@ router.post(
       value: emails.length,
     });
 
-    return res.status(200).json({ sent: true });
+    return res.status(200).json({ sent: true, invitations });
   }),
 );
 
