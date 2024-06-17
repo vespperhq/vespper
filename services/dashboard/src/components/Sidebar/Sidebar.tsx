@@ -27,6 +27,7 @@ import { Usage } from "../Usages";
 import { useMe } from "../../api/queries/auth";
 import { SHOW_CHAT_PAGE } from "../../constants";
 import { useSession } from "../../hooks/useSession";
+import { isEnterprise } from "../../utils/ee";
 
 function Toggler({
   defaultExpanded = false,
@@ -304,7 +305,7 @@ export const Sidebar = () => {
         </List>
       </Box>
       <Stack direction="column">
-        {isOwner && (
+        {isOwner && isEnterprise() && (
           <>
             <Usage
               title="Queries"

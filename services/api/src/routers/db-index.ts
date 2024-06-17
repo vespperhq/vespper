@@ -7,6 +7,7 @@ import { indexModel, integrationModel, PlanFieldCode } from "@merlinn/db";
 import { refreshAtlassianToken } from "../services/oauth";
 import type { AtlassianIntegration, IIntegration } from "@merlinn/db";
 import { zip } from "../utils/arrays";
+import { isEnterprise } from "../utils/ee";
 import { getTimestamp } from "../utils/dates";
 import { getPlanFieldState } from "../services/plans";
 import { getVectorStore } from "../agent/rag";
@@ -40,16 +41,18 @@ router.post(
       throw new AppError("Only owners are allowed to create indexes", 403);
     }
 
-    const attemptsState = await getPlanFieldState({
-      fieldCode: PlanFieldCode.indexingAttempts,
-      organizationId: String(req.user!.organization._id),
-    });
-    if (!attemptsState.isAllowed) {
-      throw new AppError(
-        `You have exceeded your indexing attempts' quota`,
-        429,
-        ErrorCode.QUOTA_EXCEEDED,
-      );
+    if (isEnterprise()) {
+      const attemptsState = await getPlanFieldState({
+        fieldCode: PlanFieldCode.indexingAttempts,
+        organizationId: String(req.user!.organization._id),
+      });
+      if (!attemptsState.isAllowed) {
+        throw new AppError(
+          `You have exceeded your indexing attempts' quota`,
+          429,
+          ErrorCode.QUOTA_EXCEEDED,
+        );
+      }
     }
 
     // TODO: use a proper messaging solution instead of plain API request

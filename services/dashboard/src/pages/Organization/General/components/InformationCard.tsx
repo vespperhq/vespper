@@ -19,6 +19,7 @@ import {
 } from "@mui/joy";
 import { FormGroup } from "@mui/material";
 import * as paths from "../../../../routes/paths";
+import { isEnterprise } from "../../../../utils/ee";
 
 export const InformationCard = ({ organization }: any) => {
   const navigate = useNavigate();
@@ -109,7 +110,7 @@ export const InformationCard = ({ organization }: any) => {
         </Stack>
       </Stack>
 
-      {organization?.plan && (
+      {organization?.plan && isEnterprise() && (
         <Card
           invertedColors
           variant="soft"

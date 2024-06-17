@@ -1,6 +1,7 @@
 import traceback
 import nest_asyncio
 
+from utils import is_enterprise
 from db.plan_field import get_plan_field_by_code
 from db.plan_state import get_plan_state_by_organization_id, update_plan_state_by_id
 
@@ -81,15 +82,17 @@ async def build_index(
             {"$set": {"state.status": "completed", "stats": stats}},
         )
 
-        attemptsField = await get_plan_field_by_code("indexingAttempts")
-        documentsField = await get_plan_field_by_code("indexingDocuments")
+        # If it's an enterprise environment, update the plan state
+        if is_enterprise():
+            attemptsField = await get_plan_field_by_code("indexingAttempts")
+            documentsField = await get_plan_field_by_code("indexingDocuments")
 
-        # Increase indexing attempts and set new indexing documents count
-        attemptsValue = plan_state["state"][str(attemptsField["_id"])]["value"]
-        plan_state["state"][str(attemptsField["_id"])]["value"] = attemptsValue + 1
-        plan_state["state"][str(documentsField["_id"])]["value"] = len(documents)
+            # Increase indexing attempts and set new indexing documents count
+            attemptsValue = plan_state["state"][str(attemptsField["_id"])]["value"]
+            plan_state["state"][str(attemptsField["_id"])]["value"] = attemptsValue + 1
+            plan_state["state"][str(documentsField["_id"])]["value"] = len(documents)
+            await update_plan_state_by_id(plan_state["_id"], plan_state)
 
-        await update_plan_state_by_id(plan_state["_id"], plan_state)
         print("Build index completed")
     except Exception as e:
         print(e)

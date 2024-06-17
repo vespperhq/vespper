@@ -12,6 +12,7 @@ import { generateTrace, runModel } from "../agent/helper";
 import { AppError, ErrorCode } from "../errors";
 import { EventType, SystemEvent, events } from "../events";
 import { catchAsync } from "../utils/errors";
+import { isEnterprise } from "../utils/ee";
 import { validateModeration } from "../utils/moderation";
 import { getPlanFieldState, incrementPlanFieldState } from "../services/plans";
 import { checkAuth, getDBUser } from "../middlewares/auth";
@@ -29,17 +30,26 @@ const getCompletions = async (req: Request, res: Response) => {
     );
   }
 
-  const queriesState = await getPlanFieldState({
-    fieldCode: PlanFieldCode.queries,
-    organizationId: String(req.user!.organization._id),
-    userId: String(req.user!._id),
-  });
-  if (!queriesState.isAllowed) {
-    throw new AppError(
-      `You have exceeded your queries' quota`,
-      429,
-      ErrorCode.QUOTA_EXCEEDED,
-    );
+  if (isEnterprise()) {
+    const queriesState = await getPlanFieldState({
+      fieldCode: PlanFieldCode.queries,
+      organizationId: String(req.user!.organization._id),
+      userId: String(req.user!._id),
+    });
+    if (!queriesState.isAllowed) {
+      throw new AppError(
+        `You have exceeded your queries' quota`,
+        429,
+        ErrorCode.QUOTA_EXCEEDED,
+      );
+    }
+
+    // Update quota
+    await incrementPlanFieldState({
+      fieldCode: PlanFieldCode.queries,
+      organizationId: String(req.user!.organization._id),
+      userId: String(req.user!._id),
+    });
   }
 
   const index = await indexModel.getOne({
@@ -163,13 +173,6 @@ const getCompletions = async (req: Request, res: Response) => {
     },
   };
   events.emit(EventType.answer_created, event);
-
-  // Update quota
-  await incrementPlanFieldState({
-    fieldCode: PlanFieldCode.queries,
-    organizationId: String(req.user!.organization._id),
-    userId: String(req.user!._id),
-  });
 
   return res.status(200).json({ output, traceURL, traceId, observationId });
 };

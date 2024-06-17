@@ -11,6 +11,7 @@ import {
 } from "@merlinn/db";
 import { checkAuth, getDBUser } from "../middlewares/auth";
 import { catchAsync } from "../utils/errors";
+import { isEnterprise } from "../utils/ee";
 import { AppError } from "../errors";
 import { getPlanFieldState } from "../services/plans";
 import { EventType, events } from "../events";
@@ -64,50 +65,6 @@ router.get(
     const organization = req.user!.organization;
 
     return res.status(200).json(organization);
-  }),
-);
-
-router.get(
-  "/:id/usage",
-  catchAsync(async (req: Request, res: Response) => {
-    const seatsState = await getPlanFieldState({
-      organizationId: String(req.user!.organization._id),
-      fieldCode: PlanFieldCode.seats,
-    });
-    const attemptsState = await getPlanFieldState({
-      organizationId: String(req.user!.organization._id),
-      fieldCode: PlanFieldCode.indexingAttempts,
-    });
-    const documentsState = await getPlanFieldState({
-      organizationId: String(req.user!.organization._id),
-      fieldCode: PlanFieldCode.indexingDocuments,
-    });
-    const alertsState = await getPlanFieldState({
-      organizationId: String(req.user!.organization._id),
-      fieldCode: PlanFieldCode.alerts,
-    });
-    const queriesState = await getPlanFieldState({
-      organizationId: String(req.user!.organization._id),
-      userId: String(req.user!._id),
-      fieldCode: PlanFieldCode.queries,
-    });
-
-    // Total usage object
-    const usage = {
-      seats: { current: seatsState.value, total: seatsState.limit },
-      indexingAttempts: {
-        current: attemptsState.value,
-        total: attemptsState.limit,
-      },
-      indexingDocuments: {
-        current: documentsState.value,
-        total: documentsState.limit,
-      },
-      alerts: { current: alertsState.value, total: alertsState.limit },
-      queries: { current: queriesState.value, total: queriesState.limit },
-    };
-
-    return res.status(200).json({ usage });
   }),
 );
 
@@ -171,4 +128,51 @@ router.delete(
   }),
 );
 
+// If the organization is an enterprise, we attach a usage route so
+// they'll know how much they've used of their plan.
+if (isEnterprise()) {
+  router.get(
+    "/:id/usage",
+    catchAsync(async (req: Request, res: Response) => {
+      const seatsState = await getPlanFieldState({
+        organizationId: String(req.user!.organization._id),
+        fieldCode: PlanFieldCode.seats,
+      });
+      const attemptsState = await getPlanFieldState({
+        organizationId: String(req.user!.organization._id),
+        fieldCode: PlanFieldCode.indexingAttempts,
+      });
+      const documentsState = await getPlanFieldState({
+        organizationId: String(req.user!.organization._id),
+        fieldCode: PlanFieldCode.indexingDocuments,
+      });
+      const alertsState = await getPlanFieldState({
+        organizationId: String(req.user!.organization._id),
+        fieldCode: PlanFieldCode.alerts,
+      });
+      const queriesState = await getPlanFieldState({
+        organizationId: String(req.user!.organization._id),
+        userId: String(req.user!._id),
+        fieldCode: PlanFieldCode.queries,
+      });
+
+      // Total usage object
+      const usage = {
+        seats: { current: seatsState.value, total: seatsState.limit },
+        indexingAttempts: {
+          current: attemptsState.value,
+          total: attemptsState.limit,
+        },
+        indexingDocuments: {
+          current: documentsState.value,
+          total: documentsState.limit,
+        },
+        alerts: { current: alertsState.value, total: alertsState.limit },
+        queries: { current: queriesState.value, total: queriesState.limit },
+      };
+
+      return res.status(200).json({ usage });
+    }),
+  );
+}
 export { router };

@@ -16,6 +16,7 @@ import { useDeleteOrg } from "../../../api/queries/organizations";
 import { useMe } from "../../../api/queries/auth";
 import { InformationCard } from "./components/InformationCard";
 import { DangerZone } from "../../../components/DangerZone";
+import { isEnterprise } from "../../../utils/ee";
 
 const USAGE_PARAMS = [
   {
@@ -89,24 +90,26 @@ export const OrganizationGeneralPage = () => {
               organization={organization}
               key={organization?._id}
             />
-            <Card>
-              <Box sx={{ mb: 1 }}>
-                <Typography level="title-md">Usage</Typography>
-                <Typography level="body-sm">
-                  See your project's usage statistics
-                </Typography>
-              </Box>
-              <Divider />
+            {isEnterprise() && (
+              <Card>
+                <Box sx={{ mb: 1 }}>
+                  <Typography level="title-md">Usage</Typography>
+                  <Typography level="body-sm">
+                    See your project's usage statistics
+                  </Typography>
+                </Box>
+                <Divider />
 
-              {USAGE_PARAMS.map(({ title, variable, template }) => (
-                <Usage
-                  title={title}
-                  variable={variable}
-                  template={template}
-                  organizationId={organization}
-                />
-              ))}
-            </Card>
+                {USAGE_PARAMS.map(({ title, variable, template }) => (
+                  <Usage
+                    title={title}
+                    variable={variable}
+                    template={template}
+                    organizationId={organization}
+                  />
+                ))}
+              </Card>
+            )}
             {organization && (
               <DangerZone
                 title="Delete this organization"

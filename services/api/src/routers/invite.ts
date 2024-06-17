@@ -11,6 +11,7 @@ import type {
 } from "@merlinn/db";
 import { EventType, SystemEvent, events } from "../events";
 import { catchAsync } from "../utils/errors";
+import { isEnterprise } from "../utils/ee";
 import { AppError } from "../errors";
 import { refreshPagerDutyToken } from "../services/oauth";
 import { getPlanFieldState, incrementPlanFieldState } from "../services/plans";
@@ -95,13 +96,20 @@ router.post(
     }
 
     const emails = req.body.emails as string[];
-    const seatsState = await getPlanFieldState({
-      fieldCode: PlanFieldCode.seats,
-      organizationId: String(req.user!.organization._id),
-    });
+    if (isEnterprise()) {
+      const seatsState = await getPlanFieldState({
+        fieldCode: PlanFieldCode.seats,
+        organizationId: String(req.user!.organization._id),
+      });
 
-    if (seatsState.value + emails.length > seatsState.limit) {
-      throw new AppError("You have exceeded your plan's seats", 400);
+      if (seatsState.value + emails.length > seatsState.limit) {
+        throw new AppError("You have exceeded your plan's seats", 400);
+      }
+      await incrementPlanFieldState({
+        fieldCode: PlanFieldCode.seats,
+        organizationId: String(req.user!.organization._id),
+        value: emails.length,
+      });
     }
 
     const sendInvitation = async (
@@ -149,12 +157,6 @@ router.post(
         sendInvitation(email, req.user!.organization),
       ),
     );
-
-    await incrementPlanFieldState({
-      fieldCode: PlanFieldCode.seats,
-      organizationId: String(req.user!.organization._id),
-      value: emails.length,
-    });
 
     return res.status(200).json({ sent: true, invitations });
   }),

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { webhookModel, PlanFieldCode, IWebhook } from "@merlinn/db";
 import { catchAsync } from "../utils/errors";
+import { isEnterprise } from "../utils/ee";
 import { AppError } from "../errors";
 import { getPlanFieldState } from "../services/plans";
 
@@ -50,6 +51,11 @@ export const checkWebhookSecret = catchAsync(
 
 export const checkAlertsQuota = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    // We only enforce this in the cloud
+    if (!isEnterprise()) {
+      return next();
+    }
+
     const { organization } = req.webhook!;
     const alertsState = await getPlanFieldState({
       fieldCode: PlanFieldCode.alerts,
