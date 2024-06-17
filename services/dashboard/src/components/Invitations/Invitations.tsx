@@ -20,6 +20,7 @@ import Menu from "@mui/joy/Menu";
 import MenuItem from "@mui/joy/MenuItem";
 import ListItemDecorator from "@mui/joy/ListItemDecorator";
 import ListDivider from "@mui/joy/ListDivider";
+import Tooltip from "@mui/joy/Tooltip";
 import { InviteMemberModal, DeleteMemberModal } from "./modals";
 import FormControl from "@mui/joy/FormControl";
 import FormLabel from "@mui/joy/FormLabel";
@@ -31,6 +32,7 @@ import toast from "react-hot-toast";
 import { Order, getComparator } from "../../utils/array";
 import { capitalize } from "../../utils/strings";
 import { useMe } from "../../api/queries/auth";
+import { useFeatures } from "../../api/queries/features";
 
 const status2label = {
   activated: "Active",
@@ -45,6 +47,10 @@ const Invitations = () => {
   const [contextMember, setContextMember] = React.useState<string | null>(null);
 
   const { data: user } = useMe();
+  const featuresQuery = useFeatures();
+
+  const isInviteMembersEnabled = featuresQuery.data?.isInviteMembersEnabled;
+
   const organizationId = user?.organization._id;
 
   const usersQuery = useOrgUsers(organizationId);
@@ -141,14 +147,27 @@ const Invitations = () => {
             justifyContent: "space-between",
           }}
         >
-          <Button
-            color="primary"
-            startDecorator={<PersonAddAltIcon />}
-            size="sm"
-            onClick={() => setInviteOpen(true)}
+          <Tooltip
+            title={
+              isInviteMembersEnabled
+                ? "Add new member"
+                : "Please configure an SMTP connection URL. Visit the docs for more information"
+            }
+            variant="solid"
           >
-            Invite members
-          </Button>
+            <div>
+              <Button
+                color="primary"
+                startDecorator={<PersonAddAltIcon />}
+                size="sm"
+                onClick={() => setInviteOpen(true)}
+                loading={featuresQuery.isPending}
+                disabled={!featuresQuery.data?.isInviteMembersEnabled}
+              >
+                Invite members
+              </Button>
+            </div>
+          </Tooltip>
           <FormControl sx={{ flex: 1 }} size="sm">
             <FormLabel>Find a member</FormLabel>
             <Input

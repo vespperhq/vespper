@@ -11,6 +11,7 @@ import {
   inviteRouter,
   organizationsRouter,
   indexRouter,
+  featuresRouter,
 } from "./routers";
 import { errorHandler, invalidPathHandler } from "./middlewares/errors";
 
@@ -40,6 +41,7 @@ app.use("/vendors", vendorsRouter);
 app.use("/invite", inviteRouter);
 app.use("/organizations", organizationsRouter);
 app.use("/index", indexRouter);
+app.use("/features", featuresRouter);
 
 app.all("*", invalidPathHandler); // Handle 404
 

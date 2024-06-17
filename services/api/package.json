@@ -39,7 +39,7 @@
     "start": "node dist/src/server.js",
     "build": "npx tsc",
     "watch": "npx nodemon -L --exec \"npx ts-node src/server.ts\" --ext ts",
-    "dev": "npx env-cmd -f .env concurrently \"yarn run tunnel\" \"yarn run watch\"",
+    "dev": "npx env-cmd yarn run watch",
     "tunnel": "source .env && ngrok http 3000 --domain=$TUNNEL_URL",
     "lint": "nx lint --ext ts",
     "test": "jest",

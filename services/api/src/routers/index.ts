@@ -7,3 +7,4 @@ export { router as vendorsRouter } from "./vendors";
 export { router as inviteRouter } from "./invite";
 export { router as organizationsRouter } from "./organizations";
 export { router as indexRouter } from "./db-index";
+export { router as featuresRouter } from "./features";
