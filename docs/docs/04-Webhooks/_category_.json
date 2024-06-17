@@ -1,0 +1,8 @@
+{
+  "label": "Webhooks",
+  "position": 2,
+  "link": {
+    "type": "generated-index",
+    "description": "Merlinn uses webhooks in order to be notified when incidents/alerts happen. They are the main entrypoints of the investigation process. Learn more about how to integrate Merlinn to your existing tools."
+  }
+}

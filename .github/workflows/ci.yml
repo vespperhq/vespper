@@ -50,44 +50,44 @@ jobs:
             npx nx show projects --affected --type app --exclude dashboard
             echo EOF
           } >> "$GITHUB_OUTPUT"
-  deploy:
-    runs-on: ubuntu-latest
-    needs: test
-    if: ${{ github.ref == 'refs/heads/main' && needs.test.outputs.affected_services != '' }}
-    permissions:
-      contents: "read"
-      id-token: "write"
-      actions: "read"
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          # We need to fetch all branches and commits so that Nx affected has a base to compare against.
-          fetch-depth: 0
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          cache: "yarn"
-          node-version: 18
-      - name: Install Yarn
-        run: npm install -g yarn
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-      - name: Derive appropriate SHAs for base and head for `nx affected` commands
-        uses: nrwl/nx-set-shas@v4
-      - name: Authenticate to Google Cloud
-        uses: "google-github-actions/auth@v0.4.0"
-        with:
-          workload_identity_provider: "projects/${{ secrets.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/ci-pool/providers/github-actions"
-          service_account: "app-engine-deployer@merlinn.iam.gserviceaccount.com"
-      - name: "Set up Google Cloud SDK"
-        uses: "google-github-actions/setup-gcloud@v2"
-        with:
-          version: ">= 363.0.0"
-          project_id: "${{ secrets.GCP_PROJECT_ID }}"
-      - name: "Docker auth"
-        run: |-
-          gcloud auth configure-docker ${{ vars.GAR_LOCATION }}-docker.pkg.dev
-      - name: Build images and push to Google Artifact Registry
-        run: INPUT_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} npx nx affected --base=$NX_BASE --head=$NX_HEAD --output-style stream --exclude dashboard -t container --parallel=3 --configuration=production
-      - name: Deploy services
-        run: npx nx affected --base=$NX_BASE --head=$NX_HEAD --output-style stream --exclude dashboard -t deploy --parallel=3
+  # deploy:
+  #   runs-on: ubuntu-latest
+  #   needs: test
+  #   if: ${{ github.ref == 'refs/heads/main' && needs.test.outputs.affected_services != '' }}
+  #   permissions:
+  #     contents: "read"
+  #     id-token: "write"
+  #     actions: "read"
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         # We need to fetch all branches and commits so that Nx affected has a base to compare against.
+  #         fetch-depth: 0
+  #     - name: Install Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         cache: "yarn"
+  #         node-version: 18
+  #     - name: Install Yarn
+  #       run: npm install -g yarn
+  #     - name: Install dependencies
+  #       run: yarn install --frozen-lockfile
+  #     - name: Derive appropriate SHAs for base and head for `nx affected` commands
+  #       uses: nrwl/nx-set-shas@v4
+  #     - name: Authenticate to Google Cloud
+  #       uses: "google-github-actions/auth@v0.4.0"
+  #       with:
+  #         workload_identity_provider: "projects/${{ secrets.GCP_PROJECT_NUMBER }}/locations/global/workloadIdentityPools/ci-pool/providers/github-actions"
+  #         service_account: "app-engine-deployer@merlinn.iam.gserviceaccount.com"
+  #     - name: "Set up Google Cloud SDK"
+  #       uses: "google-github-actions/setup-gcloud@v2"
+  #       with:
+  #         version: ">= 363.0.0"
+  #         project_id: "${{ secrets.GCP_PROJECT_ID }}"
+  #     - name: "Docker auth"
+  #       run: |-
+  #         gcloud auth configure-docker ${{ vars.GAR_LOCATION }}-docker.pkg.dev
+  #     - name: Build images and push to Google Artifact Registry
+  #       run: INPUT_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} npx nx affected --base=$NX_BASE --head=$NX_HEAD --output-style stream --exclude dashboard -t container --parallel=3 --configuration=production
+  #     - name: Deploy services
+  #       run: npx nx affected --base=$NX_BASE --head=$NX_HEAD --output-style stream --exclude dashboard -t deploy --parallel=3

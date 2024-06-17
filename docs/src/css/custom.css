@@ -1,0 +1,179 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #7213FF;
+  --ifm-color-primary-dark: #9A3FFF;
+  --ifm-color-primary-darker: #C062FF;
+  --ifm-color-primary-darkest: #E684FF;
+  --ifm-color-primary-light: #FFA6FF;
+  --ifm-color-primary-lighter: #f8b3f8;
+  --ifm-color-primary-lightest: #ffb7ff;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme='dark'] {
+  --ifm-color-primary: #9757f7;
+  --ifm-color-primary-dark: #AE5FFF;
+  --ifm-color-primary-darker: #CE7BFF;
+  --ifm-color-primary-darkest: #EE98FF;
+  --ifm-color-primary-light: #FFB5FF;
+  --ifm-color-primary-lighter: #fcc0fc;
+  --ifm-color-primary-lightest: #facafa;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+li > a.menu__link {
+  justify-content: flex-start;
+}
+
+.slack a::before {
+  content: ' ';
+  padding-right: 0.5rem;
+  background: url(../../static/img/logos/logo-slack.png) no-repeat;
+  background-size: contain;
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+}
+
+.pagerduty a::before {
+  content: ' ';
+  padding-right: 0.5rem;
+  background: url(../../static/img/logos/logo-pagerduty.png) no-repeat;
+  background-size: contain;
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+}
+
+.datadog a::before {
+  content: ' ';
+  padding-right: 0.5rem;
+  background: url(../../static/img/logos/logo-datadog-dark.png) no-repeat;
+  background-size: contain;
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+}
+
+html[data-theme="dark"] .datadog a::before {
+  content: ' ';
+  padding-right: 0.5rem;
+  background: url(../../static/img/logos/logo-datadog-light.png) no-repeat;
+  background-size: contain;
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+}
+
+
+.opsgenie a::before {
+  content: ' ';
+  padding-right: 0.5rem;
+  background: url(../../static/img/logos/logo-opsgenie.png) no-repeat;
+  background-size: contain;
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+}
+
+.coralogix a::before {
+  content: ' ';
+  margin-right: 0.5rem;
+  background-color: #3dc48f;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+}
+
+.github a::before {
+  content: ' ';
+  padding-right: 0.5rem;
+  background: url(../../static/img/logos/logo-github-dark.png) no-repeat;
+  background-size: contain;
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+}
+
+html[data-theme="dark"] .github a::before {
+  content: ' ';
+  padding-right: 0.5rem;
+  background: url(../../static/img/logos/logo-github-light.png) no-repeat;
+  background-size: contain;
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+}
+
+.notion a::before {
+  content: ' ';
+  padding-right: 0.5rem;
+  background: url(../../static/img/logos/logo-notion-dark.png) no-repeat;
+  background-size: contain;
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+}
+
+.jira a::before {
+  content: ' ';
+  padding-right: 0.5rem;
+  background: url(../../static/img/logos/logo-jira.png) no-repeat;
+  background-size: contain;
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+}
+
+.confluence a::before {
+  content: ' ';
+  padding-right: 0.5rem;
+  background: url(../../static/img/logos/logo-confluence.png) no-repeat;
+  background-size: contain;
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+}
+
+.mongodb a::before {
+  content: ' ';
+  margin-right: 0.5rem;
+  background: url(../../static/img/logos/logo-mongodb.png) no-repeat;
+  background-size: contain;
+  background-position: center;
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+}
+
+
+.grafana a::before {
+  content: ' ';
+  margin-right: 0.5rem;
+  background: url(../../static/img/logos/logo-grafana.png) no-repeat;
+  background-size: contain;
+  background-position: center;
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+}
+
+.jaeger a::before {
+  content: ' ';
+  margin-right: 0.5rem;
+  background: url(../../static/img/logos/logo-jaeger.png) no-repeat;
+  background-size: contain;
+  background-position: center;
+  height: 16px;
+  width: 16px;
+  display: inline-block;
+}
