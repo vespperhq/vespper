@@ -29,9 +29,9 @@ import {
   ConnectNotionIntegration,
   ConnectConfluenceIntegration,
   ConnectJiraIntegration,
-  ConnectMongoDBIntegration,
   ConnectJaegerIntegration,
-  ConnectPrometheusIntegration,
+  // ConnectMongoDBIntegration,
+  // ConnectPrometheusIntegration,
 } from "./integrations";
 import { CustomPaper, Null } from "./styles";
 
@@ -60,8 +60,8 @@ const connectVendor = {
     [ConnectionName.Notion]: ConnectNotionIntegration,
     [ConnectionName.Confluence]: ConnectConfluenceIntegration,
     [ConnectionName.Jira]: ConnectJiraIntegration,
-    [ConnectionName.MongoDB]: ConnectMongoDBIntegration,
-    [ConnectionName.Prometheus]: ConnectPrometheusIntegration,
+    // [ConnectionName.MongoDB]: ConnectMongoDBIntegration,
+    // [ConnectionName.Prometheus]: ConnectPrometheusIntegration,
   },
   [ConnectionType.Webhook]: {
     [ConnectionName.Opsgenie]: ConnectOpsgenieWebhook,
