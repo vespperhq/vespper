@@ -1,5 +1,7 @@
 display_information:
   name: Merlinn
+  description: AI assistant for fast incident resolution
+  background_color: "#2c2d30"
 features:
   bot_user:
     display_name: Merlinn
