@@ -163,6 +163,7 @@ const getCompletions = async (req: Request, res: Response) => {
     payload: {
       organizationId,
       env: process.env.NODE_ENV as string,
+      email: req.user.email,
       context: "chat",
       traceId,
       traceURL,
