@@ -1,0 +1,185 @@
+services:
+  postgres:
+    image: postgres
+    container_name: postgres
+    profiles: ["app", "infra"]
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    volumes:
+      - ${DATA_DIR}/postgres:/var/lib/postgresql/data
+      - ${CONFIG_DIR}/postgres/postgres_init.sh:/docker-entrypoint-initdb.d/init.sh
+    environment:
+      - POSTGRES_PASSWORD
+      - POSTGRES_USER
+      - POSTGRES_MULTIPLE_DATABASES
+  mongo:
+    image: mongo
+    container_name: mongo
+    profiles: ["app", "infra"]
+    restart: always
+    volumes:
+      - ${DATA_DIR}/mongo:/data/db
+    ports:
+      - "${MONGO_PORT}:${MONGO_PORT}"
+  chroma:
+    image: chromadb/chroma
+    container_name: chroma
+    profiles: ["app", "infra"]
+    ports:
+      - "${CHROMA_PORT}:${CHROMA_PORT}"
+    volumes:
+      - ${DATA_DIR}/chromadb:/chroma/chroma
+    environment:
+      - CHROMA_SERVER_AUTHN_CREDENTIALS
+      - CHROMA_SERVER_AUTHN_PROVIDER
+      - CHROMA_AUTH_TOKEN_TRANSPORT_HEADER
+  vector-admin:
+    image: mintplexlabs/vectoradmin
+    profiles: ["debug"]
+    ports:
+      - "${VECTOR_ADMIN_PORT}:${VECTOR_ADMIN_PORT}"
+    environment:
+      - SERVER_PORT=${VECTOR_ADMIN_PORT}
+      - JWT_SECRET=${VECTOR_ADMIN_JWT_SECRET}
+      - INNGEST_EVENT_KEY=${VECTOR_ADMIN_INNGEST_EVENT_KEY}
+      - INNGEST_SIGNING_KEY=${VECTOR_ADMIN_INNGEST_SIGNING_KEY}
+      - INNGEST_LANDING_PAGE=${VECTOR_ADMIN_INNGEST_LANDING_PAGE}
+      - DATABASE_CONNECTION_STRING=${VECTOR_ADMIN_DB_URL}
+  ory-kratos-migrate:
+    image: oryd/kratos:v1.2.0
+    container_name: ory-kratos-migrate
+    profiles: ["app", "infra"]
+    environment:
+      - DSN=${KRATOS_DATABASE_URL}
+    volumes:
+      - type: bind
+        source: ${CONFIG_DIR}/kratos/email-password
+        target: /etc/config/kratos
+    command: -c /etc/config/kratos/kratos.yml migrate sql -e --yes
+    restart: on-failure
+    depends_on:
+      - postgres
+  ory-kratos:
+    image: oryd/kratos:v1.2.0
+    container_name: ory-kratos
+    profiles: ["app", "infra"]
+    command: serve -c /etc/config/kratos/kratos.yml --dev --watch-courier
+    ports:
+      - "${KRATOS_PUBLIC_PORT}:${KRATOS_PUBLIC_PORT}"
+      - "${KRATOS_ADMIN_PORT}:${KRATOS_ADMIN_PORT}"
+    environment:
+      - DSN=${KRATOS_DATABASE_URL}
+      - LOG_LEVEL=trace
+    volumes:
+      - type: bind
+        source: ${CONFIG_DIR}/kratos/email-password
+        target: /etc/config/kratos
+    depends_on:
+      - ory-kratos-migrate
+  # This container is helpful in case you want to manage users.
+  # Currently it's excluded from the infra profile for the sake of simplicity.
+  # To start it, simply run "docker compose up ory-kratos-admin-ui -d"
+  ory-kratos-admin-ui:
+    image: ghcr.io/dfoxg/kratos-admin-ui:v2.3.2
+    container_name: ory-kratos-admin-ui
+    ports:
+      - '${KRATOS_ADMIN_UI_PORT}:8080'
+    restart: unless-stopped
+    environment:
+      - KRATOS_ADMIN_URL=${KRATOS_ADMIN_URL}
+      - KRATOS_PUBLIC_URL=${KRATOS_PUBLIC_URL}
+  ory-kratos-self-serve-ui:
+    image: oryd/kratos-selfservice-ui-node:v1.2.0
+    container_name: ory-kratos-self-serve-ui
+    profiles: ["app", "infra"]
+    ports:
+      - "${KRATOS_SELF_SERVE_UI_PORT}:${KRATOS_SELF_SERVE_UI_PORT}"
+    environment:
+      - PORT=${KRATOS_SELF_SERVE_UI_PORT}
+      - KRATOS_PUBLIC_URL=${KRATOS_PUBLIC_URL}
+      - KRATOS_BROWSER_URL=${KRATOS_SELF_SERVE_UI_BROWSER_URL}
+      - COOKIE_SECRET=${KRATOS_SELF_SERVE_UI_COOKIE_SECRET}
+      - CSRF_COOKIE_NAME=${KRATOS_SELF_SERVE_UI_CSRF_COOKIE_NAME}
+      - CSRF_COOKIE_SECRET=${KRATOS_SELF_SERVE_UI_CSRF_COOKIE_SECRET}
+    restart: on-failure
+  vault:
+    image: vault:1.13.3
+    container_name: vault
+    profiles: ["app", "infra"]
+    environment:
+      - VAULT_ADDR=http://0.0.0.0:8200
+      - VAULT_API_ADDR=http://0.0.0.0:8200
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - ${DATA_DIR}/vault/file:/vault/file
+      - ${DATA_DIR}/vault/logs:/vault/logs
+      - ${DATA_DIR}/vault/data:/vault/data
+      - ${CONFIG_DIR}/vault/config.hcl:/vault/config/vault.hcl
+    ports:
+      - "8200:8200"
+      - "8201:8201"
+      - "8202:8202"
+    entrypoint: vault server -config=/vault/config/vault.hcl
+  api:
+    container_name: api
+    profiles: ["app"]
+    build:
+      context: "."
+      dockerfile: services/api/Dockerfile
+    env_file:
+      - services/api/.env.dev
+      - services/api/.env.docker
+    environment:
+      - OPENAI_API_KEY
+      - SMTP_CONNECTION_URL
+      - SLACK_APP_TOKEN
+      - HASHICORP_VAULT_ROOT_TOKEN
+      - HASHICORP_VAULT_UNSEAL_TOKEN
+    ports:
+      - "${API_PORT}:${API_PORT}"
+    depends_on:
+      - mongo
+      - vault
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  slackbot:
+    container_name: slackbot
+    profiles: ["app"]
+    build:
+      context: "."
+      dockerfile: services/slackbot/Dockerfile
+    env_file:
+      - services/slackbot/.env.dev
+      - services/slackbot/.env.docker
+    environment:
+      - SLACK_APP_TOKEN
+      - SLACK_BOT_TOKEN
+      - SLACK_SIGNING_SECRET
+    ports:
+      - "${SLACKBOT_PORT}:${SLACKBOT_PORT}"
+  data-processor:
+    container_name: data-processor
+    profiles: ["app"]
+    build: 
+      context: services/data-processor
+    env_file:
+      - services/data-processor/.env.dev
+      - services/data-processor/.env.docker
+    environment:
+      - OPENAI_API_KEY
+      - HASHICORP_VAULT_ROOT_TOKEN
+      - HASHICORP_VAULT_UNSEAL_TOKEN
+      - IS_DOCKER=true
+    ports:
+      - "${DATA_PROCESSOR_PORT}:${DATA_PROCESSOR_PORT}"
+    depends_on:
+      - mongo
+  dashboard:
+    container_name: dashboard
+    profiles: ["app"]
+    build: 
+      context: "."
+      dockerfile: services/dashboard/Dockerfile
+    ports:
+      - "${DASHBOARD_PORT}:80"

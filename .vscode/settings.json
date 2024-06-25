@@ -1,0 +1,5 @@
+{
+  "typescript.tsdk": "node_modules\\typescript\\lib",
+  "cSpell.words": ["GCLOUD", "langfuse", "pagerduty"],
+  "python.defaultInterpreterPath": "/Users/dudulasry/Library/Caches/pypoetry/virtualenvs/playground-E1KBELiO-py3.10/bin/python"
+}

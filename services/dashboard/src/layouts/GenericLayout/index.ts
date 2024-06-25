@@ -1,0 +1,1 @@
+export { GenericLayout } from "./GenericLayout";

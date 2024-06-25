@@ -1,0 +1,1 @@
+export { OrganizationWebhooksPage } from "./Webhooks";

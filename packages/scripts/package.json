@@ -1,0 +1,16 @@
+{
+  "name": "@merlinn/scripts",
+  "version": "0.0.1",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc",
+    "build:watch": "tsc -w"
+  },
+  "dependencies": {
+    "commander": "^12.0.0",
+    "ts-node": "^10.9.2"
+  },
+  "main": "dist/index.js",
+  "types": "dist/*/**.d.ts",
+  "private": true
+}

@@ -1,0 +1,13 @@
+{
+  "root": true,
+  "ignorePatterns": ["**/node_modules", "**/dist"],
+  "extends": ["eslint:recommended"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx"],
+      "rules": {
+        "@typescript-eslint/no-non-null-assertion": "off"
+      }
+    }
+  ]
+}
