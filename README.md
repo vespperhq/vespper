@@ -18,7 +18,7 @@
 </div>
 <br />
 <div style="display: flex" style="margin-bottom: 20px">
-<a href="https://merlinn.co/"><img src="https://img.shields.io/badge/Website-blue?logo=googlechrome&logoColor=orange"/></a>
+<a href="https://merlinn.co/?utm_source=github"><img src="https://img.shields.io/badge/Website-blue?logo=googlechrome&logoColor=orange"/></a>
   <a href="https://calendly.com/dudu-merlinn/45-minute-meeting"><img src="https://img.shields.io/badge/Book%20a%20Call-blue" /></a>
 <a href="https://github.com/merlinn-co/merlinn/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-GNU AGPLv3-red.svg?style=flat-square" alt="GNU AGPLv3 License"></a>
 <a href="https://github.com/merlinn-co/merlinn/actions/workflows/ci.yml/badge.svg?branch=main">
