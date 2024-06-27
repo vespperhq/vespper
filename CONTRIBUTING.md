@@ -122,15 +122,11 @@ Additionally, if you want to work on our Python services (currently only the `da
    ```bash
    yarn install
    ```
-2. Install nx globally:
-   ```bash
-   yarn global add nx@latest
-   ```
-3. Run the infrastructure services using docker:
+2. Run the infrastructure services using docker:
    ```bash
    docker compose up --profile infra
    ```
-4. Run the dev jobs of the services. For example:
+3. Run the dev jobs of the services. For example:
    ```bash
    nx dev api
    ```
