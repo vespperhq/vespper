@@ -1,7 +1,6 @@
 # Contributing to Merlinn
 
-Contributing to Merlinn
-Hey there! Thanks for considering a contribution to Merlinn! We really appreciate it. ❤️
+Hey there! Thanks for considering a contribution to Merlinn! We really appreciate it, you're awesome! ❤️
 
 Here’s how you can help out:
 
@@ -23,8 +22,6 @@ If you’re short on time for coding, no worries! You can still support Merlinn 
 - 🗣️ Talk about us at local meetups or with friends and colleagues
 
 Every bit of support helps us grow. Thanks a ton!
-
-## Table of Contents
 
 ## Table of Contents
 
@@ -54,6 +51,8 @@ A good starting point is to check out the open issues. Look for the "good first 
 This section contains some high-level information about the project.
 
 ### Architecture
+
+Here is a diagram that shows the high-level architecture.
 
 <div align="center">
     <img src="./assets/architecture.jpg" alt="Architecture" />
@@ -131,7 +130,7 @@ Additionally, if you want to work on our Python services (currently only the `da
    ```bash
    docker compose up --profile infra
    ```
-4. Run the dev jobs in services. For example:
+4. Run the dev jobs of the services. For example:
    ```bash
    nx dev api
    ```
