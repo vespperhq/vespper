@@ -32,6 +32,9 @@ def get_repos(token: str, repos_to_sync=None):
     return repos_to_ingest
 
 
+# EXCLUDED_FILES = ["package-lock.json", "yarn.lock", "poetry.lock"]
+
+
 async def fetch_github_documents(
     integration: Integration,
     include_code=True,
@@ -67,6 +70,10 @@ async def fetch_github_documents(
                 owner=owner,
                 repo=repo,
                 verbose=True,
+                # filter_files=(
+                #     EXCLUDED_FILES,
+                #     GithubRepositoryReader.FilterType.EXCLUDE,
+                # ),
             )
             code_documents = await loader.load_data(commit_sha=commit_sha)
             # Add repo path, commit sha and branch to the documents' metadata

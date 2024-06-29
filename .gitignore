@@ -43,3 +43,7 @@ Thumbs.db
 
 # env files
 .env
+
+# LLM config files. This file is specific to each user
+config/litellm/config.yaml
+config/litellm/.env

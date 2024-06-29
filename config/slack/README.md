@@ -22,7 +22,7 @@ At the end, you should have a new Slack app in your workspace with the 3 tokens 
 1. Go to [api.slack.com](https://api.slack.com) and create a new app.
 2. Click "your apps" and then select "Create New App"
 3. Select "From an app manifest" and choose the workspace where you want to use the Slackbot.
-4. Copy the contents of `config/slack/manifest.self-hosted.yaml` from the Merlinn repository and paste it into the app manifest field.
+4. Copy the contents of `config/slack/manifest.yaml` from the Merlinn repository and paste it into the app manifest field.
 5. Click “Create” to create the app.
 6. Click "Install to workspace".
 

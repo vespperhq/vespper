@@ -78,6 +78,7 @@ class GithubRepositoryReader(BaseReader):
         concurrent_requests: int = 5,
         timeout: Optional[int] = 5,
         retries: int = 0,
+        filter_files: Optional[Tuple[List[str], FilterType]] = None,
         filter_directories: Optional[Tuple[List[str], FilterType]] = None,
         filter_file_extensions: Optional[Tuple[List[str], FilterType]] = None,
     ):
@@ -119,6 +120,7 @@ class GithubRepositoryReader(BaseReader):
         self._concurrent_requests = concurrent_requests
         self._timeout = timeout
         self._retries = retries
+        self._filter_files = filter_files
         self._filter_directories = filter_directories
         self._filter_file_extensions = filter_file_extensions
 
@@ -216,6 +218,32 @@ class GithubRepositoryReader(BaseReader):
             "Please use either 'INCLUDE' or 'EXCLUDE'."
         )
 
+    def _check_filter_files(self, tree_obj_path: str) -> bool:
+        """
+        Check if a tree object should be allowed based on the files.
+
+        :param `tree_obj_path`: path of the tree object i.e. 'llama_index/indices'
+
+        :return: True if the tree object should be allowed, False otherwise
+        """
+        if self._filter_files is None:
+            return True
+        filter_files, filter_type = self._filter_files
+        print_if_verbose(
+            self._verbose,
+            f"Checking {tree_obj_path} whether to {filter_type} it"
+            + f" based on the filter files: {filter_files}",
+        )
+
+        if filter_type == self.FilterType.EXCLUDE:
+            return tree_obj_path not in filter_files
+        if filter_type == self.FilterType.INCLUDE:
+            return tree_obj_path in filter_files
+        raise ValueError(
+            f"Unknown filter type: {filter_type}. "
+            "Please use either 'INCLUDE' or 'EXCLUDE'."
+        )
+
     def _check_filter_file_extensions(self, tree_obj_path: str) -> bool:
         """
         Check if a tree object should be allowed based on the file extensions.
@@ -258,6 +286,11 @@ class GithubRepositoryReader(BaseReader):
             return self._check_filter_directories(
                 tree_obj_path
             ) and self._check_filter_file_extensions(tree_obj_path)
+
+        if self._filter_files is not None and tree_obj_type == "blob":
+            return self._check_filter_directories(
+                tree_obj_path
+            ) and self._check_filter_files(tree_obj_path)
 
         return True
 
