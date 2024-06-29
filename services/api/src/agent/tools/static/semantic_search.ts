@@ -88,12 +88,23 @@ export default async function (context: RunContext) {
 
             const suffix = nSource && nSource > 1 ? ` #${nSource}` : "";
             const sourceName =
-              title || `${document.metadata.source.trim()} Link${suffix}`;
-            const source = `[${sourceName}](${url})`;
-            return source;
+              title ||
+              (`${document.metadata.source.trim()} Link${suffix}` as string);
+            return { sourceName, url };
           });
 
-          const output = buildOutput(text, sources);
+          // Sort chunks coming from the same source document
+          const uniqueSources = sources.filter(
+            (source, index, self) =>
+              self.findIndex((s) => s.url === source.url) === index,
+          );
+
+          // Create markdown links for sources
+          const sourcesMkdown = uniqueSources.map(
+            ({ sourceName, url }) => `[${sourceName}](${url})`,
+          );
+
+          const output = buildOutput(text, sourcesMkdown);
           return output;
 
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
