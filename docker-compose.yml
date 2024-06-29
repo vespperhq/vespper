@@ -16,12 +16,12 @@ services:
     image: ghcr.io/berriai/litellm:main-latest
     container_name: litellm
     profiles: ["app", "infra"]
+    env_file:
+      - ${CONFIG_DIR}/litellm/.env
     ports:
       - "${LITELLM_PORT}:${LITELLM_PORT}"
     volumes:
-      - ${CONFIG_DIR}/litellm/litellm_config.yaml:/app/config.yaml
-    environment:
-      - OPENAI_API_KEY
+      - ${CONFIG_DIR}/litellm/config.yaml:/app/config.yaml
     command: --config /app/config.yaml --detailed_debug
   mongo:
     image: mongo
@@ -29,7 +29,7 @@ services:
     profiles: ["app", "infra"]
     restart: always
     volumes:
-      - ${DATA_DIR}/mongo:/data/db
+      - ${DATA_DIR}/mongo:/data/db:rw
     ports:
       - "${MONGO_PORT}:${MONGO_PORT}"
   chroma:

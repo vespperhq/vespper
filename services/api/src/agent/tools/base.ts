@@ -10,7 +10,6 @@ import {
 import { Tool } from "../tools/types";
 import { ChatPromptTemplate } from "langchain/prompts";
 import { ChatOpenAI } from "langchain/chat_models/openai";
-import { ModelName } from "../model";
 
 export const createAgent = async (
   tools: Tool[],
@@ -21,7 +20,7 @@ export const createAgent = async (
 
   const model = new ChatOpenAI({
     configuration: { baseURL },
-    modelName: ModelName.GPT_3_5_TURBO_0125,
+    modelName: "chat-model",
     temperature: 0,
     openAIApiKey: apiKey,
     verbose: true,

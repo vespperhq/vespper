@@ -1,5 +1,0 @@
-model_list:
-  - model_name: gpt-3.5-turbo-1106
-    litellm_params:
-      model: openai/gpt-3.5-turbo-1106
-      api_key: os.environ/OPENAI_API_KEY

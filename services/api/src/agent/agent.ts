@@ -15,7 +15,6 @@ import { Tool } from "./tools/types";
 import { ChatMessage } from "./types";
 import { ChatPromptTemplate } from "langchain/prompts";
 import { ChatOpenAI } from "langchain/chat_models/openai";
-import { ModelName } from "./model";
 
 const createAgent = async (
   tools: Tool[],
@@ -23,10 +22,7 @@ const createAgent = async (
   template: ChatPromptTemplate,
   messages?: ChatMessage[],
 ) => {
-  const _model =
-    model.modelName === ModelName.GPT_4_VISION_PREVIEW
-      ? model
-      : model.bind({ tools: tools.map(formatToOpenAITool) });
+  const _model = model.bind({ tools: tools.map(formatToOpenAITool) });
 
   const memoryParams = {
     returnMessages: true,

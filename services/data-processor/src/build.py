@@ -15,7 +15,6 @@ from loader import get_documents
 
 import asyncio
 from dotenv import load_dotenv, find_dotenv
-from llama_index.embeddings.openai import OpenAIEmbedding
 
 load_dotenv(find_dotenv())
 
@@ -23,7 +22,7 @@ import os
 from typing import List, Optional
 from rag.utils import get_vector_store
 from llama_index.core import VectorStoreIndex, StorageContext
-
+from embeddings import LiteLLMEmbeddings
 
 from db import db
 
@@ -33,7 +32,7 @@ async def build_index(
     index_id: ObjectId,
     data_sources: Optional[List[str]] = None,
 ):
-    openai_api_key = os.getenv("OPENAI_API_KEY")
+    litellm_proxy_url = os.getenv("LITELLM_PROXY_URL")
 
     try:
         index = await db.index.find_one({"_id": index_id})
@@ -63,10 +62,9 @@ async def build_index(
 
         vector_store = store.get_llama_index_store()
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
-        embed_model = OpenAIEmbedding(
-            api_key=openai_api_key,
-            model="text-embedding-3-large",
-            dimensions=768,
+        embed_model = LiteLLMEmbeddings(
+            api_base=litellm_proxy_url,
+            model_name="openai/embedding-model",
         )
 
         VectorStoreIndex(
