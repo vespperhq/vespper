@@ -12,6 +12,17 @@ services:
       - POSTGRES_PASSWORD
       - POSTGRES_USER
       - POSTGRES_MULTIPLE_DATABASES
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    container_name: litellm
+    profiles: ["app", "infra"]
+    ports:
+      - "${LITELLM_PORT}:${LITELLM_PORT}"
+    volumes:
+      - ${CONFIG_DIR}/litellm/litellm_config.yaml:/app/config.yaml
+    environment:
+      - OPENAI_API_KEY
+    command: --config /app/config.yaml --detailed_debug
   mongo:
     image: mongo
     container_name: mongo
