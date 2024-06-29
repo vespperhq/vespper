@@ -29,7 +29,11 @@ services:
     profiles: ["app", "infra"]
     restart: always
     volumes:
+<<<<<<< HEAD
       - ${DATA_DIR}/mongo:/data/db:rw
+=======
+      - ${DATA_DIR}/mongo:/data
+>>>>>>> main
     ports:
       - "${MONGO_PORT}:${MONGO_PORT}"
   chroma:
@@ -123,9 +127,7 @@ services:
     cap_add:
       - IPC_LOCK
     volumes:
-      - ${DATA_DIR}/vault/file:/vault/file
-      - ${DATA_DIR}/vault/logs:/vault/logs
-      - ${DATA_DIR}/vault/data:/vault/data
+      - ${DATA_DIR}/vault:/vault
       - ${CONFIG_DIR}/vault/config.hcl:/vault/config/vault.hcl
     ports:
       - "8200:8200"

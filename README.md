@@ -20,7 +20,7 @@
 <div style="display: flex" style="margin-bottom: 20px">
 <a href="https://merlinn.co/?utm_source=github"><img src="https://img.shields.io/badge/Website-blue?logo=googlechrome&logoColor=orange"/></a>
   <a href="https://calendly.com/dudu-merlinn/45-minute-meeting"><img src="https://img.shields.io/badge/Book%20a%20Call-blue" /></a>
-<a href="https://github.com/merlinn-co/merlinn/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-GNU AGPLv3-red.svg?style=flat-square" alt="GNU AGPLv3 License"></a>
+<a href="https://github.com/merlinn-co/merlinn/blob/main/LICENSE.md"><img src="https://img.shields.io/badge/License-GNU AGPLv3-red.svg?style=flat-square" alt="GNU AGPLv3 License"></a>
 <a href="https://github.com/merlinn-co/merlinn/actions/workflows/ci.yml/badge.svg?branch=main">
 <img src="https://github.com/merlinn-co/merlinn/actions/workflows/ci.yml/badge.svg?branch=main" alt="main-workflow">
 </a>
@@ -52,6 +52,7 @@ Most people don't like to do on-call shifts. It requires engineers to be swift a
   - [Updating Merlinn](#updating-merlinn-️-)
   - [Visualize Knowledge Base](#visualize-knowledge-base-)
 - [Support and feedback](#support-and-feedback-️)
+- [Contributing to Merlinn](#contributing-to-merlinn-️)
 - [Telemetry](#telemetry-)
 - [License](#license-)
 - [Learn more](#learn-more-)
@@ -186,6 +187,10 @@ In order of preference the best way to communicate with us:
 - **GitHub Discussions**: Contribute ideas, support requests and report bugs (preferred as there is a static & permanent for other community members).
 - **Slack**: community support. Click [here](https://merlinn.co/#community) to join.
 - **Privately**: contact at support@merlinn.co
+
+## Contributing to Merlinn ⛑️
+
+If you're interested in contributing to Merlinn, checkout our [`CONTRIBUTING.md`](https://github.com/merlinn-co/merlinn/blob/main/CONTRIBUTING.md) file 💫 🧙‍♂️
 
 ## Telemetry 🔢
 
