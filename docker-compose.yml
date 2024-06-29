@@ -29,11 +29,7 @@ services:
     profiles: ["app", "infra"]
     restart: always
     volumes:
-<<<<<<< HEAD
       - ${DATA_DIR}/mongo:/data/db:rw
-=======
-      - ${DATA_DIR}/mongo:/data
->>>>>>> main
     ports:
       - "${MONGO_PORT}:${MONGO_PORT}"
   chroma:
