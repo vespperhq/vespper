@@ -98,22 +98,7 @@ You can find the installation video [here](https://www.loom.com/share/1f562cb067
    cp .env.example .env
    ```
 
-3. Launch vault and obtain vault tokens:
-
-   We use Hashicorp Vault to manage secrets such as API tokens, OAuth credentials, etc.
-
-   1. Launch the vault instance:
-
-      ```bash
-      docker compose up vault -d
-      ```
-
-   2. Go to Vault UI: http://localhost:8202
-   3. Insert 1 in "Key shares" and "Key threshold" and click "Initialize".
-   4. Click "Download keys".
-   5. In the JSON file you've downloaded, copy the first value in "keys_base64" and the "root_token" value. These values are going to be used in the next step as `HASHICORP_VAULT_UNSEAL_TOKEN` and `HASHICORP_VAULT_ROOT_TOKEN` respectively.
-
-4. Configure LiteLLM Proxy Server:
+3. Configure LiteLLM Proxy Server:
 
    We use [LiteLLM Proxy Server](https://docs.litellm.ai/docs/simple_proxy) to interact with 100+ of models in a unified interface (OpenAI interface).
 
@@ -127,6 +112,21 @@ You can find the installation video [here](https://www.loom.com/share/1f562cb067
    2. Define your OpenAI key and place it inside `config/litellm/.env` as `OPENAI_API_KEY`. You can get your API key [here](https://platform.openai.com/api-keys). Rest assured, you won't be charged unless you use the API. For more details on pricing, check [here](https://openai.com/pricing).
 
    3. **(Optional)** Define custom endpoints. If you want to use other vendors (AWS Bedrock, Azure OpenAI, Anthropic, Hugging Face models, etc), checkout LiteLLM Proxy documentation. You simply need to change `config/litellm/.env` & `config/litellm/config.yaml`. Checkout the comments there & LiteLLM's documentation. **Note** You have to use a vendor that supports function calling.
+
+4. Launch vault and obtain vault tokens:
+
+   We use Hashicorp Vault to manage secrets such as API tokens, OAuth credentials, etc.
+
+   1. Launch the vault instance:
+
+      ```bash
+      docker compose up vault -d
+      ```
+
+   2. Go to Vault UI: http://localhost:8202
+   3. Insert 1 in "Key shares" and "Key threshold" and click "Initialize".
+   4. Click "Download keys".
+   5. In the JSON file you've downloaded, copy the first value in "keys_base64" and the "root_token" value. These values are going to be used in the next step as `HASHICORP_VAULT_UNSEAL_TOKEN` and `HASHICORP_VAULT_ROOT_TOKEN` respectively.
 
 5. Open `.env` in your favorite editor (vim, vscode, emacs, etc):
 
