@@ -14,7 +14,7 @@ import { AppError, ErrorCode } from "../errors";
 import { EventType, SystemEvent, events } from "../events";
 import { catchAsync } from "../utils/errors";
 import { isEnterprise, isLangfuseEnabled } from "../utils/ee";
-import { validateModeration } from "../utils/moderation";
+// import { validateModeration } from "../utils/moderation";
 import { getPlanFieldState, incrementPlanFieldState } from "../services/plans";
 import { checkAuth, getDBUser } from "../middlewares/auth";
 import { PostHogClient } from "../telemetry/posthog";
@@ -75,15 +75,15 @@ const getCompletions = async (req: Request, res: Response) => {
   const chatMessages = parseMessages(messages);
   const message = chatMessages[chatMessages.length - 1];
 
-  const moderationResult = await validateModeration(message.content as string);
+  // const moderationResult = await validateModeration(message.content as string);
 
-  if (!moderationResult) {
-    throw new AppError(
-      "Text was found that violates our content policy",
-      400,
-      ErrorCode.MODERATION_FAILED,
-    );
-  }
+  // if (!moderationResult) {
+  //   throw new AppError(
+  //     "Text was found that violates our content policy",
+  //     400,
+  //     ErrorCode.MODERATION_FAILED,
+  //   );
+  // }
 
   const hasImages =
     typeof message.content !== "string" &&

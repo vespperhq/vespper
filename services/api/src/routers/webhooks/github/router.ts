@@ -6,10 +6,10 @@ import { SystemEvent, EventType, events } from "../../../events";
 import { conversationIssuesTemplate } from "../../../agent/prompts";
 import { chatModel } from "../../../agent/model";
 import { catchAsync } from "../../../utils/errors";
-import { AppError, ErrorCode } from "../../../errors";
+import { AppError } from "../../../errors";
 import { BaseMessage, RunContext, TextBlock } from "../../../agent/types";
 import { secretManager } from "../../../common/secrets";
-import { validateModeration } from "../../../utils/moderation";
+// import { validateModeration } from "../../../utils/moderation";
 import { parseMessages } from "../../../agent/parse";
 import { GithubClient } from "../../../clients";
 import { generateTrace } from "../../../agent/helper";
@@ -120,17 +120,17 @@ router.post(
     // Prepare history and last message
     const chatMessages = parseMessages(history);
 
-    const moderationResult = await validateModeration(
-      message.content as string,
-    );
+    // const moderationResult = await validateModeration(
+    //   message.content as string,
+    // );
 
-    if (!moderationResult) {
-      throw new AppError(
-        "Text was found that violates our content policy",
-        400,
-        ErrorCode.MODERATION_FAILED,
-      );
-    }
+    // if (!moderationResult) {
+    //   throw new AppError(
+    //     "Text was found that violates our content policy",
+    //     400,
+    //     ErrorCode.MODERATION_FAILED,
+    //   );
+    // }
 
     // const hasImages =
     //   typeof message.content !== "string" &&
