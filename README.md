@@ -53,6 +53,7 @@ Most people don't like to do on-call shifts. It requires engineers to be swift a
   - [Visualize Knowledge Base](#visualize-knowledge-base-)
 - [Support and feedback](#support-and-feedback-️)
 - [Contributing to Merlinn](#contributing-to-merlinn-️)
+- [Troubleshooting](#troubleshooting-️)
 - [Telemetry](#telemetry-)
 - [License](#license-)
 - [Learn more](#learn-more-)
@@ -191,6 +192,12 @@ In order of preference the best way to communicate with us:
 ## Contributing to Merlinn ⛑️
 
 If you're interested in contributing to Merlinn, checkout our [`CONTRIBUTING.md`](https://github.com/merlinn-co/merlinn/blob/main/CONTRIBUTING.md) file 💫 🧙‍♂️
+
+## Troubleshooting ⚒️
+
+If you encounter any problems/errors/issues with Merlinn, checkout our [troubleshooting guide](https://github.com/merlinn-co/merlinn/tree/main/config/slack/TROUBLESHOOTING.md). We try to update it regularly, and fix some of the urgent problems there as soon as possible.
+
+Moreover, feel free to reach out to us at our [support channels](#support-and-feedback-️).
 
 ## Telemetry 🔢
 
