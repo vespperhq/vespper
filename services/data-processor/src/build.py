@@ -22,7 +22,7 @@ import os
 from typing import List, Optional
 from rag.utils import get_vector_store
 from llama_index.core import VectorStoreIndex, StorageContext
-from embeddings import LiteLLMEmbeddings
+from embeddings import LiteLLMEmbedding
 
 from db import db
 
@@ -62,7 +62,7 @@ async def build_index(
 
         vector_store = store.get_llama_index_store()
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
-        embed_model = LiteLLMEmbeddings(
+        embed_model = LiteLLMEmbedding(
             api_base=litellm_proxy_url,
             model_name="openai/embedding-model",
         )
