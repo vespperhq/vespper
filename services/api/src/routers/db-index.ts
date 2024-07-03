@@ -129,9 +129,13 @@ router.delete(
       throw new AppError("User is not a member of this organization", 403);
     }
 
-    // Delete pinecone index
-    const vectorStore = getVectorStore(index.name, index.type);
-    await vectorStore.deleteIndex();
+    try {
+      // Delete Vector DB index
+      const vectorStore = getVectorStore(index.name, index.type);
+      await vectorStore.deleteIndex();
+    } catch (err) {
+      console.log("Failed to delete vector index", err);
+    }
 
     // Delete internal index
     await indexModel.deleteOneById(id);
