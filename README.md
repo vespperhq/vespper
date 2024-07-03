@@ -195,7 +195,7 @@ If you're interested in contributing to Merlinn, checkout our [`CONTRIBUTING.md`
 
 ## Troubleshooting ⚒️
 
-If you encounter any problems/errors/issues with Merlinn, checkout our [troubleshooting guide](https://github.com/merlinn-co/merlinn/tree/main/config/slack/TROUBLESHOOTING.md). We try to update it regularly, and fix some of the urgent problems there as soon as possible.
+If you encounter any problems/errors/issues with Merlinn, checkout our [troubleshooting guide](https://github.com/merlinn-co/merlinn/tree/main/TROUBLESHOOTING.md). We try to update it regularly, and fix some of the urgent problems there as soon as possible.
 
 Moreover, feel free to reach out to us at our [support channels](#support-and-feedback-️).
 
