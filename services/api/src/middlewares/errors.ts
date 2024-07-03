@@ -1,8 +1,23 @@
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../errors";
-
+import { PostHogClient } from "../telemetry/posthog";
+import { uuid } from "uuidv4";
 // handles productional error
+
+const captureErrorInTelemetry = (error: AppError) => {
+  const posthog = new PostHogClient();
+  posthog.capture({
+    event: "app_error",
+    distinctId: uuid(),
+    properties: {
+      message: error.message,
+    },
+  });
+};
 const productionError = (error: AppError, res: Response) => {
+
+  captureErrorInTelemetry(error);
+
   // Send a lean error message
   res.status(error.statusCode).json({
     status: error.status,
@@ -14,6 +29,9 @@ const productionError = (error: AppError, res: Response) => {
 // Send a detailed error message, for debugging purposes
 const developmentError = (error: AppError, res: Response) => {
   console.error("developmentError error: ", error);
+
+  captureErrorInTelemetry(error);
+
   res.status(error.statusCode).json({
     status: error.status,
     message: error.message,
