@@ -42,9 +42,13 @@ async def build_index(
 
         store = get_vector_store(index_name, index_type)
 
-        if await store.is_index_live():
-            print("Index exists. Delete old one...")
-            await store.delete_index()
+        try:
+            if await store.is_index_live():
+                print("Index exists. Delete old one...")
+                await store.delete_index()
+        except Exception as e:
+            print("Could not delete index", e)
+            print("Trying to move forward")
         await store.create_index()
 
         async def update_status(vendor_name: str, status: str):
