@@ -149,7 +149,7 @@ You can find the installation video [here](https://www.loom.com/share/1f562cb067
    ```
 
 That's it. You should be able to visit Merlinn's dashboard in http://localhost:5173.
-Simply create a user **(with the same e-mail as the one in your Slack user)** and start to configure your organization.
+Simply create a user **(with the same e-mail as the one in your Slack user)** and start to configure your organization. If something does not work for you, please checkout our [troubleshooting](#troubleshooting-️) or reach out to us via our [support channels](#support-and-feedback-️).
 
 The next steps are to configure your organization a bit more (connect incident management tools, build a knowledge base, etc). Head over to the [connect & configure](https://docs.merlinn.co/Getting%20started/Configure%20&%20connect) section in our docs for more information 💫
 
