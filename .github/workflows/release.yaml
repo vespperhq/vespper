@@ -28,13 +28,11 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: Derive appropriate SHAs for base and head for `nx affected` commands
         uses: nrwl/nx-set-shas@v4
-      - name: Log in to the Container registry
+      - name: Log in to Github Container registry
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      # - name: Build images and push to Github Container Registry
-      #   run: npx nx affected --base=$NX_BASE --head=$NX_HEAD --output-style stream -t container --parallel=4 --configuration=production
       - name: Build images and push to Github Container Registry
         run: npx nx run-many  -t container --output-style stream --parallel=4 --configuration=production
