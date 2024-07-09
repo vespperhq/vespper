@@ -48,17 +48,7 @@ function getImageTag(serviceName: string) {
 }
 
 // Deploy images to Google Cloud Run
-async function deployImageToGCP(serviceName: string) {
-  console.log(`Deploying ${serviceName}...`);
-  const imageTag = await getImageTag(serviceName);
-  console.log(`Image tag: ${imageTag}`);
-  return execCommand(
-    `gcloud run deploy ${serviceName} --image ${imageTag} --region europe-west2`,
-  );
-}
-
-// Deploy images to Docker Hub
-async function deployImageToDockerHub(serviceName: string) {
+async function deployImage(serviceName: string) {
   console.log(`Deploying ${serviceName}...`);
   const imageTag = await getImageTag(serviceName);
   console.log(`Image tag: ${imageTag}`);
