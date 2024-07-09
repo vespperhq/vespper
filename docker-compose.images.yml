@@ -1,56 +1,63 @@
 services:
+  # Infra services
+  postgres:
+    extends:
+      file: docker-compose.common.yml
+      service: postgres
+  litellm:
+    extends:
+      file: docker-compose.common.yml
+      service: litellm
+  mongo:
+    extends:
+      file: docker-compose.common.yml
+      service: mongo
+  chroma:
+    extends:
+      file: docker-compose.common.yml
+      service: chroma
+  vector-admin:
+    extends:
+      file: docker-compose.common.yml
+      service: vector-admin
+  ory-kratos-migrate:
+    extends:
+      file: docker-compose.common.yml
+      service: ory-kratos-migrate
+  ory-kratos:
+    extends:
+      file: docker-compose.common.yml
+      service: ory-kratos
+  ory-kratos-admin-ui:
+    extends:
+      file: docker-compose.common.yml
+      service: ory-kratos-admin-ui
+  ory-kratos-self-serve-ui:
+    extends:
+      file: docker-compose.common.yml
+      service: ory-kratos-self-serve-ui
+  vault:
+    extends:
+      file: docker-compose.common.yml
+      service: vault
+  # App services
   api:
-    container_name: api
-    profiles: ["app"]
+    extends:
+      file: docker-compose.common.yml
+      service: api
     image: ghcr.io/merlinn/api:latest
-    env_file:
-      - services/api/.env.dev
-      - services/api/.env.docker
-    environment:
-      - OPENAI_API_KEY
-      - SMTP_CONNECTION_URL
-      - SLACK_APP_TOKEN
-      - HASHICORP_VAULT_ROOT_TOKEN
-      - HASHICORP_VAULT_UNSEAL_TOKEN
-    ports:
-      - "${API_PORT}:${API_PORT}"
-    depends_on:
-      - mongo
-      - vault
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
   slackbot:
-    container_name: slackbot
-    profiles: ["app"]
+    extends:
+      file: docker-compose.common.yml
+      service: slackbot
     image: ghcr.io/merlinn/slackbot:latest
-    env_file:
-      - services/slackbot/.env.dev
-      - services/slackbot/.env.docker
-    environment:
-      - SLACK_APP_TOKEN
-      - SLACK_BOT_TOKEN
-      - SLACK_SIGNING_SECRET
-    ports:
-      - "${SLACKBOT_PORT}:${SLACKBOT_PORT}"
   data-processor:
-    container_name: data-processor
-    profiles: ["app"]
+    extends:
+      file: docker-compose.common.yml
+      service: data-processor
     image: ghcr.io/merlinn/data-processor:latest
-    env_file:
-      - services/data-processor/.env.dev
-      - services/data-processor/.env.docker
-    environment:
-      - OPENAI_API_KEY
-      - HASHICORP_VAULT_ROOT_TOKEN
-      - HASHICORP_VAULT_UNSEAL_TOKEN
-      - IS_DOCKER=true
-    ports:
-      - "${DATA_PROCESSOR_PORT}:${DATA_PROCESSOR_PORT}"
-    depends_on:
-      - mongo
   dashboard:
-    container_name: dashboard
-    profiles: ["app"]
+    extends:
+      file: docker-compose.common.yml
+      service: dashboard
     image: ghcr.io/merlinn/dashboard:latest
-    ports:
-      - "${DASHBOARD_PORT}:80"

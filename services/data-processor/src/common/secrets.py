@@ -1,17 +1,25 @@
 import os
+import hvac
 from typing import Dict, List
 from google.cloud import secretmanager
-import hvac
+from pathlib import Path
 
 
 def fetch_secrets(secret_names: List[str]) -> Dict[str, str]:
-    if os.getenv("GCLOUD_PROJECT"):
+    secret_manager_type = os.getenv("SECRET_MANAGER_TYPE")
+    if secret_manager_type == "file":
+        if not os.getenv("SECRET_MANAGER_DIRECTORY"):
+            raise Exception("Secret directory is required")
+        return fetch_file_secrets(secret_names)
+    elif secret_manager_type == "gcp":
         return fetch_gcp_secrets(secret_names)
-    elif (
-        os.getenv("HASHICORP_VAULT_URL")
-        and os.getenv("HASHICORP_VAULT_ROOT_TOKEN")
-        and os.getenv("HASHICORP_VAULT_UNSEAL_TOKEN")
-    ):
+    elif secret_manager_type == "vault":
+        if (
+            not os.getenv("HASHICORP_VAULT_URL")
+            or not os.getenv("HASHICORP_VAULT_ROOT_TOKEN")
+            or not os.getenv("HASHICORP_VAULT_UNSEAL_TOKEN")
+        ):
+            raise Exception("Vault URL, root token, and unseal token are required")
         return fetch_vault_secrets(secret_names)
     else:
         raise Exception("No secret provider found")
@@ -57,6 +65,27 @@ def fetch_vault_secrets(secret_names: List[str]) -> Dict[str, str]:
 
             payload = response["data"]["data"]["value"]
             result[secret_name] = payload
+        except Exception as error:
+            print(f"Error fetching secret {secret_name}: {error}")
+
+    return result
+
+
+def fetch_file_secrets(secret_names: List[str]) -> Dict[str, str]:
+    secret_directory = os.getenv("SECRET_MANAGER_DIRECTORY")
+    if not secret_directory:
+        raise Exception("No secret directory found")
+
+    result = {}
+    for secret_name in secret_names:
+        try:
+            secret_path = Path(secret_directory, secret_name)
+            if not secret_path.exists():
+                raise Exception(f"Could not find secret {secret_name}")
+
+            with secret_path.open() as secret_file:
+                payload = secret_file.read()
+                result[secret_name] = payload
         except Exception as error:
             print(f"Error fetching secret {secret_name}: {error}")
 

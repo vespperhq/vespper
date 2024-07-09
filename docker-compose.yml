@@ -1,63 +1,70 @@
 services:
+  # Infra services
+  postgres:
+    extends:
+      file: docker-compose.common.yml
+      service: postgres-common
+  litellm:
+    extends:
+      file: docker-compose.common.yml
+      service: litellm-common
+  mongo:
+    extends:
+      file: docker-compose.common.yml
+      service: mongo-common
+  chroma:
+    extends:
+      file: docker-compose.common.yml
+      service: chroma-common
+  vector-admin:
+    extends:
+      file: docker-compose.common.yml
+      service: vector-admin-common
+  ory-kratos-migrate:
+    extends:
+      file: docker-compose.common.yml
+      service: ory-kratos-migrate-common
+  ory-kratos:
+    extends:
+      file: docker-compose.common.yml
+      service: ory-kratos-common
+  ory-kratos-admin-ui:
+    extends:
+      file: docker-compose.common.yml
+      service: ory-kratos-admin-ui-common
+  ory-kratos-self-serve-ui:
+    extends:
+      file: docker-compose.common.yml
+      service: ory-kratos-self-serve-ui-common
+  vault:
+    extends:
+      file: docker-compose.common.yml
+      service: vault-common
+  # App services
   api:
-    container_name: api
-    profiles: ["app"]
+    extends:
+      file: docker-compose.common.yml
+      service: api-common
     build:
       context: "."
       dockerfile: services/api/Dockerfile
-    env_file:
-      - services/api/.env.dev
-      - services/api/.env.docker
-    environment:
-      - OPENAI_API_KEY
-      - SMTP_CONNECTION_URL
-      - SLACK_APP_TOKEN
-      - HASHICORP_VAULT_ROOT_TOKEN
-      - HASHICORP_VAULT_UNSEAL_TOKEN
-    ports:
-      - "${API_PORT}:${API_PORT}"
-    depends_on:
-      - mongo
-      - vault
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
   slackbot:
-    container_name: slackbot
-    profiles: ["app"]
+    extends:
+      file: docker-compose.common.yml
+      service: slackbot-common
     build:
       context: "."
       dockerfile: services/slackbot/Dockerfile
-    env_file:
-      - services/slackbot/.env.dev
-      - services/slackbot/.env.docker
-    environment:
-      - SLACK_APP_TOKEN
-      - SLACK_BOT_TOKEN
-      - SLACK_SIGNING_SECRET
-    ports:
-      - "${SLACKBOT_PORT}:${SLACKBOT_PORT}"
   data-processor:
-    container_name: data-processor
-    profiles: ["app"]
+    extends:
+      file: docker-compose.common.yml
+      service: data-processor-common
     build: 
       context: services/data-processor
-    env_file:
-      - services/data-processor/.env.dev
-      - services/data-processor/.env.docker
-    environment:
-      - OPENAI_API_KEY
-      - HASHICORP_VAULT_ROOT_TOKEN
-      - HASHICORP_VAULT_UNSEAL_TOKEN
-      - IS_DOCKER=true
-    ports:
-      - "${DATA_PROCESSOR_PORT}:${DATA_PROCESSOR_PORT}"
-    depends_on:
-      - mongo
   dashboard:
-    container_name: dashboard
-    profiles: ["app"]
+    extends:
+      file: docker-compose.common.yml
+      service: dashboard-common
     build: 
       context: "."
       dockerfile: services/dashboard/Dockerfile
-    ports:
-      - "${DASHBOARD_PORT}:80"

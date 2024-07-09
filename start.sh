@@ -9,6 +9,7 @@ test -e merlinn
 cd merlinn
 
 which curl &> /dev/null || echo "curl not installed" 
+curl https://raw.githubusercontent.com/merlinn-co/merlinn/main/docker-compose.common.yml --output docker-compose.common.yml
 curl https://raw.githubusercontent.com/merlinn-co/merlinn/main/docker-compose.yml --output docker-compose.yml
 
 docker compose up -d

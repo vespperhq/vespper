@@ -1,5 +1,6 @@
 services:
-  postgres:
+  # Infra services
+  postgres-common:
     image: postgres
     container_name: postgres
     profiles: ["app", "infra"]
@@ -12,7 +13,7 @@ services:
       - POSTGRES_PASSWORD
       - POSTGRES_USER
       - POSTGRES_MULTIPLE_DATABASES
-  litellm:
+  litellm-common:
     image: ghcr.io/berriai/litellm:main-latest
     container_name: litellm
     profiles: ["app", "infra"]
@@ -23,7 +24,7 @@ services:
     volumes:
       - ${CONFIG_DIR}/litellm/config.yaml:/app/config.yaml
     command: --config /app/config.yaml --detailed_debug
-  mongo:
+  mongo-common:
     image: mongo
     container_name: mongo
     profiles: ["app", "infra"]
@@ -32,7 +33,7 @@ services:
       - ${DATA_DIR}/mongo:/data/db:rw
     ports:
       - "${MONGO_PORT}:${MONGO_PORT}"
-  chroma:
+  chroma-common:
     image: chromadb/chroma
     container_name: chroma
     profiles: ["app", "infra"]
@@ -44,7 +45,7 @@ services:
       - CHROMA_SERVER_AUTHN_CREDENTIALS
       - CHROMA_SERVER_AUTHN_PROVIDER
       - CHROMA_AUTH_TOKEN_TRANSPORT_HEADER
-  vector-admin:
+  vector-admin-common:
     image: mintplexlabs/vectoradmin
     profiles: ["debug"]
     ports:
@@ -56,7 +57,7 @@ services:
       - INNGEST_SIGNING_KEY=${VECTOR_ADMIN_INNGEST_SIGNING_KEY}
       - INNGEST_LANDING_PAGE=${VECTOR_ADMIN_INNGEST_LANDING_PAGE}
       - DATABASE_CONNECTION_STRING=${VECTOR_ADMIN_DB_URL}
-  ory-kratos-migrate:
+  ory-kratos-migrate-common:
     image: oryd/kratos:v1.2.0
     container_name: ory-kratos-migrate
     profiles: ["app", "infra"]
@@ -70,7 +71,7 @@ services:
     restart: on-failure
     depends_on:
       - postgres
-  ory-kratos:
+  ory-kratos-common:
     image: oryd/kratos:v1.2.0
     container_name: ory-kratos
     profiles: ["app", "infra"]
@@ -90,7 +91,7 @@ services:
   # This container is helpful in case you want to manage users.
   # Currently it's excluded from the infra profile for the sake of simplicity.
   # To start it, simply run "docker compose up ory-kratos-admin-ui -d"
-  ory-kratos-admin-ui:
+  ory-kratos-admin-ui-common:
     image: ghcr.io/dfoxg/kratos-admin-ui:v2.3.2
     container_name: ory-kratos-admin-ui
     ports:
@@ -99,7 +100,7 @@ services:
     environment:
       - KRATOS_ADMIN_URL=${KRATOS_ADMIN_URL}
       - KRATOS_PUBLIC_URL=${KRATOS_PUBLIC_URL}
-  ory-kratos-self-serve-ui:
+  ory-kratos-self-serve-ui-common:
     image: oryd/kratos-selfservice-ui-node:v1.2.0
     container_name: ory-kratos-self-serve-ui
     profiles: ["app", "infra"]
@@ -113,7 +114,7 @@ services:
       - CSRF_COOKIE_NAME=${KRATOS_SELF_SERVE_UI_CSRF_COOKIE_NAME}
       - CSRF_COOKIE_SECRET=${KRATOS_SELF_SERVE_UI_CSRF_COOKIE_SECRET}
     restart: on-failure
-  vault:
+  vault-common:
     image: vault:1.13.3
     container_name: vault
     profiles: ["app", "infra"]
@@ -130,3 +131,78 @@ services:
       - "8201:8201"
       - "8202:8202"
     entrypoint: vault server -config=/vault/config/vault.hcl
+  # App services
+  api-common:
+    container_name: api
+    profiles: ["app"]
+    environment:
+      - OPENAI_API_KEY
+      - SMTP_CONNECTION_URL
+      - SLACK_APP_TOKEN
+      - SECRET_MANAGER_TYPE
+      - SECRET_MANAGER_DIRECTORY
+      - HASHICORP_VAULT_ROOT_TOKEN
+      - HASHICORP_VAULT_UNSEAL_TOKEN
+      - HASHICORP_VAULT_URL
+      - NODE_ENV=development
+      - METADATA_ENCRYPTION_KEY=f78d8202-bb2a-49fe-bd63-a586cd921226
+      - ENCRYPTION_SALT=1234567890123456
+      - APP_URL=http://localhost:5173
+      - MONGO_URI=mongodb://mongo:27017/merlinn-db
+      - ORY_PUBLIC_URL=http://ory-kratos:4433
+      - ORY_ADMIN_URL=http://ory-kratos:4434
+      - ORY_WEBHOOK_SECRET=super-secret-ory-webhook-key
+      - CHROMADB_HOST=http://chroma:8000
+      - CHROMADB_API_KEY=secret-token
+      - DATA_PROCESSOR_URL=http://data-processor:3002
+      - LITELLM_PROXY_URL=http://litellm:4000
+      - TELEMETRY_ENABLED=true
+    ports:
+      - "${API_PORT}:${API_PORT}"
+    volumes:
+      - ${DATA_DIR}/secrets:${SECRET_MANAGER_DIRECTORY}
+    depends_on:
+      - mongo
+      - vault
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  slackbot-common:
+    container_name: slackbot
+    profiles: ["app"]
+    environment:
+      - SLACK_APP_TOKEN
+      - SLACK_BOT_TOKEN
+      - SLACK_SIGNING_SECRET
+      - PORT=3003
+      - NODE_ENV=development
+      - API_URL=http://api:3000
+    ports:
+      - "${SLACKBOT_PORT}:${SLACKBOT_PORT}"
+  data-processor-common:
+    container_name: data-processor
+    profiles: ["app"]
+    environment:
+      - OPENAI_API_KEY
+      - SECRET_MANAGER_TYPE
+      - SECRET_MANAGER_DIRECTORY
+      - HASHICORP_VAULT_ROOT_TOKEN
+      - HASHICORP_VAULT_UNSEAL_TOKEN
+      - HASHICORP_VAULT_URL
+      - IS_DOCKER=true
+      - MONGO_URI=mongodb://mongo:27017/merlinn-db
+      - CHROMADB_HOST=chroma
+      - CHROMADB_SSL=false
+      - CHROMADB_PORT=8000
+      - CHROMADB_API_KEY=secret-token
+      - LITELLM_PROXY_URL=http://litellm:4000
+    ports:
+      - "${DATA_PROCESSOR_PORT}:${DATA_PROCESSOR_PORT}"
+    volumes:
+      - ${DATA_DIR}/secrets:${SECRET_MANAGER_DIRECTORY}
+    depends_on:
+      - mongo
+  dashboard-common:
+    container_name: dashboard
+    profiles: ["app"]
+    ports:
+      - "${DASHBOARD_PORT}:80"
