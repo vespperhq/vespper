@@ -24,6 +24,7 @@ def fetch_slack_documents(integration: Integration):
     # TODO: Add pagination to support more than 100 channels
     channels = client.conversations_list(
         exclude_archived=True,
+        types=["public_channel", "private_channel"],
     )
     channel_ids = [channel["id"] for channel in channels["channels"]]
 
