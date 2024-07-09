@@ -30,6 +30,8 @@ oauth_config:
       - files:read
       - commands
       - team:read
+      - groups:read
+      - groups:history
 settings:
   event_subscriptions:
     bot_events:
