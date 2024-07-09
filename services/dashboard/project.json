@@ -1,5 +1,5 @@
 {
-  "name": "slackbot",
+  "name": "dashboard",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "targets": {
     "container": {
@@ -7,18 +7,18 @@
       "defaultConfiguration": "local",
       "options": {
         "engine": "docker",
-        "file": "services/slackbot/Dockerfile",
+        "file": "services/dashboard/Dockerfile",
         "platforms": ["linux/amd64"]
       },
       "configurations": {
         "local": {
-          "tags": ["slackbot:latest"],
+          "tags": ["dashboard:latest"],
           "push": false
         },
         "production": {
           "push": true,
           "metadata": {
-            "images": ["ghcr.io/merlinn/slackbot"],
+            "images": ["ghcr.io/merlinn/dashboard"],
             "tags": ["type=sha"]
           }
         }

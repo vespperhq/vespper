@@ -1,0 +1,42 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: "read"
+      id-token: "write"
+      actions: "read"
+      packages: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          # We need to fetch all branches and commits so that Nx affected has a base to compare against.
+          fetch-depth: 0
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          cache: "yarn"
+          node-version: 18
+      - name: Install Yarn
+        run: npm install -g yarn
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v4
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build images and push to Github Container Registry
+        run: INPUT_GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} npx nx affected --base=$NX_BASE --head=$NX_HEAD --output-style stream -t container --parallel=4 --configuration=production

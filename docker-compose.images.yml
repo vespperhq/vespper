@@ -2,9 +2,7 @@ services:
   api:
     container_name: api
     profiles: ["app"]
-    build:
-      context: "."
-      dockerfile: services/api/Dockerfile
+    image: ghcr.io/merlinn/api:latest
     env_file:
       - services/api/.env.dev
       - services/api/.env.docker
@@ -24,9 +22,7 @@ services:
   slackbot:
     container_name: slackbot
     profiles: ["app"]
-    build:
-      context: "."
-      dockerfile: services/slackbot/Dockerfile
+    image: ghcr.io/merlinn/slackbot:latest
     env_file:
       - services/slackbot/.env.dev
       - services/slackbot/.env.docker
@@ -39,8 +35,7 @@ services:
   data-processor:
     container_name: data-processor
     profiles: ["app"]
-    build: 
-      context: services/data-processor
+    image: ghcr.io/merlinn/data-processor:latest
     env_file:
       - services/data-processor/.env.dev
       - services/data-processor/.env.docker
@@ -56,8 +51,6 @@ services:
   dashboard:
     container_name: dashboard
     profiles: ["app"]
-    build: 
-      context: "."
-      dockerfile: services/dashboard/Dockerfile
+    image: ghcr.io/merlinn/dashboard:latest
     ports:
       - "${DASHBOARD_PORT}:80"
