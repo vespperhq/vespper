@@ -47,7 +47,6 @@ function getImageTag(serviceName: string) {
   );
 }
 
-// Deploy images to Google Cloud Run
 async function deployImage(serviceName: string) {
   console.log(`Deploying ${serviceName}...`);
   const imageTag = await getImageTag(serviceName);
