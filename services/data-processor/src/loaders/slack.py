@@ -22,7 +22,10 @@ def fetch_slack_documents(integration: Integration):
     client = WebClient(token=integration.credentials["access_token"])
     # Get most up to date channels
     # TODO: Add pagination to support more than 100 channels
-    channels = client.conversations_list(exclude_archived=True, limit=100)
+    channels = client.conversations_list(
+        exclude_archived=True,
+        types=["public_channel", "private_channel"],
+    )
     channel_ids = [channel["id"] for channel in channels["channels"]]
 
     id2name = {channel["id"]: channel["name"] for channel in channels["channels"]}

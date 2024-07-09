@@ -70,6 +70,7 @@ async def get_documents(
         # Limit the number of documents per source
         # docs = docs[:limit_per_source]
 
+        print(f"Found {len(docs)} documents for {vendor_name}")
         documents.extend(docs)
         stats[integration.vendor.name] = len(docs)
 
