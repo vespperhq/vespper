@@ -6,7 +6,7 @@ from bson import ObjectId
 
 
 async def get_index_by_organization_id(organization_id: str) -> Index:
-    index = await db.index.find_one({"organization": organization_id})
+    index = await db.index.find_one({"organization": ObjectId(organization_id)})
     return index
 
 

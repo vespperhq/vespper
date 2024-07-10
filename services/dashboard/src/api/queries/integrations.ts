@@ -24,11 +24,8 @@ export const useCreateIntegration = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (requestData: ConnectRequest) => {
-      await axios.post(requestData.url!, requestData.body, requestData.config);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await new Promise((resolve: any) => setTimeout(resolve, 5000));
-    },
+    mutationFn: async (requestData: ConnectRequest) =>
+      axios.post(requestData.url!, requestData.body, requestData.config),
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: [ConnectionType.Integration] });
     },

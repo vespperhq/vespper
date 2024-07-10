@@ -114,10 +114,12 @@ services:
       - CSRF_COOKIE_NAME=${KRATOS_SELF_SERVE_UI_CSRF_COOKIE_NAME}
       - CSRF_COOKIE_SECRET=${KRATOS_SELF_SERVE_UI_CSRF_COOKIE_SECRET}
     restart: on-failure
+  # We support Hashicorp Vault but for now the default secret manager
+  # is a simple file-based secret manager.
   vault-common:
     image: vault:1.13.3
     container_name: vault
-    profiles: ["app", "infra"]
+    profiles: ["misc"]
     environment:
       - VAULT_ADDR=http://0.0.0.0:8200
       - VAULT_API_ADDR=http://0.0.0.0:8200
@@ -136,6 +138,7 @@ services:
     container_name: api
     profiles: ["app"]
     environment:
+      - TELEMETRY_ENABLED
       - OPENAI_API_KEY
       - SMTP_CONNECTION_URL
       - SLACK_APP_TOKEN
@@ -144,57 +147,57 @@ services:
       - HASHICORP_VAULT_ROOT_TOKEN
       - HASHICORP_VAULT_UNSEAL_TOKEN
       - HASHICORP_VAULT_URL
+      - MONGO_URI
+      - APP_URL
+      - KRATOS_PUBLIC_URL
+      - KRATOS_ADMIN_URL
+      - DATA_PROCESSOR_URL
+      - LITELLM_URL
       - NODE_ENV=development
       - METADATA_ENCRYPTION_KEY=f78d8202-bb2a-49fe-bd63-a586cd921226
       - ENCRYPTION_SALT=1234567890123456
-      - APP_URL=http://localhost:5173
-      - MONGO_URI=mongodb://mongo:27017/merlinn-db
-      - ORY_PUBLIC_URL=http://ory-kratos:4433
-      - ORY_ADMIN_URL=http://ory-kratos:4434
       - ORY_WEBHOOK_SECRET=super-secret-ory-webhook-key
-      - CHROMADB_HOST=http://chroma:8000
-      - CHROMADB_API_KEY=secret-token
-      - DATA_PROCESSOR_URL=http://data-processor:3002
-      - LITELLM_PROXY_URL=http://litellm:4000
-      - TELEMETRY_ENABLED=true
+      - CHROMA_HOST
+      - CHROMA_API_KEY=${CHROMA_SERVER_AUTHN_CREDENTIALS}
     ports:
       - "${API_PORT}:${API_PORT}"
     volumes:
       - ${DATA_DIR}/secrets:${SECRET_MANAGER_DIRECTORY}
     depends_on:
       - mongo
-      - vault
     extra_hosts:
       - "host.docker.internal:host-gateway"
   slackbot-common:
     container_name: slackbot
     profiles: ["app"]
     environment:
+      - TELEMETRY_ENABLED
       - SLACK_APP_TOKEN
       - SLACK_BOT_TOKEN
       - SLACK_SIGNING_SECRET
+      - API_URL
       - PORT=3003
       - NODE_ENV=development
-      - API_URL=http://api:3000
     ports:
       - "${SLACKBOT_PORT}:${SLACKBOT_PORT}"
   data-processor-common:
     container_name: data-processor
     profiles: ["app"]
     environment:
+      - TELEMETRY_ENABLED
       - OPENAI_API_KEY
       - SECRET_MANAGER_TYPE
       - SECRET_MANAGER_DIRECTORY
       - HASHICORP_VAULT_ROOT_TOKEN
       - HASHICORP_VAULT_UNSEAL_TOKEN
       - HASHICORP_VAULT_URL
+      - MONGO_URI
+      - LITELLM_URL
       - IS_DOCKER=true
-      - MONGO_URI=mongodb://mongo:27017/merlinn-db
-      - CHROMADB_HOST=chroma
-      - CHROMADB_SSL=false
-      - CHROMADB_PORT=8000
-      - CHROMADB_API_KEY=secret-token
-      - LITELLM_PROXY_URL=http://litellm:4000
+      - CHROMA_HOST=chroma
+      - CHROMA_SSL=false
+      - CHROMA_PORT=8000
+      - CHROMA_API_KEY=${CHROMA_SERVER_AUTHN_CREDENTIALS}
     ports:
       - "${DATA_PROCESSOR_PORT}:${DATA_PROCESSOR_PORT}"
     volumes:

@@ -12,14 +12,14 @@ export function getVectorStore(
       }
       return new PineconeVectorStore(process.env.PINECONE_API_KEY, indexName);
     case "chromadb":
-      if (!process.env.CHROMADB_HOST || !process.env.CHROMADB_API_KEY) {
+      if (!process.env.CHROMA_HOST || !process.env.CHROMA_API_KEY) {
         throw new Error(
-          "CHROMADB_HOST and CHROMADB_API_KEY are required for ChromaDB",
+          "CHROMA_HOST and CHROMA_API_KEY are required for ChromaDB",
         );
       }
       return new ChromaDBVectorStore(
-        process.env.CHROMADB_HOST as string,
-        process.env.CHROMADB_API_KEY as string,
+        process.env.CHROMA_HOST as string,
+        process.env.CHROMA_API_KEY as string,
         indexName,
       );
     default:

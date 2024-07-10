@@ -16,7 +16,7 @@ export const createAgent = async (
   template: ChatPromptTemplate,
 ) => {
   const apiKey = process.env.OPENAI_API_KEY;
-  const baseURL = process.env.LITELLM_PROXY_URL;
+  const baseURL = process.env.LITELLM_URL;
 
   const model = new ChatOpenAI({
     configuration: { baseURL },

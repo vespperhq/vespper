@@ -38,7 +38,7 @@ Merlinn is an AI-powered on-call engineer. It can automatically jump into incide
 
 ## Why ❓
 
-Most people don't like to do on-call shifts. It requires engineers to be swift and solve problems quickly. However, it takes time to reach to the root cause of the problem. That's why we developed Merlinn. We believe Gen AI can help on-call developrs solve issues faster.
+Most people don't like to do on-call shifts. It requires engineers to be swift and solve problems quickly. Moreover, it takes time to reach to the root cause of the problem. That's why we developed Merlinn. We believe Gen AI can help on-call developrs solve issues faster.
 
 ## Table of Contents
 
@@ -93,15 +93,9 @@ You can find the installation video [here](https://www.loom.com/share/1f562cb067
    git clone git@github.com:merlinn-co/merlinn.git && cd merlinn
    ```
 
-2. Copy the .env.example file:
+2. Configure LiteLLM Proxy Server:
 
-   ```bash
-   cp .env.example .env
-   ```
-
-3. Configure LiteLLM Proxy Server:
-
-   We use [LiteLLM Proxy Server](https://docs.litellm.ai/docs/simple_proxy) to interact with 100+ of models in a unified interface (OpenAI interface).
+   We use [LiteLLM Proxy Server](https://docs.litellm.ai/docs/simple_proxy) to interact with 100+ of LLMs in a unified interface (OpenAI interface).
 
    1. Copy the example files:
 
@@ -110,40 +104,29 @@ You can find the installation video [here](https://www.loom.com/share/1f562cb067
       cp config/litellm/config.example.yaml config/litellm/config.yaml
       ```
 
-   2. Define your OpenAI key and place it inside `config/litellm/.env` as `OPENAI_API_KEY`. You can get your API key [here](https://platform.openai.com/api-keys). Rest assured, you won't be charged unless you use the API. For more details on pricing, check [here](https://openai.com/pricing).
+   2. Define your **OpenAI key** and place it inside `config/litellm/.env` as `OPENAI_API_KEY`. You can get your API key [here](https://platform.openai.com/api-keys). Rest assured, you won't be charged unless you use the API. For more details on pricing, check [here](https://openai.com/pricing).
 
    3. **(Optional)** Define custom endpoints. If you want to use other vendors (AWS Bedrock, Azure OpenAI, Anthropic, Hugging Face models, etc), checkout LiteLLM Proxy documentation. You simply need to change `config/litellm/.env` & `config/litellm/config.yaml`. Checkout the comments there & LiteLLM's documentation. **Note** You have to use a vendor that supports function calling.
 
-4. Launch vault and obtain vault tokens:
+3. Copy the `.env.example` file:
 
-   We use Hashicorp Vault to manage secrets such as API tokens, OAuth credentials, etc.
+   ```bash
+   cp .env.example .env
+   ```
 
-   1. Launch the vault instance:
-
-      ```bash
-      docker compose up vault -d
-      ```
-
-   2. Go to Vault UI: http://localhost:8202
-   3. Insert 1 in "Key shares" and "Key threshold" and click "Initialize".
-   4. Click "Download keys".
-   5. In the JSON file you've downloaded, copy the first value in "keys_base64" and the "root_token" value. These values are going to be used in the next step as `HASHICORP_VAULT_UNSEAL_TOKEN` and `HASHICORP_VAULT_ROOT_TOKEN` respectively.
-
-5. Open `.env` in your favorite editor (vim, vscode, emacs, etc):
+4. Open the `.env` file in your favorite editor (vim, vscode, emacs, etc):
 
    ```bash
    vim .env # or emacs or vscode or nano
    ```
 
-6. Update these variables:
+5. Update these variables:
 
    - `SLACK_BOT_TOKEN`, `SLACK_APP_TOKEN` and `SLACK_SIGNING_SECRET` - These variables are needed in order to talk to Merlinn on Slack. Please follow [this guide](https://github.com/merlinn-co/merlinn/tree/main/config/slack/README.md) to create a new Slack app in your organization.
 
-   - `HASHICORP_VAULT_ROOT_TOKEN` and `HASHICORP_VAULT_UNSEAL_TOKEN` - These variables are used to manage your secrets. You should obtain them from the JSON you've downloaded at step 3. `root_token`=`HASHICORP_VAULT_ROOT_TOKEN`, `keys_base64`=`HASHICORP_VAULT_UNSEAL_TOKEN`
-
    - (Optional) `SMTP_CONNECTION_URL` - This variable is needed in order to invite new members to your Merlinn organization via email and allow them to use the bot. It's not mandatory if you just want to test Merlinn and play with it. If you do want to send invites to your team members, you can use a service like SendGrid/Mailgun. Should follow this pattern: `smtp://username:password@domain:port`.
 
-7. Launch the project:
+6. Launch the project:
    ```bash
    docker compose up -d
    ```
@@ -210,7 +193,7 @@ This allows us to:
 
 Rest assured, the data collected is not shared with third parties and does not include any sensitive information. We aim to be transparent, and you can review the specific data we collect [here](https://github.com/merlinn-co/merlinn/blob/main/services/api/src/telemetry/listener.ts).
 
-If you prefer not to participate, you can easily opt-out by setting `TELEMETRY_ENABLED=false` inside `services/api/.env.dev`.
+If you prefer not to participate, you can easily opt-out by setting `TELEMETRY_ENABLED=false` inside your `.env`.
 
 ## License 📃
 

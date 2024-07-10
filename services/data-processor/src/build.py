@@ -32,7 +32,7 @@ async def build_index(
     index_id: ObjectId,
     data_sources: Optional[List[str]] = None,
 ):
-    litellm_proxy_url = os.getenv("LITELLM_PROXY_URL")
+    litellm_url = os.getenv("LITELLM_URL")
 
     try:
         index = await db.index.find_one({"_id": index_id})
@@ -67,7 +67,7 @@ async def build_index(
         vector_store = store.get_llama_index_store()
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         embed_model = LiteLLMEmbedding(
-            api_base=litellm_proxy_url,
+            api_base=litellm_url,
             model_name="openai/embedding-model",
         )
 
