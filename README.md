@@ -20,7 +20,7 @@
 <div style="display: flex" style="margin-bottom: 20px">
 <a href="https://merlinn.co/?utm_source=github"><img src="https://img.shields.io/badge/Website-blue?logo=googlechrome&logoColor=orange"/></a>
   <a href="https://calendly.com/dudu-merlinn/45-minute-meeting"><img src="https://img.shields.io/badge/Book%20a%20Call-blue" /></a>
-<a href="https://github.com/merlinn-co/merlinn/blob/main/LICENSE.md"><img src="https://img.shields.io/badge/License-GNU AGPLv3-red.svg?style=flat-square" alt="GNU AGPLv3 License"></a>
+<a href="https://github.com/merlinn-co/merlinn/blob/main/LICENSE.md"><img src="https://img.shields.io/badge/License-Apache 2.0-red.svg?style=flat-square" alt="Apache 2.0 License"></a>
 <a href="https://github.com/merlinn-co/merlinn/actions/workflows/ci.yml/badge.svg?branch=main">
 <img src="https://github.com/merlinn-co/merlinn/actions/workflows/ci.yml/badge.svg?branch=main" alt="main-workflow">
 </a>
@@ -218,7 +218,7 @@ If you prefer not to participate, you can easily opt-out by setting `TELEMETRY_E
 
 ## License 📃
 
-This project is licensed under the GNU AGPLv3 License - see the [LICENSE](https://github.com/merlinn-co/merlinn/tree/main/LICENSE.md) file for details
+This project is licensed under the Apache 2.0 license - see the [LICENSE](https://github.com/merlinn-co/merlinn/tree/main/LICENSE.md) file for details
 
 ## Learn more 🔍
 
