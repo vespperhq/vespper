@@ -1,6 +1,3 @@
-#!/bin/bash
-# This script downloads the docker-compose.yml file and starts the Merlinn network using docker compose.
-
 echo "Creating merlinn directory"
 mkdir -p merlinn
 test -e merlinn
@@ -10,10 +7,6 @@ cd merlinn
 
 which curl &> /dev/null || echo "curl is not installed. Please install curl and try again."
 
-curl https://raw.githubusercontent.com/merlinn-co/merlinn/main/docker-compose.common.yml --output docker-compose.common.yml
-curl https://raw.githubusercontent.com/merlinn-co/merlinn/main/docker-compose.yml --output docker-compose.yml
 curl https://raw.githubusercontent.com/merlinn-co/merlinn/main/.env.example --output .env
 curl https://raw.githubusercontent.com/merlinn-co/merlinn/main/config/litellm/.env.example --output config/litellm/.env
 curl https://raw.githubusercontent.com/merlinn-co/merlinn/main/config/litellm/config.example.yaml --output config/litellm/config.yaml
-
-docker compose up -d
