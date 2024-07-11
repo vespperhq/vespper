@@ -6,7 +6,10 @@ from pathlib import Path
 
 
 def fetch_secrets(secret_names: List[str]) -> Dict[str, str]:
-    secret_manager_type = os.getenv("SECRET_MANAGER_TYPE")
+    # Get the secret manager type from the environment variable
+    # For now, the default is set to "vault" since we don't want to break existing instances of users
+    secret_manager_type = os.getenv("SECRET_MANAGER_TYPE", "vault")
+
     if secret_manager_type == "file":
         if not os.getenv("SECRET_MANAGER_DIRECTORY"):
             raise Exception("Secret directory is required")

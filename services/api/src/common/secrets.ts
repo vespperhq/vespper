@@ -5,7 +5,7 @@ import {
 } from "@merlinn/utils";
 
 export function getSecretManager() {
-  const secretManagerType = process.env.SECRET_MANAGER_TYPE || "file";
+  const secretManagerType = process.env.SECRET_MANAGER_TYPE || "vault";
 
   switch (secretManagerType) {
     case "vault": {
