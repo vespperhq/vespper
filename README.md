@@ -138,9 +138,24 @@ The next steps are to configure your organization a bit more (connect incident m
 
 #### Using DockerHub images
 
-If you want, you can pull our images from DockerHub instead of cloning the repo & building them from scratch.
+If you want, you can pull our [Docker images](https://hub.docker.com/u/merlinnco) from DockerHub instead of cloning the repo & building from scratch.
 
-In order to do that,
+In order to do that, follow these steps:
+
+1. Download configuration files:
+
+   ```bash
+   curl https://raw.githubusercontent.com/merlinn-co/merlinn/main/tools/scripts/download_env_files.sh | sh
+   ```
+
+2. Follow steps 2 and 5 above to configure LiteLLM Proxy and your `.env` file respectively. Namely, you'd need to configure your OpenAI key at `config/litellm/.env` and configure your Slack credentials in the root `.env`.
+
+3. Spin up the environment using docker compose:
+   ```bash
+   curl https://raw.githubusercontent.com/merlinn-co/merlinn/main/tools/scripts/start.sh | sh
+   ```
+
+That's it 💫 You should be able to visit Merlinn's dashboard in http://localhost:5173.
 
 ### Updating Merlinn 🧙‍♂️
 
