@@ -24,3 +24,4 @@ curl https://raw.githubusercontent.com/merlinn-co/merlinn/main/config/kratos/web
 # Postgres config
 curl https://raw.githubusercontent.com/merlinn-co/merlinn/main/config/postgres/postgres_init.sh --output config/postgres/postgres_init.sh
 
+chmod +x config/postgres/postgres_init.sh
