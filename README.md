@@ -136,6 +136,12 @@ Simply create a user **(with the same e-mail as the one in your Slack user)** an
 
 The next steps are to configure your organization a bit more (connect incident management tools, build a knowledge base, etc). Head over to the [connect & configure](https://docs.merlinn.co/Getting%20started/Configure%20&%20connect) section in our docs for more information 💫
 
+#### Using DockerHub images
+
+If you want, you can pull our images from DockerHub instead of cloning the repo & building them from scratch.
+
+In order to do that,
+
 ### Updating Merlinn 🧙‍♂️
 
 1. Pull the latest changes:

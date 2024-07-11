@@ -65,7 +65,7 @@ services:
       - DSN=${KRATOS_DATABASE_URL}
     volumes:
       - type: bind
-        source: ${CONFIG_DIR}/kratos/email-password
+        source: ${CONFIG_DIR}/kratos
         target: /etc/config/kratos
     command: -c /etc/config/kratos/kratos.yml migrate sql -e --yes
     restart: on-failure
@@ -84,7 +84,7 @@ services:
       - LOG_LEVEL=trace
     volumes:
       - type: bind
-        source: ${CONFIG_DIR}/kratos/email-password
+        source: ${CONFIG_DIR}/kratos
         target: /etc/config/kratos
     depends_on:
       - ory-kratos-migrate
