@@ -45,19 +45,19 @@ services:
     extends:
       file: docker-compose.common.yml
       service: api-common
-    image: ghcr.io/merlinn/api:latest
+    image: merlinnco/api:latest
   slackbot:
     extends:
       file: docker-compose.common.yml
       service: slackbot-common
-    image: ghcr.io/merlinn/slackbot:latest
+    image: merlinnco/slackbot:latest
   data-processor:
     extends:
       file: docker-compose.common.yml
       service: data-processor-common
-    image: ghcr.io/merlinn/data-processor:latest
+    image: merlinnco/data-processor:latest
   dashboard:
     extends:
       file: docker-compose.common.yml
       service: dashboard-common
-    image: ghcr.io/merlinn/dashboard:latest
+    image: merlinnco/dashboard:latest
