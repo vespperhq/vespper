@@ -1,0 +1,211 @@
+services:
+  # Infra services
+  postgres-common:
+    image: postgres
+    container_name: postgres
+    profiles: ["app", "infra"]
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    volumes:
+      - ${DATA_DIR}/postgres:/var/lib/postgresql/data
+      - ${CONFIG_DIR}/postgres/postgres_init.sh:/docker-entrypoint-initdb.d/init.sh
+    environment:
+      - POSTGRES_PASSWORD
+      - POSTGRES_USER
+      - POSTGRES_MULTIPLE_DATABASES
+  litellm-common:
+    image: ghcr.io/berriai/litellm:main-latest
+    container_name: litellm
+    profiles: ["app", "infra"]
+    env_file:
+      - ${CONFIG_DIR}/litellm/.env
+    ports:
+      - "${LITELLM_PORT}:${LITELLM_PORT}"
+    volumes:
+      - ${CONFIG_DIR}/litellm/config.yaml:/app/config.yaml
+    command: --config /app/config.yaml --detailed_debug
+  mongo-common:
+    image: mongo
+    container_name: mongo
+    profiles: ["app", "infra"]
+    restart: always
+    volumes:
+      - ${DATA_DIR}/mongo:/data/db:rw
+    ports:
+      - "${MONGO_PORT}:${MONGO_PORT}"
+  chroma-common:
+    image: chromadb/chroma
+    container_name: chroma
+    profiles: ["app", "infra"]
+    ports:
+      - "${CHROMA_PORT}:${CHROMA_PORT}"
+    volumes:
+      - ${DATA_DIR}/chromadb:/chroma/chroma
+    environment:
+      - CHROMA_SERVER_AUTHN_CREDENTIALS
+      - CHROMA_SERVER_AUTHN_PROVIDER
+      - CHROMA_AUTH_TOKEN_TRANSPORT_HEADER
+  vector-admin-common:
+    image: mintplexlabs/vectoradmin
+    profiles: ["debug"]
+    ports:
+      - "${VECTOR_ADMIN_PORT}:${VECTOR_ADMIN_PORT}"
+    environment:
+      - SERVER_PORT=${VECTOR_ADMIN_PORT}
+      - JWT_SECRET=${VECTOR_ADMIN_JWT_SECRET}
+      - INNGEST_EVENT_KEY=${VECTOR_ADMIN_INNGEST_EVENT_KEY}
+      - INNGEST_SIGNING_KEY=${VECTOR_ADMIN_INNGEST_SIGNING_KEY}
+      - INNGEST_LANDING_PAGE=${VECTOR_ADMIN_INNGEST_LANDING_PAGE}
+      - DATABASE_CONNECTION_STRING=${VECTOR_ADMIN_DB_URL}
+  ory-kratos-migrate-common:
+    image: oryd/kratos:v1.2.0
+    container_name: ory-kratos-migrate
+    profiles: ["app", "infra"]
+    environment:
+      - DSN=${KRATOS_DATABASE_URL}
+    volumes:
+      - type: bind
+        source: ${CONFIG_DIR}/kratos
+        target: /etc/config/kratos
+    command: -c /etc/config/kratos/kratos.yml migrate sql -e --yes
+    restart: on-failure
+    depends_on:
+      - postgres
+  ory-kratos-common:
+    image: oryd/kratos:v1.2.0
+    container_name: ory-kratos
+    profiles: ["app", "infra"]
+    command: serve -c /etc/config/kratos/kratos.yml --dev --watch-courier
+    ports:
+      - "${KRATOS_PUBLIC_PORT}:${KRATOS_PUBLIC_PORT}"
+      - "${KRATOS_ADMIN_PORT}:${KRATOS_ADMIN_PORT}"
+    environment:
+      - DSN=${KRATOS_DATABASE_URL}
+      - LOG_LEVEL=trace
+    volumes:
+      - type: bind
+        source: ${CONFIG_DIR}/kratos
+        target: /etc/config/kratos
+    depends_on:
+      - ory-kratos-migrate
+  # This container is helpful in case you want to manage users.
+  # Currently it's excluded from the infra profile for the sake of simplicity.
+  # To start it, simply run "docker compose up ory-kratos-admin-ui -d"
+  ory-kratos-admin-ui-common:
+    image: ghcr.io/dfoxg/kratos-admin-ui:v2.3.2
+    container_name: ory-kratos-admin-ui
+    ports:
+      - '${KRATOS_ADMIN_UI_PORT}:8080'
+    restart: unless-stopped
+    environment:
+      - KRATOS_ADMIN_URL=${KRATOS_ADMIN_URL}
+      - KRATOS_PUBLIC_URL=${KRATOS_PUBLIC_URL}
+  ory-kratos-self-serve-ui-common:
+    image: oryd/kratos-selfservice-ui-node:v1.2.0
+    container_name: ory-kratos-self-serve-ui
+    profiles: ["app", "infra"]
+    ports:
+      - "${KRATOS_SELF_SERVE_UI_PORT}:${KRATOS_SELF_SERVE_UI_PORT}"
+    environment:
+      - PORT=${KRATOS_SELF_SERVE_UI_PORT}
+      - KRATOS_PUBLIC_URL=${KRATOS_PUBLIC_URL}
+      - KRATOS_BROWSER_URL=${KRATOS_SELF_SERVE_UI_BROWSER_URL}
+      - COOKIE_SECRET=${KRATOS_SELF_SERVE_UI_COOKIE_SECRET}
+      - CSRF_COOKIE_NAME=${KRATOS_SELF_SERVE_UI_CSRF_COOKIE_NAME}
+      - CSRF_COOKIE_SECRET=${KRATOS_SELF_SERVE_UI_CSRF_COOKIE_SECRET}
+    restart: on-failure
+  # We support Hashicorp Vault but for now the default secret manager
+  # is a simple file-based secret manager.
+  vault-common:
+    image: vault:1.13.3
+    container_name: vault
+    profiles: ["misc"]
+    environment:
+      - VAULT_ADDR=http://0.0.0.0:8200
+      - VAULT_API_ADDR=http://0.0.0.0:8200
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - ${DATA_DIR}/vault:/vault
+      - ${CONFIG_DIR}/vault/config.hcl:/vault/config/vault.hcl
+    ports:
+      - "8200:8200"
+      - "8201:8201"
+      - "8202:8202"
+    entrypoint: vault server -config=/vault/config/vault.hcl
+  # App services
+  api-common:
+    container_name: api
+    profiles: ["app"]
+    environment:
+      - TELEMETRY_ENABLED
+      - OPENAI_API_KEY
+      - SMTP_CONNECTION_URL
+      - SLACK_APP_TOKEN
+      - SECRET_MANAGER_TYPE
+      - SECRET_MANAGER_DIRECTORY
+      - HASHICORP_VAULT_ROOT_TOKEN
+      - HASHICORP_VAULT_UNSEAL_TOKEN
+      - HASHICORP_VAULT_URL
+      - MONGO_URI
+      - APP_URL
+      - KRATOS_PUBLIC_URL
+      - KRATOS_ADMIN_URL
+      - DATA_PROCESSOR_URL
+      - LITELLM_URL
+      - NODE_ENV=development
+      - METADATA_ENCRYPTION_KEY=f78d8202-bb2a-49fe-bd63-a586cd921226
+      - ENCRYPTION_SALT=1234567890123456
+      - ORY_WEBHOOK_SECRET=super-secret-ory-webhook-key
+      - CHROMA_HOST
+      - CHROMA_API_KEY=${CHROMA_SERVER_AUTHN_CREDENTIALS}
+    ports:
+      - "${API_PORT}:${API_PORT}"
+    volumes:
+      - ${DATA_DIR}/secrets:${SECRET_MANAGER_DIRECTORY}
+    depends_on:
+      - mongo
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  slackbot-common:
+    container_name: slackbot
+    profiles: ["app"]
+    environment:
+      - TELEMETRY_ENABLED
+      - SLACK_APP_TOKEN
+      - SLACK_BOT_TOKEN
+      - SLACK_SIGNING_SECRET
+      - API_URL
+      - PORT=3003
+      - NODE_ENV=development
+    ports:
+      - "${SLACKBOT_PORT}:${SLACKBOT_PORT}"
+  data-processor-common:
+    container_name: data-processor
+    profiles: ["app"]
+    environment:
+      - TELEMETRY_ENABLED
+      - OPENAI_API_KEY
+      - SECRET_MANAGER_TYPE
+      - SECRET_MANAGER_DIRECTORY
+      - HASHICORP_VAULT_ROOT_TOKEN
+      - HASHICORP_VAULT_UNSEAL_TOKEN
+      - HASHICORP_VAULT_URL
+      - MONGO_URI
+      - LITELLM_URL
+      - IS_DOCKER=true
+      - CHROMA_HOST=chroma
+      - CHROMA_SSL=false
+      - CHROMA_PORT=8000
+      - CHROMA_API_KEY=${CHROMA_SERVER_AUTHN_CREDENTIALS}
+    ports:
+      - "${DATA_PROCESSOR_PORT}:${DATA_PROCESSOR_PORT}"
+    volumes:
+      - ${DATA_DIR}/secrets:${SECRET_MANAGER_DIRECTORY}
+    depends_on:
+      - mongo
+  dashboard-common:
+    container_name: dashboard
+    profiles: ["app"]
+    ports:
+      - "${DASHBOARD_PORT}:80"

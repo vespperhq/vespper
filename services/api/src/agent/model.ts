@@ -1,7 +1,7 @@
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { OpenAIEmbedding } from "llamaindex";
 
-const baseURL = process.env.LITELLM_PROXY_URL;
+const baseURL = process.env.LITELLM_URL;
 const apiKey = "secret-key"; // This is a dummy variable. LiteLLM is the one responsible for the actual API key
 
 export const chatModel = new ChatOpenAI({

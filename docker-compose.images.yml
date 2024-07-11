@@ -45,26 +45,19 @@ services:
     extends:
       file: docker-compose.common.yml
       service: api-common
-    build:
-      context: "."
-      dockerfile: services/api/Dockerfile
+    image: merlinnco/api:latest
   slackbot:
     extends:
       file: docker-compose.common.yml
       service: slackbot-common
-    build:
-      context: "."
-      dockerfile: services/slackbot/Dockerfile
+    image: merlinnco/slackbot:latest
   data-processor:
     extends:
       file: docker-compose.common.yml
       service: data-processor-common
-    build: 
-      context: services/data-processor
+    image: merlinnco/data-processor:latest
   dashboard:
     extends:
       file: docker-compose.common.yml
       service: dashboard-common
-    build: 
-      context: "."
-      dockerfile: services/dashboard/Dockerfile
+    image: merlinnco/dashboard:latest

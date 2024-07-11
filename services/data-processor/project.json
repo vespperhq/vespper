@@ -36,12 +36,7 @@
         },
         "production": {
           "push": true,
-          "metadata": {
-            "images": [
-              "europe-west2-docker.pkg.dev/merlinn/production/data-processor"
-            ],
-            "tags": ["type=sha"]
-          }
+          "tags": ["merlinnco/data-processor:latest"]
         }
       }
     }

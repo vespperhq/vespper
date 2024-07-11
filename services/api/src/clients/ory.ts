@@ -13,7 +13,7 @@ function isJsonMime(mime: string): boolean {
 }
 
 const identityClient = new sdk.IdentityApi({
-  basePath: process.env.ORY_ADMIN_URL,
+  basePath: process.env.KRATOS_ADMIN_URL,
   isJsonMime,
 });
 
