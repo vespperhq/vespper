@@ -25,7 +25,7 @@ export class PagerDutyClient {
     });
 
     this.axios.interceptors.request.use((config) => {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers.Authorization = `Token token=${token}`;
       return config;
     });
   }

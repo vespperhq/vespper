@@ -1,7 +1,6 @@
 import { integrationModel, PagerDutyIntegration } from "@merlinn/db";
 import { PagerDutyClient } from "../../../clients";
 import { AlertEvent } from "../../../types/internal";
-import { refreshPagerDutyToken } from "../../oauth";
 import { secretManager } from "../../../common/secrets";
 
 export const parseAlert = async (
@@ -19,9 +18,6 @@ export const parseAlert = async (
       `No PagerDuty integration for organization ${organizationId}`,
     );
   }
-
-  // TODO: Extract refresh token operation to a centralized place
-  await refreshPagerDutyToken(pagerdutyIntegration._id.toString());
 
   pagerdutyIntegration = (
     await secretManager.populateCredentials([pagerdutyIntegration])

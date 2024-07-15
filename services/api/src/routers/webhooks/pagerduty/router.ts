@@ -64,8 +64,11 @@ router.post(
       await secretManager.populateCredentials([slackIntegration])
     )[0] as SlackIntegration;
 
-    const { channel_id: channelId } =
-      slackIntegration.metadata.incoming_webhook;
+    // const { channel_id: channelId } =
+    //   slackIntegration.metadata.incoming_webhook;
+    // TODO: Fix this hardcoded channel ID. It's "#critical-alerts"
+    const channelId = "C0706NWR3D5";
+
     const { access_token: slackToken } = slackIntegration.credentials;
     const slackClient = new SlackClient(slackToken);
 
