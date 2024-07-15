@@ -152,6 +152,7 @@ services:
       - KRATOS_PUBLIC_URL
       - KRATOS_ADMIN_URL
       - DATA_PROCESSOR_URL
+      - PAGERDUTY_SECRET
       - LITELLM_URL
       - NODE_ENV=development
       - METADATA_ENCRYPTION_KEY=f78d8202-bb2a-49fe-bd63-a586cd921226
