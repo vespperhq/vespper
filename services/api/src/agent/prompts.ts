@@ -31,6 +31,9 @@ export const prefix = {
   Incident:
   {incident}
 
+  Additional investigation information:
+  {additionalInfo}
+  
   Contextual information:
   {context}
   `,

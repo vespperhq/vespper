@@ -3,15 +3,26 @@ import type { EventSource } from "../../types/internal";
 import {
   generateQueriesPrompt,
   investigationLeanTemplate,
+  investigationTemplate,
   verifyDocumentPrompt,
 } from "../../agent/prompts";
 import { chatModel } from "../../agent/model";
 import { getVectorStore, nodesToText } from "../../agent/rag";
 import type { Document } from "../../agent/rag/types";
 import { buildPrompt } from "../alerts/utils";
-import { indexModel } from "@merlinn/db";
-import type { IIndex } from "@merlinn/db";
+import {
+  // connectToDB,
+  indexModel,
+  integrationModel,
+  organizationModel,
+} from "@merlinn/db";
+import type { CoralogixIntegration, IIndex, IIntegration } from "@merlinn/db";
 import { JsonOutputParser } from "langchain/schema/output_parser";
+import { secretManager } from "../../common/secrets";
+import { createToolsForVendor } from "../../agent/tools";
+import { createAgent } from "../../agent/agent";
+import { RunContext } from "../../agent/types";
+import { toolLoaders as coralogixToolLoaders } from "../../agent/tools/coralogix";
 
 async function generateQueries(
   incidentText: string,
@@ -83,14 +94,41 @@ async function runQueries(
 
 async function runInvestigation(
   incidentText: string,
-  context: string,
+  contextText: string,
+  additionalInfoText: string,
 ): Promise<string> {
   const investigationPrompt = await investigationLeanTemplate.format({
     incident: incidentText,
-    context,
+    context: contextText,
+    additionalInfo: additionalInfoText,
   });
   const { content } = await chatModel.invoke(investigationPrompt);
   return content as string;
+}
+
+async function runLogsExpert(
+  incidentText: string,
+  integrations: IIntegration[],
+  context: RunContext,
+) {
+  const coralogixTools = await createToolsForVendor<CoralogixIntegration>(
+    integrations,
+    "Coralogix",
+    coralogixToolLoaders,
+    context,
+  );
+  const agent = await createAgent(
+    coralogixTools,
+    chatModel,
+    investigationTemplate,
+  );
+
+  const { output } = await agent.call({
+    input: `Please search the logs for relevant information this incident: ${incidentText}.
+    If no results are found, try to adjust the query, e.g change timeframe, change query params, etc.`,
+  });
+
+  return output;
 }
 
 export async function runAnalysis(
@@ -98,12 +136,37 @@ export async function runAnalysis(
   eventSource: EventSource,
   organizationId: string,
 ) {
+  const organization = await organizationModel.getOneById(organizationId);
+  if (!organization) {
+    throw new Error("Organization not found");
+  }
+
   const index = await indexModel.getOne({
     organization: organizationId,
   });
   if (!index) {
     throw new Error("Knowledge base is not set up. Analysis cannot be done.");
   }
+
+  const integrations = (await integrationModel
+    .get({
+      organization: organizationId,
+    })
+    .populate("vendor")) as IIntegration[];
+  if (!integrations || integrations.length === 0) {
+    throw new Error("No integrations found");
+  }
+
+  const populatedIntegrations =
+    await secretManager.populateCredentials(integrations);
+
+  const context: RunContext = {
+    organizationName: organization.name,
+    organizationId: organizationId,
+    env: process.env.NODE_ENV as string,
+    eventId,
+    context: `trigger-pagerduty`,
+  };
 
   const event = await parseAlert(eventId, eventSource, organizationId);
   const incidentText = buildPrompt(event);
@@ -116,8 +179,29 @@ export async function runAnalysis(
   const topDocuments = filteredDocuments
     .sort((a, b) => b.score - a.score)
     .slice(0, 3);
-  const context = nodesToText(topDocuments);
-
-  const analysis = await runInvestigation(incidentText, context);
+  const contextText = nodesToText(topDocuments);
+  const additionalInfoText = await runLogsExpert(
+    incidentText,
+    populatedIntegrations,
+    context,
+  );
+  const analysis = await runInvestigation(
+    incidentText,
+    contextText,
+    additionalInfoText,
+  );
   return analysis;
 }
+
+// (async () => {
+//   const mongoUri = process.env.MONGO_URI as string;
+//   await connectToDB(mongoUri);
+
+//   const eventId = "asdasd";
+//   const organizationId = "asdasd";
+//   const eventSource = "PagerDuty";
+
+//   const analysis = await runAnalysis(eventId, eventSource, organizationId);
+
+//   console.log(analysis);
+// })();

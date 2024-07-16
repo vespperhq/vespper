@@ -63,7 +63,6 @@ export const createTools = async (
 ) => {
   const tools = [] as Tool[];
 
-  // Coralogix
   const [
     coralogixTools,
     githubTools,
