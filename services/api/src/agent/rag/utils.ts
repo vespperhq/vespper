@@ -1,5 +1,6 @@
 import { PineconeVectorStore } from "./pinecone";
 import { ChromaDBVectorStore } from "./chromadb";
+import type { Document } from "./types";
 
 export function getVectorStore(
   indexName: string,
@@ -25,4 +26,16 @@ export function getVectorStore(
     default:
       throw new Error(`Invalid index source: ${indexType}`);
   }
+}
+
+export function nodesToText(documents: Document[]) {
+  const formattedNodes = documents.map(
+    (document, index) =>
+      `Document: ${index + 1}\n
+       Source: ${document.metadata.source}\n
+       Score: ${document.score}\n
+       Metadata: ${JSON.stringify(document.metadata)}\n
+       Text: ${document.text}`,
+  );
+  return formattedNodes.join("\n\n");
 }

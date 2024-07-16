@@ -38,12 +38,11 @@
       "type": "node",
       "request": "launch",
       "name": "API: Debug TypeScript",
-      "program": "${workspaceFolder}/services/api/node_modules/ts-node/dist/bin.js",
-      "args": ["${file}"],
+      "runtimeExecutable": "yarn",
+      "args": ["runFile", "${file}"],
       "sourceMaps": true,
-      "cwd": "${workspaceFolder}/services/api/",
-      "internalConsoleOptions": "neverOpen",
-      "envFile": "${workspaceFolder}/services/api/.env"
+      "cwd": "${workspaceFolder}/services/api",
+      "internalConsoleOptions": "neverOpen"
     },
     {
       "type": "node",

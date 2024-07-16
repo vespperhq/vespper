@@ -3,19 +3,8 @@ import { DynamicStructuredTool } from "langchain/tools";
 import { RunContext } from "../../types";
 import { buildOutput } from "../utils";
 import { indexModel } from "@merlinn/db";
-import { getVectorStore, Document } from "../../rag";
+import { getVectorStore, nodesToText } from "../../rag";
 
-function nodesToText(documents: Document[]) {
-  const formattedNodes = documents.map(
-    (document, index) =>
-      `Document: ${index + 1}\n
-       Source: ${document.metadata.source}\n
-       Score: ${document.score}\n
-       Metadata: ${JSON.stringify(document.metadata)}\n
-       Text: ${document.text}`,
-  );
-  return formattedNodes.join("\n\n");
-}
 export default async function (context: RunContext) {
   const index = await indexModel.getOne({
     organization: context.organizationId,
@@ -30,7 +19,7 @@ export default async function (context: RunContext) {
             return "Knowledge base is not set up. Tool is not available.";
           }
           const vectorStore = getVectorStore(index.name, index.type);
-          const documents = await vectorStore.query({ query, topK: 5 });
+          const documents = await vectorStore.query({ query, topK: 3 });
           const text = nodesToText(documents);
 
           // Create sources
@@ -77,7 +66,17 @@ export default async function (context: RunContext) {
                   return { url: manualUrl, title };
                 }
                 case "PagerDuty": {
-                  return document.metadata.link;
+                  return {
+                    url: document.metadata.link,
+                    title: "PagerDuty Alert",
+                  };
+                }
+                case "Confluence": {
+                  const { url, title } = document.metadata;
+                  return { url, title };
+                }
+                default: {
+                  throw new Error("Unsupported source");
                 }
               }
             })();

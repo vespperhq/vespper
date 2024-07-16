@@ -1,6 +1,5 @@
 import express, { Request, Response } from "express";
 import { SlackClient } from "../../../clients";
-import { runAgent } from "../../../agent";
 import {
   IIntegration,
   PagerDutyIntegration,
@@ -15,16 +14,14 @@ import {
   checkWebhookSecret,
 } from "../../../middlewares/webhooks";
 import { checkPagerDutySignature } from "./utils";
-import { parseAlertToPrompt } from "../../../services/alerts";
 import { EventType, SystemEvent, events } from "../../../events";
-import { investigationTemplate } from "../../../agent/prompts";
-import { chatModel } from "../../../agent/model";
 import { catchAsync } from "../../../utils/errors";
 import { AppError, ErrorCode } from "../../../errors";
 import { RunContext } from "../../../agent/types";
 import { secretManager } from "../../../common/secrets";
 import { generateTrace } from "../../../agent/helper";
 import { isLangfuseEnabled } from "../../../utils/ee";
+import { runAnalysis } from "../../../services/analyzer";
 
 const router = express.Router();
 
@@ -72,12 +69,6 @@ router.post(
     const { access_token: slackToken } = slackIntegration.credentials;
     const slackClient = new SlackClient(slackToken);
 
-    const prompt = await parseAlertToPrompt(
-      event.data.id,
-      "PagerDuty",
-      String(organization._id),
-    );
-
     const messages = await slackClient.getChannelHistoryGracefully(channelId);
     const pdMessage = messages?.find((message) =>
       message.text?.includes(event.data.id),
@@ -87,6 +78,12 @@ router.post(
     }
 
     await postInitialStatus(slackToken, channelId, pdMessage.ts!);
+
+    const analysis = await runAnalysis(
+      event.data.id,
+      "PagerDuty",
+      String(organization._id),
+    );
 
     const context: RunContext = {
       organizationName,
@@ -101,17 +98,6 @@ router.post(
     }
 
     try {
-      const { answer, answerContext } = await runAgent({
-        prompt,
-        template: investigationTemplate,
-        model: chatModel,
-        integrations,
-        context,
-      });
-
-      const traceId = answerContext.getTraceId()!;
-      const traceURL = answerContext.getTraceURL()!;
-      const observationId = answerContext.getObservationId()!;
       const event: SystemEvent = {
         type: EventType.answer_created,
         entityId: String(organization._id),
@@ -120,15 +106,9 @@ router.post(
           organizationName,
           env: process.env.NODE_ENV as string,
           context: "trigger-pagerduty",
-          traceId,
-          observationId,
-          traceURL,
         },
       };
-      if (!isLangfuseEnabled()) {
-        event.payload.text = answer;
-        event.payload.prompt = prompt;
-      }
+
       events.publish(event);
 
       // Post a reply to the thread
@@ -140,7 +120,7 @@ router.post(
       const response = await slackClient.postReply({
         channelId,
         ts: pdMessage?.ts as string,
-        text: answer,
+        text: analysis,
         metadata,
       });
 
