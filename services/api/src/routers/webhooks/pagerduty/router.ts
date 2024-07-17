@@ -36,6 +36,11 @@ router.post(
     const organizationId = String(organization._id);
 
     const { event } = req.body as PagerDutyWebhookEvent;
+    // if (incidentsCompleted.includes(event.data.id)) {
+    //   return res.status(200).send("ok");
+    // } else {
+    //   incidentsCompleted.push(event.data.id);
+    // }
 
     const integrations = (await integrationModel
       .get({

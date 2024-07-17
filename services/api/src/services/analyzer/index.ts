@@ -10,12 +10,7 @@ import { chatModel } from "../../agent/model";
 import { getVectorStore, nodesToText } from "../../agent/rag";
 import type { Document } from "../../agent/rag/types";
 import { buildPrompt } from "../alerts/utils";
-import {
-  // connectToDB,
-  indexModel,
-  integrationModel,
-  organizationModel,
-} from "@merlinn/db";
+import { indexModel, integrationModel, organizationModel } from "@merlinn/db";
 import type { CoralogixIntegration, IIndex, IIntegration } from "@merlinn/db";
 import { JsonOutputParser } from "langchain/schema/output_parser";
 import { secretManager } from "../../common/secrets";
@@ -197,8 +192,8 @@ export async function runAnalysis(
 //   const mongoUri = process.env.MONGO_URI as string;
 //   await connectToDB(mongoUri);
 
-//   const eventId = "asdasd";
-//   const organizationId = "asdasd";
+//   const eventId = "Q2D18BCNS67L5K";
+//   const organizationId = "66841ebc489b57392f102e08";
 //   const eventSource = "PagerDuty";
 
 //   const analysis = await runAnalysis(eventId, eventSource, organizationId);
