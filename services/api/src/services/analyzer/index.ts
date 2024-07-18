@@ -10,13 +10,19 @@ import { chatModel } from "../../agent/model";
 import { getVectorStore, nodesToText } from "../../agent/rag";
 import type { Document } from "../../agent/rag/types";
 import { buildPrompt } from "../alerts/utils";
-import { indexModel, integrationModel, organizationModel } from "@merlinn/db";
-import type { CoralogixIntegration, IIndex, IIntegration } from "@merlinn/db";
+import {
+  VendorName,
+  indexModel,
+  integrationModel,
+  organizationModel,
+} from "@merlinn/db";
+import type { IIndex, IIntegration } from "@merlinn/db";
 import { JsonOutputParser } from "langchain/schema/output_parser";
 import { secretManager } from "../../common/secrets";
 import { createToolsForVendor } from "../../agent/tools";
 import { createAgent } from "../../agent/agent";
 import { RunContext } from "../../agent/types";
+import { ToolLoader } from "../../agent/tools/types";
 import { toolLoaders as coralogixToolLoaders } from "../../agent/tools/coralogix";
 
 async function generateQueries(
@@ -87,36 +93,52 @@ async function runQueries(
   return documents;
 }
 
-async function runInvestigation(
+async function summarize(
   incidentText: string,
   contextText: string,
-  additionalInfoText: string,
+  additionalInfoText?: string,
 ): Promise<string> {
   const investigationPrompt = await investigationLeanTemplate.format({
     incident: incidentText,
     context: contextText,
-    additionalInfo: additionalInfoText,
+    additionalInfo: additionalInfoText || "no additional information",
   });
   const { content } = await chatModel.invoke(investigationPrompt);
   return content as string;
 }
 
-async function runLogsExpert(
+async function analyzeLogs(
   incidentText: string,
   integrations: IIntegration[],
   context: RunContext,
-) {
-  const coralogixTools = await createToolsForVendor<CoralogixIntegration>(
+): Promise<string | undefined> {
+  // TODO: extract this array to a constant maybe or introduce a "type" field
+  // to the integrations
+  // TODO: in the future, we need to add more vendors to here to support more
+  // log vendors
+  const logVendorToolLoaders: {
+    [key in VendorName]?: ToolLoader<IIntegration>[];
+  } = {
+    [VendorName.Coralogix]: coralogixToolLoaders as ToolLoader<IIntegration>[],
+  };
+
+  const logVendor = integrations.find(
+    (integration) => logVendorToolLoaders[integration.vendor.name],
+  );
+  if (!logVendor) {
+    return;
+  }
+  const toolLoaders = logVendorToolLoaders[
+    logVendor.vendor.name
+  ] as ToolLoader<IIntegration>[];
+
+  const logTools = await createToolsForVendor(
     integrations,
-    "Coralogix",
-    coralogixToolLoaders,
+    logVendor.vendor.name,
+    toolLoaders,
     context,
   );
-  const agent = await createAgent(
-    coralogixTools,
-    chatModel,
-    investigationTemplate,
-  );
+  const agent = await createAgent(logTools, chatModel, investigationTemplate);
 
   const { output } = await agent.call({
     input: `Please search the logs for relevant information this incident: ${incidentText}.
@@ -160,7 +182,7 @@ export async function runAnalysis(
     organizationId: organizationId,
     env: process.env.NODE_ENV as string,
     eventId,
-    context: `trigger-pagerduty`,
+    context: `trigger-${eventSource}`,
   };
 
   const event = await parseAlert(eventId, eventSource, organizationId);
@@ -175,28 +197,15 @@ export async function runAnalysis(
     .sort((a, b) => b.score - a.score)
     .slice(0, 3);
   const contextText = nodesToText(topDocuments);
-  const additionalInfoText = await runLogsExpert(
+
+  // Phase 2 - Fetch information from logs
+  const logsText = await analyzeLogs(
     incidentText,
     populatedIntegrations,
     context,
   );
-  const analysis = await runInvestigation(
-    incidentText,
-    contextText,
-    additionalInfoText,
-  );
+
+  // Phase 3 - Summarization phase
+  const analysis = await summarize(incidentText, contextText, logsText);
   return analysis;
 }
-
-// (async () => {
-//   const mongoUri = process.env.MONGO_URI as string;
-//   await connectToDB(mongoUri);
-
-//   const eventId = "Q2D18BCNS67L5K";
-//   const organizationId = "66841ebc489b57392f102e08";
-//   const eventSource = "PagerDuty";
-
-//   const analysis = await runAnalysis(eventId, eventSource, organizationId);
-
-//   console.log(analysis);
-// })();

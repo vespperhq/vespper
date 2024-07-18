@@ -35,13 +35,7 @@ export interface RunContext {
   env: string;
   organizationName: string;
   organizationId: string;
-  context:
-    | "chat"
-    | "chat-github"
-    | "trigger-pagerduty"
-    | "trigger-opsgenie"
-    | "trigger-alertmanager"
-    | "trigger-local-script";
+  context: string;
 }
 
 export interface RunAgentParams {
