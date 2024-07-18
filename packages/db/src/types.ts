@@ -124,9 +124,7 @@ export interface BaseConnection {
   _id: Types.ObjectId;
   vendor: IVendor;
   organization: IOrganization;
-  settings?: {
-    tools?: Record<string, unknown>;
-  };
+  settings?: Record<string, unknown>;
   type: "basic" | "oauth";
   createdAt: Date;
   updatedAt: Date;
@@ -179,6 +177,9 @@ export interface PagerDutyIntegration extends BaseConnection {
     token_type: string;
     scope: string;
     expires_in: number;
+  };
+  settings: {
+    slackChannelId: string;
   };
 }
 

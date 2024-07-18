@@ -100,7 +100,6 @@ router.put(
   getDBUser,
   catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { tools } = req.body;
 
     const integration = await integrationModel.getOneById(id);
     if (!integration) {
@@ -113,8 +112,6 @@ router.put(
       throw new AppError("User is not allowed to perform this action", 403);
     }
 
-    const { settings = {} } = integration;
-    integration.settings = { ...settings.tools, ...tools };
     return res.status(200).json({ integration });
   }),
 );

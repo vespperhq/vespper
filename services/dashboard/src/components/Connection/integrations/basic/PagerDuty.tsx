@@ -13,6 +13,13 @@ const fieldsConfigurations: FieldConfiguration[] = [
     type: "credentials",
     input: { type: "secret" },
   },
+  {
+    key: "slackChannelId",
+    label: "PagerDuty Slack Channel ID",
+    subtitle:
+      "The ID of the Slack channel where PagerDuty incidents are posted.",
+    type: "settings",
+  },
 ];
 
 export const ConnectPagerDutyIntegration = ({
@@ -30,6 +37,7 @@ export const ConnectPagerDutyIntegration = ({
           organization: orgId,
           metadata: { ...(prev?.body?.metadata || {}) },
           credentials: { ...(prev?.body?.credentials || {}) },
+          settings: { ...(prev?.body?.settings || {}) },
         };
 
         body[type as keyof IntegrationPayload][key] = value;
