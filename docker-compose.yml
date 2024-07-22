@@ -61,6 +61,12 @@ services:
       service: data-processor-common
     build: 
       context: services/data-processor
+  log-parser:
+    extends:
+      file: docker-compose.common.yml
+      service: log-parser-common
+    build: 
+      context: services/log-parser
   dashboard:
     extends:
       file: docker-compose.common.yml

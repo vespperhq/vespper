@@ -116,6 +116,36 @@ export const prefix = {
   Document:
   {document}
   `,
+  extractLogStructureKeys: `  
+  Given a log record, return the key paths of the severity and message in a JSON format.
+
+  Examples:
+  Log records:
+  [{{"message": "Successfully updated user 123", "timestamp": "some-time", "severityText": "INFO"}},
+  {{"message": "Successfully updated user 456", "timestamp": "some-time", "severityText": "INFO"}}]
+
+  Output:
+  {{
+    "severityKey": "severityText",
+    "messageKey": "message"
+  }}
+
+  Log record:
+  [{{"timestamp": "some-time", "severity": {{"severityNumber": 3, "severityText": "INFO"}}, "logRecord": {{"body": "Successfully updated user 123"}}}},
+  {{"timestamp": "some-time2", "severity": {{"severityNumber": 3, "severityText": "INFO"}}, "logRecord": {{"body": "Successfully updated user 456"}}}}
+  ]
+
+  Output:
+  {{
+    "severityKey": "severity.severityText",
+    "messageKey": "logRecord.body"
+  }}
+
+  Begin!
+  
+  Log records:
+  {logRecords}
+  `,
 };
 
 export const investigationTemplate = ChatPromptTemplate.fromMessages([
@@ -153,4 +183,8 @@ export const verifyDocumentPrompt = PromptTemplate.fromTemplate(
 
 export const investigationLeanTemplate = PromptTemplate.fromTemplate(
   prefix.investigationLean,
+);
+
+export const extractLogStructureKeysPrompt = PromptTemplate.fromTemplate(
+  prefix.extractLogStructureKeys,
 );

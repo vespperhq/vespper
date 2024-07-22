@@ -3,7 +3,7 @@ import type { EventSource } from "../../types/internal";
 import {
   generateQueriesPrompt,
   investigationLeanTemplate,
-  investigationTemplate,
+  // investigationTemplate,
   verifyDocumentPrompt,
 } from "../../agent/prompts";
 import { chatModel } from "../../agent/model";
@@ -19,11 +19,13 @@ import {
 import type { IIndex, IIntegration } from "@merlinn/db";
 import { JsonOutputParser } from "langchain/schema/output_parser";
 import { secretManager } from "../../common/secrets";
-import { createToolsForVendor } from "../../agent/tools";
-import { createAgent } from "../../agent/agent";
+// import { createToolsForVendor } from "../../agent/tools";
+// import { createAgent } from "../../agent/agent";
 import { RunContext } from "../../agent/types";
 import { ToolLoader } from "../../agent/tools/types";
 import { toolLoaders as coralogixToolLoaders } from "../../agent/tools/coralogix";
+import { getLogClusters } from "./logs";
+import { Timeframe } from "../../utils/dates";
 
 async function generateQueries(
   incidentText: string,
@@ -111,6 +113,7 @@ async function analyzeLogs(
   incidentText: string,
   integrations: IIntegration[],
   context: RunContext,
+  timeframe: Timeframe = Timeframe.Last24Hours,
 ): Promise<string | undefined> {
   // TODO: extract this array to a constant maybe or introduce a "type" field
   // to the integrations
@@ -128,27 +131,58 @@ async function analyzeLogs(
   if (!logVendor) {
     return;
   }
-  const toolLoaders = logVendorToolLoaders[
-    logVendor.vendor.name
-  ] as ToolLoader<IIntegration>[];
 
-  const logTools = await createToolsForVendor(
-    integrations,
-    logVendor.vendor.name,
-    toolLoaders,
-    context,
-  );
-  const agent = await createAgent(logTools, chatModel, investigationTemplate);
+  // // Branch 1 - fetch logs using an AI agent that generates queries by itself
+  // const toolLoaders = logVendorToolLoaders[
+  //   logVendor.vendor.name
+  // ] as ToolLoader<IIntegration>[];
 
-  const { output } = await agent.call({
-    input: `Please search the logs for relevant information this incident: ${incidentText}.
-    If no results are found, try to adjust the query, e.g change timeframe, change query params, etc.`,
-  });
+  // const logTools = await createToolsForVendor(
+  //   integrations,
+  //   logVendor.vendor.name,
+  //   toolLoaders,
+  //   context,
+  // );
+  // const agent = await createAgent(logTools, chatModel, investigationTemplate);
 
-  return output;
+  // const { output } = await agent.call({
+  //   input: `Please search the logs for relevant information this incident: ${incidentText}`,
+  // });
+
+  // Branch 2 - get log aggregation analysis
+  const clusters = await getLogClusters(logVendor, timeframe);
+  const excludedLevels = ["DEBUG", "INFO", "Information"];
+  const formattedClusters = clusters
+    .filter((cluster) => !excludedLevels.includes(cluster.Level))
+    .map((cluster, index) => {
+      const {
+        Level,
+        EventTemplate,
+        Occurrences,
+        Percentage,
+        ...additionalInfo
+      } = cluster;
+      return `
+      Cluster: ${index + 1}
+      Log level: ${Level}
+      Log template: ${EventTemplate}
+      Occurrences: ${Occurrences}
+      Percentage: ${Percentage}
+      Addtitonal Cluster Info: ${JSON.stringify(additionalInfo, null, 2)}
+    `;
+    })
+    .join("\n----------------\n");
+
+  // Branch 3 - combine both branches
+  const finalLogAnalysis = `
+    Log aggregation/cluster analysis:
+    ${formattedClusters}
+  `;
+
+  return finalLogAnalysis;
 }
 
-export async function runAnalysis(
+export async function runRCA(
   eventId: string,
   eventSource: EventSource,
   organizationId: string,

@@ -154,6 +154,7 @@ services:
       - DATA_PROCESSOR_URL
       - PAGERDUTY_SECRET
       - LITELLM_URL
+      - LOG_PARSER_URL
       - NODE_ENV=development
       - METADATA_ENCRYPTION_KEY=f78d8202-bb2a-49fe-bd63-a586cd921226
       - ENCRYPTION_SALT=1234567890123456
@@ -205,6 +206,14 @@ services:
       - ${DATA_DIR}/secrets:${SECRET_MANAGER_DIRECTORY}
     depends_on:
       - mongo
+  log-parser-common:
+    container_name: log-parser
+    profiles: ["app"]
+    environment:
+      - TELEMETRY_ENABLED
+      - PORT=${LOG_PARSER_PORT}
+    ports:
+      - "${LOG_PARSER_PORT}:${LOG_PARSER_PORT}"
   dashboard-common:
     container_name: dashboard
     profiles: ["app"]

@@ -19,7 +19,7 @@ model_list:
   ###  OpenAI (Default) ####
   - model_name: chat-model
     litellm_params:
-      model: openai/gpt-4-turbo
+      model: openai/gpt-4o-mini
       api_key: os.environ/OPENAI_API_KEY
   - model_name: embedding-model
     litellm_params:

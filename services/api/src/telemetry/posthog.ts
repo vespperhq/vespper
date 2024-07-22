@@ -4,13 +4,16 @@ import { PostHog as OriginalPosthog } from "posthog-node";
 const POSTHOG_API_KEY = "phc_eifETYrGPaTRYKvlarnFMJj9dNfYzoP5CS46K9nsdif";
 const POSTHOG_HOST = "https://us.i.posthog.com";
 
+// const DEBUG = process.env.NODE_ENV === "development";
+const DEBUG = false;
+
 export class PostHogClient extends OriginalPosthog {
   constructor() {
     super(POSTHOG_API_KEY, {
       host: POSTHOG_HOST,
     });
 
-    if (process.env.NODE_ENV === "development") {
+    if (DEBUG) {
       this.debug();
     }
   }

@@ -7,8 +7,7 @@ import { getCommonLogFields, getPrettyLogSample } from "./utils";
 import { buildOutput } from "../utils";
 import { JsonOutputParser } from "langchain/schema/output_parser";
 import { chatModel } from "../../../agent/model";
-import { getTimestamp } from "../../../utils/dates";
-import { timeframe2values } from "./read_logs";
+import { getTimestamp, timeframe2values } from "../../../utils/dates";
 import { CoralogixClient } from "../../../clients";
 import { RunContext } from "../../../agent/types";
 

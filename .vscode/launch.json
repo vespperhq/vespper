@@ -39,7 +39,13 @@
       "request": "launch",
       "name": "API: Debug TypeScript",
       "runtimeExecutable": "yarn",
-      "args": ["runFile", "${file}"],
+      "args": [
+        "runFile",
+        "${file}"
+        // "Q2HI9P83ZC9UXT",
+        // "66841ebc489b57392f102e08",
+        // "PagerDuty"
+      ],
       "sourceMaps": true,
       "cwd": "${workspaceFolder}/services/api",
       "internalConsoleOptions": "neverOpen"
@@ -71,6 +77,14 @@
       "request": "launch",
       "program": "src/main.py",
       "cwd": "${workspaceFolder}/services/data-processor/",
+      "justMyCode": false
+    },
+    {
+      "type": "debugpy",
+      "name": "Log Parser: Debug",
+      "request": "launch",
+      "program": "src/main.py",
+      "cwd": "${workspaceFolder}/services/log-parser/",
       "justMyCode": false
     }
   ]

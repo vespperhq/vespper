@@ -34,6 +34,22 @@ export class CoralogixClient {
     });
   }
 
+  getRawLogs = async (request: CoralogixQueryRequest): Promise<string> => {
+    const { query, startDate, endDate, syntax } = request;
+    const { apiURL } = domains.management[this.region];
+    const metadata = { syntax, startDate, endDate };
+    try {
+      const { data } = await this.axios.post<string>(apiURL, {
+        query,
+        metadata,
+      });
+      return data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  };
+
   getLogs = async (
     request: CoralogixQueryRequest,
   ): Promise<CoralogixQueryResult> => {
@@ -41,34 +57,12 @@ export class CoralogixClient {
     const { apiURL } = domains.management[this.region];
     const metadata = { syntax, startDate, endDate };
     try {
-      const { data: result } = await this.axios.post<CoralogixQueryResult>(
-        apiURL,
-        { query, metadata },
-      );
+      const { data } = await this.axios.post<CoralogixQueryResult>(apiURL, {
+        query,
+        metadata,
+      });
 
-      if (typeof result === "string") {
-        const objects = (result as string)
-          .split("\n")
-          .filter((obj: string) => !!obj) as string[];
-        const results = objects.map((obj) => JSON.parse(obj));
-        const logs = results
-          .reduce(
-            (total, current) => [...total, ...(current.result?.results || [])],
-            [],
-          )
-          .map((o: CoralogixLogRecord) => ({
-            ...o,
-            userData: JSON.stringify(flatten(JSON.parse(o.userData))),
-          }));
-        return { result: { results: logs } };
-      } else {
-        if (result.result) {
-          result.result.results = result.result.results.map((o) => ({
-            ...o,
-            userData: JSON.stringify(flatten(JSON.parse(o.userData))),
-          }));
-        }
-      }
+      const result = this.parseResult(data);
       return result;
     } catch (error) {
       console.log(error);
@@ -117,5 +111,34 @@ export class CoralogixClient {
       console.log(error);
       return null;
     }
+  };
+
+  parseResult = (
+    result: string | CoralogixQueryResult,
+  ): CoralogixQueryResult => {
+    if (typeof result === "string") {
+      const objects = (result as string)
+        .split("\n")
+        .filter((obj: string) => !!obj) as string[];
+      const results = objects.map((obj) => JSON.parse(obj));
+      const logs = results
+        .reduce(
+          (total, current) => [...total, ...(current.result?.results || [])],
+          [],
+        )
+        .map((o: CoralogixLogRecord) => ({
+          ...o,
+          userData: JSON.stringify(flatten(JSON.parse(o.userData))),
+        }));
+      return { result: { results: logs } };
+    } else {
+      if (result.result) {
+        result.result.results = result.result.results.map((o) => ({
+          ...o,
+          userData: JSON.stringify(flatten(JSON.parse(o.userData))),
+        }));
+      }
+    }
+    return result;
   };
 }
