@@ -1,0 +1,45 @@
+{
+  "name": "log-parser",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "./src",
+  "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "cwd": "services/log-parser",
+        "commands": ["poetry run python src/main.py"]
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "cwd": "services/log-parser",
+        "commands": ["npx ts-node ../../tools/scripts/deploy.ts log-parser"]
+      }
+    },
+    "container": {
+      "executor": "@nx-tools/nx-container:build",
+      "defaultConfiguration": "local",
+      "options": {
+        "context": "services/log-parser",
+        // "file": "services/log-parser/Dockerfile",
+        "engine": "docker",
+        "platforms": ["linux/amd64"]
+      },
+      "configurations": {
+        "local": {
+          "tags": ["log-parser:latest"],
+          "push": false
+        },
+        "production": {
+          "push": true,
+          "tags": ["merlinnco/log-parser:latest"]
+        }
+      }
+    }
+  },
+  "tags": []
+}

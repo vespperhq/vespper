@@ -15,7 +15,7 @@ export const createAgent = async (
   tools: Tool[],
   template: ChatPromptTemplate,
 ) => {
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = "secret-key"; // This is a dummy variable. LiteLLM is the one responsible for the actual API key
   const baseURL = process.env.LITELLM_URL;
 
   const model = new ChatOpenAI({

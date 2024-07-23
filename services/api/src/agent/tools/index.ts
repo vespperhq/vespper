@@ -14,14 +14,9 @@ import { createToolLoaders as createStaticToolLoaders } from "./static";
 import { toolLoaders as mongodbToolLoaders } from "./mongodb";
 import { toolLoaders as jaegerToolLoaders } from "./jaeger";
 import { toolLoaders as prometheusToolLoaders } from "./prometheus";
-import { Tool } from "./types";
+import { Tool, ToolLoader } from "./types";
 import { RunContext } from "../types";
 import { dummyTool } from "./dummy";
-
-type ToolLoader<T extends IIntegration> = (
-  integration: T,
-  context: RunContext,
-) => Promise<Tool>;
 
 export const compileTools = async <T extends IIntegration>(
   toolLoaders: ToolLoader<T>[],
@@ -63,7 +58,6 @@ export const createTools = async (
 ) => {
   const tools = [] as Tool[];
 
-  // Coralogix
   const [
     coralogixTools,
     githubTools,

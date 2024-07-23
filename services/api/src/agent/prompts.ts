@@ -20,6 +20,23 @@ export const prefix = {
   
   Begin!
   `,
+  investigationLean: `
+  You are an expert on-call engineer called Merlinn. Your mission is to investigate incidents in Production and provide findings to the responders, with as much information as possible.
+
+  Given the contextual information, produce a meaningful summarization about the data provided.
+  Don't write a report, write in free text, 5 sentences max. Be very concise and produce a short answer in a human readable format.
+
+  Begin! 
+
+  Incident:
+  {incident}
+
+  Additional investigation information:
+  {additionalInfo}
+  
+  Contextual information:
+  {context}
+  `,
   conversation: `
   You are a smart AI assistant called Merlinn. Your mission is to help on-call developers and SREs investigate production incidents.
   
@@ -50,6 +67,85 @@ export const prefix = {
   captionImage: `
   Please describe what you see in this image
   `,
+  generateQueries: `
+  Hi! You are tasked with retrieving information about the following production incident:
+
+  {incident}
+
+  You have access to a semantic search engine (VectorDB), where you can fetch historical & related information about this issue. Please create {nQueries} different queries that you would want to search against this search engine.
+
+  Your queries should be:
+  * Related to the incident above
+  * Short and simple. No long sentences.
+  * Abstract and expressive, with no IP addresses & numbers.
+
+
+  You should return your answer as JSON. It should contain 1 key called "queries", and it should be a list. For instance, here is an example response:
+  \`\`\`json
+  {{"queries": ["Service X issue", "500 error", "User could not pay issue"]}}
+  \`\`\`
+
+
+  IMPORTANT: Please respond only in JSON.
+
+  Begin!
+  `,
+  verifyDocument: `
+  Hi! You are tasked with verifying whether a document is actually relevant to a source information. The source information is a production incident information. You are tasked with judging whether a document is relevant. 
+
+  For example, given the following incident:
+  \`\`\`
+  Title: Coralogix Alert: Service data-processor has high CPU usage
+  Source: PagerDuty
+  Time: 5 months ago
+  Additional information: {{"Application":"demo-app","CompanyId":4014214}}
+  \`\`\`
+  
+  And the following document:
+  \`\`\`
+  Does someone know where do we save our finance reports?
+  \`\`\`
+
+  You should return false. IMPORTANT: return only true or false.
+  
+  Begin!
+
+  Incident:
+  {incident}
+
+  Document:
+  {document}
+  `,
+  extractLogStructureKeys: `  
+  Given a log record, return the key paths of the severity and message in a JSON format.
+
+  Examples:
+  Log records:
+  [{{"message": "Successfully updated user 123", "timestamp": "some-time", "severityText": "INFO"}},
+  {{"message": "Successfully updated user 456", "timestamp": "some-time", "severityText": "INFO"}}]
+
+  Output:
+  {{
+    "severityKey": "severityText",
+    "messageKey": "message"
+  }}
+
+  Log record:
+  [{{"timestamp": "some-time", "severity": {{"severityNumber": 3, "severityText": "INFO"}}, "logRecord": {{"body": "Successfully updated user 123"}}}},
+  {{"timestamp": "some-time2", "severity": {{"severityNumber": 3, "severityText": "INFO"}}, "logRecord": {{"body": "Successfully updated user 456"}}}}
+  ]
+
+  Output:
+  {{
+    "severityKey": "severity.severityText",
+    "messageKey": "logRecord.body"
+  }}
+
+  Begin!
+  
+  Log records:
+  {logRecords}
+  `,
 };
 
 export const investigationTemplate = ChatPromptTemplate.fromMessages([
@@ -75,4 +171,20 @@ export const conversationIssuesTemplate = ChatPromptTemplate.fromMessages([
 
 export const summarizeReadmePrompt = PromptTemplate.fromTemplate(
   prefix.summarizeReadme,
+);
+
+export const generateQueriesPrompt = PromptTemplate.fromTemplate(
+  prefix.generateQueries,
+);
+
+export const verifyDocumentPrompt = PromptTemplate.fromTemplate(
+  prefix.verifyDocument,
+);
+
+export const investigationLeanTemplate = PromptTemplate.fromTemplate(
+  prefix.investigationLean,
+);
+
+export const extractLogStructureKeysPrompt = PromptTemplate.fromTemplate(
+  prefix.extractLogStructureKeys,
 );

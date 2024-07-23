@@ -91,6 +91,7 @@ We work in a monorepo manner using [yarn](https://yarnpkg.com/) and [nx](https:/
 - `slackbot` - the slackbot code. Contains the logic of our Slack app.
 - `dashboard` - the web ui code. Contains the code of the web app, which allows users to configure their organization.
 - `data-processor` - contains the data processor code. This service is used to build the knowledge base that is needed in order to perform an extensive investigation with rich context.
+- `log-parser` - performs simple log aggregation/clustering.
 
 **Other important folders/files**
 

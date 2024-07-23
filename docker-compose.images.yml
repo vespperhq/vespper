@@ -56,6 +56,11 @@ services:
       file: docker-compose.common.yml
       service: data-processor-common
     image: merlinnco/data-processor:latest
+  log-parser:
+    extends:
+      file: docker-compose.common.yml
+      service: log-parser-common
+    image: merlinnco/log-parser:latest
   dashboard:
     extends:
       file: docker-compose.common.yml

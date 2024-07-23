@@ -45,7 +45,8 @@
     "lint": "nx lint --ext ts",
     "test": "jest",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "deploy": "npx ts-node ../../tools/scripts/deploy.ts api"
+    "deploy": "npx ts-node ../../tools/scripts/deploy.ts api",
+    "runFile": "npx dotenv-cli -o -e ../../.env -e .env.dev npx ts-node"
   },
   "devDependencies": {
     "@babel/preset-typescript": "^7.23.3",

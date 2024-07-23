@@ -3,26 +3,13 @@ import { z } from "zod";
 import { DynamicStructuredTool } from "langchain/tools";
 import type { CoralogixIntegration } from "@merlinn/db";
 import type { CoralogixRegionKey } from "../../../types";
-import { Timescale, getTimestamp } from "../../../utils/dates";
+import {
+  Timeframe,
+  getTimestamp,
+  timeframe2values,
+} from "../../../utils/dates";
 import { buildOutput } from "../utils";
 import { CoralogixClient } from "../../../clients";
-
-const timeframe2values = {
-  "Last 1 minute": [1, "minutes"],
-  "Last 2 minutes": [2, "minutes"],
-  "Last 5 minutes": [5, "minutes"],
-  "Last 15 minutes": [15, "minutes"],
-  "Last 30 minutes": [30, "minutes"],
-  "Last 1 hour": [1, "hours"],
-  "Last 2 hours": [2, "hours"],
-  "Last 6 hours": [6, "hours"],
-  "Last 12 hours": [12, "hours"],
-  "Last 24 hours": [24, "hours"],
-  "Last 2 days": [2, "days"],
-  "Last 3 days": [3, "days"],
-  "Last 5 days": [5, "days"],
-  "Last 7 days": [7, "days"],
-} as Record<string, [number, Timescale]>;
 
 export const fetchLogs = async (
   query: string,
@@ -104,20 +91,20 @@ export default async function (integration: CoralogixIntegration) {
         ),
       timeframe: z
         .enum([
-          "Last 1 minute",
-          "Last 2 minutes",
-          "Last 5 minutes",
-          "Last 15 minutes",
-          "Last 30 minutes",
-          "Last 1 hour",
-          "Last 2 hours",
-          "Last 6 hours",
-          "Last 12 hours",
-          "Last 24 hours",
-          "Last 2 days",
-          "Last 3 days",
-          "Last 5 days",
-          "Last 7 days",
+          // Timeframe.Last1Minute,
+          // Timeframe.Last2Minutes,
+          // Timeframe.Last5Minutes,
+          // Timeframe.Last15Minutes,
+          // Timeframe.Last30Minutes,
+          // Timeframe.Last1Hour,
+          // Timeframe.Last2Hours,
+          // Timeframe.Last6Hours,
+          // Timeframe.Last12Hours,
+          Timeframe.Last24Hours,
+          // Timeframe.Last2Days,
+          // Timeframe.Last3Days,
+          // Timeframe.Last5Days,
+          // Timeframe.Last7Days,
         ])
         .describe("The period for which you wish to search the logs."),
     }),
