@@ -24,29 +24,33 @@ Here are the common fields that you can use in your query (they were taken from 
 Here is a sample of logs so you'd know how they look like:
 {logSample}
 
-You should return your answer as JSON. It should contain 1 key called "queries", and it should be a list.
-Each value in the list should be a valid Coralogix DataPrime query.
+You should return your answer as a block of Thought, Observation and Answer.
+The thought section should contain a thought that you have about the request.
+The observation section should contain an observation on log sample/cheatsheet/common fields.
+The answer section should contain a JSON with only one key called "queries", and it should be a list of valid DataPrime queries.
 
-For instance, here is an example response:
+For instance, given the following logSample + request:
+
+Log sample
+resource.attributes.service.name: recommendationservice
+logRecord.severityText: WARN
+logRecord.body: Receive ListRecommendations for product ids:['OLJCESPC7Z', 'L9ECAV7KIM', '66VCHSJNUP', '6E92ZMYYFZ', 'LS4PSXUNUM']
+
+Request:
+"Please fetch all the warning logs for the recommendationservice"
+
+Your answer should be as follows:
+Thought: I think that the request is asking for logs with a specific severity level for a specific service, in this case, the "recommendationservice".
+Observation: The log sample contains the service name and the severity level. The fields are called "resource.attributes.service.name" and "logRecord.severityText".
+Answer:
 \`\`\`json
-{{"queries": ["source logs | filter resource.attributes.service.name == 'adservice'", "source logs | filter resource.attributes.service.name == 'cartservice'"]}}
+{{"queries": ["source logs | filter resource.attributes.service.name == 'recommendationservice' && logRecord.severityText == 'WARN'"]}}
 \`\`\`
 
 Please create variations of the queries to cover more ground. Try to make some of them wider and some of them more specific.
 Start from the service level and then go deeper into the logs.
 
-For example, given a request: "Please fetch the logs for the last 24 hours for the adservice related to the alert with datasource UID P8E80F9AEF21F6940 and rule name 'adservice warn'
-Try to generate queries like this (start from wider to more specific):
-\`\`\`json
-{{"queries": [
-  "source logs | filter resource.attributes.service.name == 'adservice'",
-  "source logs | filter resource.attributes.service.name == 'adservice' && alert.datasource.uid == 'P8E80F9AEF21F6940'",
-  "source logs | filter resource.attributes.service.name == 'adservice' && alert.datasource.uid == 'P8E80F9AEF21F6940' && alert.rule.name == 'adservice warn'"
-]}}
-\`\`\`
-Moreover, try to include a service name in the query, as it will help to narrow down the search.
-
-IMPORTANT: Please respond only in JSON.
+IMPORTANT! Always look at the log sample and the common fields to understand the structure of the logs, so your queries are valid.
 IMPORTANT! Don't include timestamp filters. We add them in the metadata of the query, not in the query itself.
 
 Begin!
