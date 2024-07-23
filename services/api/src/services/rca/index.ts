@@ -132,24 +132,6 @@ async function analyzeLogs(
     return;
   }
 
-  // // Branch 1 - fetch logs using an AI agent that generates queries by itself
-  // const toolLoaders = logVendorToolLoaders[
-  //   logVendor.vendor.name
-  // ] as ToolLoader<IIntegration>[];
-
-  // const logTools = await createToolsForVendor(
-  //   integrations,
-  //   logVendor.vendor.name,
-  //   toolLoaders,
-  //   context,
-  // );
-  // const agent = await createAgent(logTools, chatModel, investigationTemplate);
-
-  // const { output } = await agent.call({
-  //   input: `Please search the logs for relevant information this incident: ${incidentText}`,
-  // });
-
-  // Branch 2 - get log aggregation analysis
   const clusters = await getLogClusters(logVendor, timeframe);
   const excludedLevels = ["DEBUG", "INFO", "Information"];
   const formattedClusters = clusters
