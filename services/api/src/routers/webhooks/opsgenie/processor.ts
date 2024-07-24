@@ -52,7 +52,7 @@ export async function processWebhook(
 
   const { alert } = event;
   const { alertId } = alert;
-  const { channel_id: channelId } = slackIntegration.metadata.incoming_webhook;
+  const channelId = opsgenieIntegration.settings.slackChannelId as string;
   const ogMessage = await slackClient.waitAndFetchMessage(channelId, alertId);
 
   await postInitialStatus(access_token, channelId, ogMessage.ts!);

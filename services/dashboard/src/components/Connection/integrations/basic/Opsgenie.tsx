@@ -19,6 +19,13 @@ const fieldsConfigurations: FieldConfiguration[] = [
     type: "metadata",
     input: { type: "select", options: ["us", "eu"] },
   },
+  {
+    key: "slackChannelId",
+    label: "Opsgenie Slack Channel ID",
+    subtitle:
+      "The ID of the Slack channel where Opsgenie incidents are posted.",
+    type: "settings",
+  },
 ];
 
 export const ConnectOpsgenieIntegration = ({
@@ -36,6 +43,7 @@ export const ConnectOpsgenieIntegration = ({
           organization: orgId,
           metadata: { ...(prev?.body?.metadata || {}) },
           credentials: { ...(prev?.body?.credentials || {}) },
+          settings: { ...(prev?.body?.settings || {}) },
         };
 
         body[type as keyof IntegrationPayload][key] = value;

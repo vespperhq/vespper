@@ -92,9 +92,7 @@ const getDataFromCoralogix = async (
     },
   )) as CoralogixIntegration;
   if (!coralogixIntegration) {
-    throw new Error(
-      `No coralogix integration for organization ${organizationId}`,
-    );
+    return null;
   }
 
   coralogixIntegration = (
@@ -124,9 +122,7 @@ const getDataFromGrafana = async (
     },
   )) as GrafanaIntegration;
   if (!grafanaIntegration) {
-    throw new Error(
-      `No coralogix integration for organization ${organizationId}`,
-    );
+    return null;
   }
 
   grafanaIntegration = (
