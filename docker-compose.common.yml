@@ -88,18 +88,18 @@ services:
         target: /etc/config/kratos
     depends_on:
       - ory-kratos-migrate
-  # This container is helpful in case you want to manage users.
-  # Currently it's excluded from the infra profile for the sake of simplicity.
-  # To start it, simply run "docker compose up ory-kratos-admin-ui -d"
-  ory-kratos-admin-ui-common:
-    image: ghcr.io/dfoxg/kratos-admin-ui:v2.3.2
-    container_name: ory-kratos-admin-ui
-    ports:
-      - '${KRATOS_ADMIN_UI_PORT}:8080'
-    restart: unless-stopped
-    environment:
-      - KRATOS_ADMIN_URL=${KRATOS_ADMIN_URL}
-      - KRATOS_PUBLIC_URL=${KRATOS_PUBLIC_URL}
+  # # This container is helpful in case you want to manage users.
+  # # Currently it's excluded from the infra profile for the sake of simplicity.
+  # # To start it, simply run "docker compose up ory-kratos-admin-ui -d"
+  # ory-kratos-admin-ui-common:
+  #   image: ghcr.io/dfoxg/kratos-admin-ui:v2.3.2
+  #   container_name: ory-kratos-admin-ui
+  #   ports:
+  #     - '${KRATOS_ADMIN_UI_PORT}:8080'
+  #   restart: unless-stopped
+  #   environment:
+  #     - KRATOS_ADMIN_URL=${KRATOS_ADMIN_URL}
+  #     - KRATOS_PUBLIC_URL=${KRATOS_PUBLIC_URL}
   ory-kratos-self-serve-ui-common:
     image: oryd/kratos-selfservice-ui-node:v1.2.0
     container_name: ory-kratos-self-serve-ui
@@ -114,6 +114,18 @@ services:
       - CSRF_COOKIE_NAME=${KRATOS_SELF_SERVE_UI_CSRF_COOKIE_NAME}
       - CSRF_COOKIE_SECRET=${KRATOS_SELF_SERVE_UI_CSRF_COOKIE_SECRET}
     restart: on-failure
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "nc -z -w 5 localhost ${KRATOS_SELF_SERVE_UI_PORT} || exit 1"
+        ]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+      start_period: 40s
+    depends_on:
+      - ory-kratos
   # We support Hashicorp Vault but for now the default secret manager
   # is a simple file-based secret manager.
   vault-common:
@@ -219,3 +231,6 @@ services:
     profiles: ["app"]
     ports:
       - "${DASHBOARD_PORT}:80"
+    depends_on:
+      ory-kratos-self-serve-ui:
+        condition: service_healthy
