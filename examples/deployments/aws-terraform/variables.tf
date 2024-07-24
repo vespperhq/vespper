@@ -28,14 +28,14 @@ variable "instance_type" {
 variable "public_access" {
   description = "Enable public ingress on port 8000"
   type        = bool
-  default     = true // or true depending on your needs
+  default     = true // or false depending on your needs
 }
 
 
 locals {
-  tags = [
-    "merlinn"
-  ]
+  tags = {
+    Name        = "merlinn-instance"
+  }
 }
 
 variable "ssh_public_key" {
@@ -64,7 +64,7 @@ variable "merlinn_data_volume_size" {
 variable "merlinn_data_volume_snapshot_before_destroy" {
     description = "Take a snapshot of the merlinn data volume before destroying it"
     type        = bool
-    default     = false
+    default     = true
 }
 
 variable "merlinn_data_restore_from_snapshot_id" {
@@ -80,13 +80,28 @@ variable "merlinn_port" {
 }
 
 variable "source_ranges" {
-  default     = ["0.0.0.0/0", "::/0"]
+  default     = ["0.0.0.0/0"]
   type        = list(string)
   description = "List of CIDR ranges to allow through the firewall"
 }
 
 variable "mgmt_source_ranges" {
-  default     = ["0.0.0.0/0", "::/0"]
+  default     = ["0.0.0.0/0"]
   type        = list(string)
   description = "List of CIDR ranges to allow for management of the Merlinn instance. This is used for SSH incoming traffic filtering"
+}
+
+variable "slack_bot_token" {
+  description = "Slack Bot Token"
+  type        = string
+}
+
+variable "slack_app_token" {
+  description = "Slack App Token"
+  type        = string
+}
+
+variable "slack_signing_secret" {
+  description = "Slack Signing Secret"
+  type        = string
 }
