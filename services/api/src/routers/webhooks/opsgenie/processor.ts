@@ -1,11 +1,11 @@
 import {
   IIntegration,
   IWebhook,
-  PagerDutyIntegration,
+  OpsgenieIntegration,
   SlackIntegration,
   integrationModel,
 } from "@merlinn/db";
-import { PagerDutyWebhookEvent } from "../../../types";
+import { OpsgenieWebhookEvent } from "../../../types";
 import { secretManager } from "../../../common/secrets";
 import { SlackClient } from "../../../clients";
 import { postInitialStatus } from "../utils";
@@ -18,57 +18,49 @@ import { MessageMetadata } from "@slack/bolt";
 
 export async function processWebhook(
   webhook: IWebhook,
-  event: PagerDutyWebhookEvent,
+  event: OpsgenieWebhookEvent,
 ) {
   const { organization } = webhook;
   const organizationName = organization.name;
   const organizationId = String(organization._id);
 
-  const { event: pdEvent } = event;
-
+  // Make sure we have the basic integrations to perform an investigation.
   const integrations = (await integrationModel
     .get({
       organization: organization._id,
     })
     .populate("vendor")) as IIntegration[];
 
-  // Get integrations to Slack and PagerDuty
   let slackIntegration = integrations.find(
     (integration) => integration.vendor.name === "Slack",
   ) as SlackIntegration;
-  const pagerdutyIntegration = integrations.find(
-    (integration) => integration.vendor.name === "PagerDuty",
-  ) as PagerDutyIntegration;
-
-  if (!slackIntegration) {
+  const opsgenieIntegration = integrations.find(
+    (integration) => integration.vendor.name === "Opsgenie",
+  ) as OpsgenieIntegration;
+  if (!opsgenieIntegration) {
+    throw new Error("Opsgenie integration was not found");
+  } else if (!slackIntegration) {
     throw new Error("Slack integration was not found");
-  } else if (!pagerdutyIntegration) {
-    throw new Error("PagerDuty integration was not found");
   }
 
   slackIntegration = (
     await secretManager.populateCredentials([slackIntegration])
   )[0] as SlackIntegration;
 
-  const channelId = pagerdutyIntegration.settings.slackChannelId as string;
+  const { access_token } = slackIntegration.credentials;
+  const slackClient = new SlackClient(access_token);
 
-  const { access_token: slackToken } = slackIntegration.credentials;
-  const slackClient = new SlackClient(slackToken);
+  const { alert } = event;
+  const { alertId } = alert;
+  const channelId = opsgenieIntegration.settings.slackChannelId as string;
+  const ogMessage = await slackClient.waitAndFetchMessage(channelId, alertId);
 
-  const messages = await slackClient.getChannelHistoryGracefully(channelId);
-  const pdMessage = messages?.find((message) =>
-    message.text?.includes(pdEvent.data.id),
-  );
-  if (!pdMessage) {
-    throw new Error("Could not find Slack message");
-  }
-
-  await postInitialStatus(slackToken, channelId, pdMessage.ts!);
+  await postInitialStatus(access_token, channelId, ogMessage.ts!);
 
   try {
     const analysis = await runRCA(
-      pdEvent.data.id,
-      "PagerDuty",
+      event.alert.alertId,
+      "Opsgenie",
       String(organization._id),
     );
 
@@ -76,8 +68,8 @@ export async function processWebhook(
       organizationName,
       organizationId,
       env: process.env.NODE_ENV as string,
-      eventId: pdEvent.data.id,
-      context: "trigger-pagerduty",
+      eventId: alertId,
+      context: "trigger-opsgenie",
     };
     if (isLangfuseEnabled()) {
       const trace = generateTrace({ ...context });
@@ -91,7 +83,7 @@ export async function processWebhook(
         organizationId,
         organizationName,
         env: process.env.NODE_ENV as string,
-        context: "trigger-pagerduty",
+        context: "trigger-opsgenie",
       },
     };
 
@@ -102,14 +94,12 @@ export async function processWebhook(
       event_type: systemEvent.type,
       event_payload: systemEvent.payload,
     };
-
     const response = await slackClient.postReply({
       channelId,
-      ts: pdMessage?.ts as string,
+      ts: ogMessage?.ts as string,
       text: analysis,
       metadata,
     });
-
     const { ok, ts } = response;
     if (ok) {
       await slackClient.addFeedbackReactions(channelId, ts!);
@@ -117,7 +107,7 @@ export async function processWebhook(
   } catch (error) {
     await slackClient.postReply({
       channelId,
-      ts: pdMessage?.ts as string,
+      ts: ogMessage?.ts as string,
       text: "An error occurred while processing the event, and the investigation could not be completed.",
     });
 

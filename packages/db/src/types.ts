@@ -190,6 +190,9 @@ export interface OpsgenieIntegration extends BaseConnection {
   metadata: {
     region: "us" | "eu";
   };
+  settings: {
+    slackChannelId: string;
+  };
 }
 
 export interface CoralogixIntegration extends BaseConnection {
