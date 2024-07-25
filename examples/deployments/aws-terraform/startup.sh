@@ -2,7 +2,24 @@
 
 # Note: This is run as root
 
+echo "Starting startup script..."
+
+echo "CD to home directory"
 cd ~
+
+export slack_bot_token="${slack_bot_token}"
+export slack_app_token="${slack_app_token}"
+export slack_signing_secret="${slack_signing_secret}"
+export openai_token="${openai_token}"
+
+replace_env_value() {
+  local filename=$1
+  local var_name=$2
+  local new_value=$3
+
+  # Use sed to replace the value of the variable
+  sed -i "s|${var_name}=\"[^\"]*\"|${var_name}=\"${new_value}\"|g" "$filename"
+}
 
 apt-get update -y
 apt-get install -y ca-certificates curl gnupg lsb-release
@@ -18,4 +35,15 @@ apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin do
 usermod -aG docker ubuntu
 git clone https://github.com/merlinn-co/merlinn.git && cd merlinn
 
+cp config/litellm/.env.example config/litellm/.env
+cp config/litellm/config.example.yaml config/litellm/config.yaml
+replace_env_value config/litellm/.env OPENAI_API_KEY $openai_token
+
+cp .env.example .env
+replace_env_value .env SLACK_BOT_TOKEN $slack_bot_token
+replace_env_value .env SLACK_APP_TOKEN $slack_app_token
+replace_env_value .env SLACK_SIGNING_SECRET $slack_signing_secret
+
 docker compose up -d --build
+
+echo "Done!"

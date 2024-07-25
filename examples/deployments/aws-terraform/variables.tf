@@ -9,7 +9,7 @@ data "template_file" "user_data" {
 variable "region" {
   description = "AWS Region"
   type        = string
-  default     = "us-west-1"
+  default     = "us-east-1"
 }
 
 variable "instance_type" {
@@ -97,5 +97,10 @@ variable "slack_app_token" {
 
 variable "slack_signing_secret" {
   description = "Slack Signing Secret"
+  type        = string
+}
+
+variable "openai_token" {
+  description = "OpenAI token"
   type        = string
 }

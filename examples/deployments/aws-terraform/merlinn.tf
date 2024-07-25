@@ -95,7 +95,7 @@ resource "aws_ebs_volume" "merlinn-volume" {
   tags = local.tags
 
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
 
