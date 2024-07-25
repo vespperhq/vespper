@@ -51,6 +51,8 @@ config/litellm/.env
 # Terraform & Deployment files
 .terraform
 .terraform.lock.hcl
+.terraform.tfstate.lock.info
 terraform.tfstate
+terraform.tfstate.backup
 merlinn-aws
 merlinn-aws.pub

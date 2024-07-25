@@ -18,7 +18,4 @@ apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin do
 usermod -aG docker ubuntu
 git clone https://github.com/merlinn-co/merlinn.git && cd merlinn
 
-# git fetch --tags
-# git checkout tags/${merlinn_release} # in the future, we can use a specific release of Merlinn
-
 docker compose up -d --build

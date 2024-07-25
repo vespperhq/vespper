@@ -1,9 +1,3 @@
-# variable "merlinn_release" {
-#   description = "The merlinn release to deploy"
-#   type        = string
-#   default     = "0.4.12"
-# }
-
 data "http" "startup_script_remote" {
   url = "https://raw.githubusercontent.com/merlinn-co/merlinn/terraform-deploy/examples/deployments/aws-terraform/startup.sh"
 }
@@ -70,7 +64,7 @@ variable "merlinn_data_volume_snapshot_before_destroy" {
 variable "merlinn_data_restore_from_snapshot_id" {
     description = "Restore the merlinn data volume from a snapshot"
     type        = string
-    default     = null
+    default     = ""
 }
 
 variable "merlinn_port" {
