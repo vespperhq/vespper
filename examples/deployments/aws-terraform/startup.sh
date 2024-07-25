@@ -18,7 +18,7 @@ replace_env_value() {
   local new_value=$3
 
   # Use sed to replace the value of the variable
-  sed -i "s|${variable_name}=\"[^\"]*\"|${variable_name}=\"${new_value}\"|g" "$filename"
+  sed -i "s|$variable_name=\"[^\"]*\"|$variable_name=\"$new_value\"|g" "$filename"
 }
 
 apt-get update -y
