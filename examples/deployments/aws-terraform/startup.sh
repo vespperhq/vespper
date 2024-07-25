@@ -5,7 +5,7 @@
 echo "Starting startup script..."
 
 echo "CD to home directory"
-cd ~
+cd /home/ubuntu
 
 export slack_bot_token="${slack_bot_token}"
 export slack_app_token="${slack_app_token}"
