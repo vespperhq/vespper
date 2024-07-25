@@ -14,11 +14,11 @@ export openai_token="${openai_token}"
 
 replace_env_value() {
   local filename=$1
-  local var_name=$2
+  local variable_name=$2
   local new_value=$3
 
   # Use sed to replace the value of the variable
-  sed -i "s|${var_name}=\"[^\"]*\"|${var_name}=\"${new_value}\"|g" "$filename"
+  sed -i "s|${variable_name}=\"[^\"]*\"|${variable_name}=\"${new_value}\"|g" "$filename"
 }
 
 apt-get update -y

@@ -4,6 +4,13 @@ data "http" "startup_script_remote" {
 
 data "template_file" "user_data" {
   template = data.http.startup_script_remote.response_body
+
+  vars = {
+    slack_bot_token         = var.slack_bot_token
+    slack_app_token         = var.slack_app_token
+    slack_signing_secret    = var.slack_signing_secret
+    openai_token            = var.openai_token
+  }
 }
 
 variable "region" {
