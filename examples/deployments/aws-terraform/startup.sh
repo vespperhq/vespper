@@ -7,6 +7,7 @@ echo "Starting startup script..."
 echo "CD to home directory"
 cd /home/ubuntu
 
+echo "Setting up environment variables..."
 export slack_bot_token="${slack_bot_token}"
 export slack_app_token="${slack_app_token}"
 export slack_signing_secret="${slack_signing_secret}"
@@ -18,9 +19,10 @@ replace_env_value() {
   local new_value=$3
 
   # Use sed to replace the value of the variable
-  sed -i "s|$${variable_name=\"[^\"]*\"|$${variable_name}=\"$${new_value}\"|g" "$${filename}"
+  sed -i "s|$variable_name=\"[^\"]*\"|$variable_name=\"$new_value\"|g" "$filename"
 }
 
+echo "Installing dependencies..."
 apt-get update -y
 apt-get install -y ca-certificates curl gnupg lsb-release
 mkdir -m 0755 -p /etc/apt/keyrings
@@ -33,8 +35,11 @@ chmod a+r /etc/apt/keyrings/docker.gpg
 apt-get update -y
 apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin git
 usermod -aG docker ubuntu
+
+echo "About to clone the repository..."
 git clone https://github.com/merlinn-co/merlinn.git && cd merlinn
 
+echo "Injecting environment variables..."
 cp config/litellm/.env.example config/litellm/.env
 cp config/litellm/config.example.yaml config/litellm/config.yaml
 replace_env_value config/litellm/.env OPENAI_API_KEY $openai_token
@@ -44,6 +49,7 @@ replace_env_value .env SLACK_BOT_TOKEN $slack_bot_token
 replace_env_value .env SLACK_APP_TOKEN $slack_app_token
 replace_env_value .env SLACK_SIGNING_SECRET $slack_signing_secret
 
+echo "Running docker compose..."
 docker compose up -d --build
 
 echo "Done!"
