@@ -219,6 +219,3 @@ services:
     profiles: ["app"]
     ports:
       - "${DASHBOARD_PORT}:80"
-    environment:
-      - VITE_API_SERVER_URL=${DASHBOARD_API_URL}
-      - VITE_ORY_URL=${DASHBOARD_ORY_URL}

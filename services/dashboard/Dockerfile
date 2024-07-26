@@ -2,6 +2,11 @@ FROM node:18.18.2-alpine as builder
 
 WORKDIR /app
 
+ARG DASHBOARD_API_URL
+ARG DASHBOARD_ORY_URL
+ENV VITE_API_SERVER_URL=${DASHBOARD_API_URL}
+ENV VITE_ORY_URL=${DASHBOARD_ORY_URL}
+
 COPY package.json ./
 COPY yarn.lock ./
 COPY nx.json ./
