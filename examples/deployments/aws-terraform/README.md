@@ -70,6 +70,7 @@ Define the following environment variables. Make sure you insert the desired `re
 export TF_VAR_slack_bot_token="your slack bot token"
 export TF_VAR_slack_app_token="your slack app token"
 export TF_VAR_slack_signing_secret="your slack signing secret"
+export TF_VAR_open
 # AWS region to deploy the merlinn instance to
 export TF_VAR_region="us-east-1"
 #enable public access to the merlinn instance on port 8000
@@ -101,7 +102,7 @@ export instance_public_ip=$(terraform output instance_public_ip | sed 's/"//g')
 curl -v http://$instance_public_ip:3000/
 ```
 
-#### 4.2 Connect (ssh) to your instance
+#### 5.1 SSH to your instance
 
 To SSH to your instance:
 
@@ -109,20 +110,37 @@ To SSH to your instance:
 ssh -i ./merlinn-aws ubuntu@$instance_public_ip
 ```
 
-### 5. Destroy your Merlinn instance
+#### 5.2 Make sure Docker process is complete
 
-You will need to change `prevent_destroy` to `false` in the `aws_ebs_volume` in `merlinn.tf`.
+When Terraform creates the EC2 instance, it defines a startup script that we run. The script is located next to this README.md, at `examples/deployments/aws-terraform`. The script mainly clones this repo and runs `docker compose up -d`.
+
+You need to monitor the health of the script and make sure it was executed successfully.
+To do that, run the following command:
+
+```bash
+tail -f /var/log/cloud-init-output.log
+```
+
+This command would tail the log file that the EC2 writes to when running the startup script.
+The startup script should take about 10-13 minutes to complete.
+
+When it's done, you should see a similar message at the bottom:
+
+```
+Done!
+Cloud-init v. 24.1.3-0ubuntu1~22.04.5 finished at Fri, 26 Jul 2024 09:32:37 +0000. Datasource DataSourceEc2Local.  Up 937.21 seconds
+```
+
+You can also double check all the containers are up using `docker ps`.
+
+### 6. Try to access the UI
+
+Use the public IP from before (run `terraform output instance_public_ip` if you don't have it already) and navigate in the browser to `http:{instance_public_ip}:3000`. This should open the Merlinn dashboard, where you can sign up and configure your organization & integrations!
+
+### 7. Destroy your Merlinn instance
+
+If you wish to destroy all this setup and remove all the resouces, run the following command:
 
 ```bash
 terraform destroy
 ```
-
-## Extras
-
-You can visualize your infrastructure with:
-
-```bash
-terraform graph | dot -Tsvg > graph.svg
-```
-
-> Note: You will need graphviz installed for this to work

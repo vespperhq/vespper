@@ -49,7 +49,7 @@ cp .env.example .env
 replace_env_value .env SLACK_BOT_TOKEN $slack_bot_token
 replace_env_value .env SLACK_APP_TOKEN $slack_app_token
 replace_env_value .env SLACK_SIGNING_SECRET $slack_signing_secret
-replace_env_value .env APP_URL http://$public_ip:5173
+replace_env_value .env DASHBOARD_APP_URL http://$public_ip:5173
 replace_env_value .env DASHBOARD_API_URL http://$public_ip:3000
 replace_env_value .env DASHBOARD_ORY_URL http://$public_ip:4433
 replace_env_value .env KRATOS_SELF_SERVE_UI_BROWSER_URL http://$public_ip:4433
