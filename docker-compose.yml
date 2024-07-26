@@ -28,10 +28,10 @@ services:
     extends:
       file: docker-compose.common.yml
       service: ory-kratos-common
-  ory-kratos-admin-ui:
-    extends:
-      file: docker-compose.common.yml
-      service: ory-kratos-admin-ui-common
+  # ory-kratos-admin-ui:
+  #   extends:
+  #     file: docker-compose.common.yml
+  #     service: ory-kratos-admin-ui-common
   ory-kratos-self-serve-ui:
     extends:
       file: docker-compose.common.yml
@@ -59,19 +59,19 @@ services:
     extends:
       file: docker-compose.common.yml
       service: data-processor-common
-    build: 
+    build:
       context: services/data-processor
   log-parser:
     extends:
       file: docker-compose.common.yml
       service: log-parser-common
-    build: 
+    build:
       context: services/log-parser
   dashboard:
     extends:
       file: docker-compose.common.yml
       service: dashboard-common
-    build: 
+    build:
       context: "."
       dockerfile: services/dashboard/Dockerfile
       args:

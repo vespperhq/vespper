@@ -3,6 +3,11 @@
 In this document, you can find common scenarios where we're currently have problems. If you're interested in some of these
 issues and want to help, feel free to create an [issue](https://github.com/merlinn-co/merlinn/issues).
 
+### `service "X" can't be used with extends as it declare depends_on`
+This issue is related to a [new change](https://github.com/docker/compose/issues/11544) the docker compose team has introduced (also mentioned [here](https://github.com/rancher-sandbox/rancher-desktop/issues/6759)).
+
+The solution is to upgrade docker compose to 2.25.0+.
+
 ### `Failed creating a secret`
 
 This errors often happens because the Hashicorp Vault keys in your `.env` are out-dated. This can happen if the `data` folder was changed/deleted. Try to visit the Vault UI at http://localhost:8202 and generate a new set of keys, and update your `.env`.

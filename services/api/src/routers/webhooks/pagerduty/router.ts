@@ -18,7 +18,7 @@ router.post(
   checkWebhookSecret,
   checkAlertsQuota,
   async (req: Request, res: Response) => {
-    // Acknowledge the webhook
+    // Acknowledge the webhook as soon as possible
     res.status(202).send("ok");
 
     // PagerDuty sends a webhook ID with every event that can be used to deduplicate events
