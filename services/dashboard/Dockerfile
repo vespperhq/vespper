@@ -19,7 +19,7 @@ COPY packages packages
 
 COPY services/dashboard/package.json services/dashboard/package.json
 COPY services/dashboard/yarn.lock services/dashboard/yarn.lock
-RUN yarn install --frozen-lockfile
+RUN yarn install --frozen-lockfile --network-timeout 100000
 
 COPY services/dashboard services/dashboard
 

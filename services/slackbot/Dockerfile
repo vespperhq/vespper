@@ -14,7 +14,7 @@ COPY jest.config.ts ./
 COPY packages packages
 COPY services/slackbot services/slackbot
 
-RUN yarn install --frozen-lockfile
+RUN yarn install --frozen-lockfile --network-timeout 100000
 
 RUN npx nx build slackbot --verbose
 
