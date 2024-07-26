@@ -24,10 +24,10 @@ resource "aws_security_group" "merlinn_sg" {
   }
 
   dynamic "ingress" {
-    for_each = var.public_access ? [1] : []
+    for_each = var.public_access ? [3000, 5173, 4433, 4455] : []
     content {
-      from_port   = var.merlinn_port
-      to_port     = 8000
+      from_port   = ingress.value
+      to_port     = ingress.value
       protocol    = "tcp"
       cidr_blocks = var.source_ranges
     }

@@ -74,12 +74,6 @@ variable "merlinn_data_restore_from_snapshot_id" {
     default     = ""
 }
 
-variable "merlinn_port" {
-  default     = "8000"
-  description = "The port that merlinn listens on"
-  type        = string
-}
-
 variable "source_ranges" {
   default     = ["0.0.0.0/0"]
   type        = list(string)

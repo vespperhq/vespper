@@ -12,6 +12,7 @@ export slack_bot_token="${slack_bot_token}"
 export slack_app_token="${slack_app_token}"
 export slack_signing_secret="${slack_signing_secret}"
 export openai_token="${openai_token}"
+export public_ip="$(curl http://checkip.amazonaws.com)"
 
 replace_env_value() {
   local filename=$1
@@ -48,6 +49,10 @@ cp .env.example .env
 replace_env_value .env SLACK_BOT_TOKEN $slack_bot_token
 replace_env_value .env SLACK_APP_TOKEN $slack_app_token
 replace_env_value .env SLACK_SIGNING_SECRET $slack_signing_secret
+replace_env_value .env APP_URL http://$public_ip:5173
+replace_env_value .env DASHBOARD_API_URL http://$public_ip:3000
+replace_env_value .env DASHBOARD_ORY_URL http://$public_ip:4433
+replace_env_value .env KRATOS_SELF_SERVE_UI_BROWSER_URL http://$public_ip:4433
 
 echo "Running docker compose..."
 docker compose up -d --build
