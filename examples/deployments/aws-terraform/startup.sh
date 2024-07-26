@@ -38,6 +38,7 @@ apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin do
 usermod -aG docker ubuntu
 
 echo "About to clone the repository..."
+git config --global safe.directory '*'
 git clone https://github.com/merlinn-co/merlinn.git && cd merlinn
 # TODO: this is only for testing. remove after it workds
 git checkout terraform-deploy
