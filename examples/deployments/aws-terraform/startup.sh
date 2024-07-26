@@ -39,6 +39,8 @@ usermod -aG docker ubuntu
 
 echo "About to clone the repository..."
 git clone https://github.com/merlinn-co/merlinn.git && cd merlinn
+# TODO: this is only for testing. remove after it workds
+git checkout terraform-deploy
 
 echo "Injecting environment variables..."
 cp config/litellm/.env.example config/litellm/.env
