@@ -6,6 +6,7 @@ echo "Starting startup script..."
 
 echo "CD to home directory"
 cd /home/ubuntu
+sudo chown -R $USER:$USER /home/ubuntu
 
 echo "Setting up environment variables..."
 export slack_bot_token="${slack_bot_token}"
@@ -21,6 +22,15 @@ replace_env_value() {
 
   # Use sed to replace the value of the variable
   sed -i "s|$variable_name=\"[^\"]*\"|$variable_name=\"$new_value\"|g" "$filename"
+}
+
+replace_value() {
+  local filename=$1
+  local variable_name=$2
+  local new_value=$3
+
+  # Use sed to replace the value of the variable
+  sed -i "s|$variable_name|$new_value|g" "$filename"
 }
 
 echo "Installing dependencies..."
@@ -56,6 +66,10 @@ replace_env_value .env DASHBOARD_APP_URL http://$public_ip:5173
 replace_env_value .env DASHBOARD_API_URL http://$public_ip:3000
 replace_env_value .env DASHBOARD_ORY_URL http://$public_ip:4433
 replace_env_value .env KRATOS_SELF_SERVE_UI_BROWSER_URL http://$public_ip:4433
+
+# Change Ory Kratos configuration
+replace_value config/kratos/kratos.yml localhost $public_ip
+replace_value config/kratos/kratos.yml host.docker.internal $public_ip
 
 echo "Running docker compose..."
 docker compose up -d --build
