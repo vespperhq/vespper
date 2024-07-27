@@ -14,7 +14,7 @@ services:
       - POSTGRES_USER
       - POSTGRES_MULTIPLE_DATABASES
   litellm-common:
-    image: ghcr.io/berriai/litellm:main-latest
+    image: ghcr.io/berriai/litellm:main-v1.41.3
     container_name: litellm
     profiles: ["app", "infra"]
     env_file:
