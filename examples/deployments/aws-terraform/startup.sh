@@ -73,7 +73,7 @@ replace_env_value .env KRATOS_SELF_SERVE_UI_BROWSER_URL http://$public_ip:4433
 replace_value config/kratos/kratos.yml localhost $public_ip
 replace_value config/kratos/kratos.yml host.docker.internal $public_ip
 
-echo "Running docker compose..."
-docker compose up -d --build
+# echo "Running docker compose..."
+# docker compose up -d --build
 
-echo "Done!"
+# echo "Done!"
