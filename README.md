@@ -50,6 +50,7 @@ Most people don't like to do on-call shifts. It requires engineers to be swift a
   - [Prerequisites](#prerequisites-)
   - [Quick Installation](#quick-installation-)
   - [Updating Merlinn](#updating-merlinn-️-)
+  - [Deployment](#deployment-)
   - [Visualize Knowledge Base](#visualize-knowledge-base-)
 - [Support and feedback](#support-and-feedback-️)
 - [Contributing to Merlinn](#contributing-to-merlinn-️)
@@ -170,6 +171,10 @@ That's it 💫 You should be able to visit Merlinn's dashboard in http://localho
    ```bash
    docker-compose up --build -d
    ```
+
+### Deployment ☁️
+
+Visit our [example guides](https://github.com/merlinn-co/merlinn/tree/main/examples) in order to deploy Merlinn to your cloud.
 
 ### Visualize Knowledge Base 🗺️
 

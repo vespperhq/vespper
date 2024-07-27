@@ -62,7 +62,7 @@ Generate SSH key to use with your merlinn instance, in order for you to login to
 ssh-keygen -t RSA -b 4096 -C "Merlinn AWS Key" -N "" -f ./merlinn-aws && chmod 400 ./merlinn-aws
 ```
 
-### 4. Set up your Terraform variables and deploy your instance:
+### 4. Set up your Terraform variables and deploy your instance
 
 Define the following environment variables. Make sure you insert the desired `region` and the Slack tokens:
 
@@ -93,7 +93,7 @@ Run the following command in your terminal:
 export instance_public_ip=$(terraform output instance_public_ip | sed 's/"//g')
 ```
 
-#### 5.2 Connect to your instance:
+#### 5.2 Connect to your instance
 
 Connect to your EC2 via SSH:
 
