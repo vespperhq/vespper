@@ -3,7 +3,7 @@ import {
   checkAlertsQuota,
   checkWebhookSecret,
 } from "../../../middlewares/webhooks";
-import { checkPagerDutySignature } from "./utils";
+// import { checkPagerDutySignature } from "./utils";
 import { processWebhook } from "./processor";
 
 const router = express.Router();
@@ -14,7 +14,10 @@ const webhookIds: string[] = [];
 
 router.post(
   "/",
-  checkPagerDutySignature,
+  // TODO: pagerduty generate a secret dynamically when creating a webhook
+  // We need to take this secret from the user, store it, and use it here.
+  // Right now, it's commented out because we also verify the x-merlinn-secret
+  // checkPagerDutySignature,
   checkWebhookSecret,
   checkAlertsQuota,
   async (req: Request, res: Response) => {

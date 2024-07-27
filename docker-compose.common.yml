@@ -160,7 +160,6 @@ services:
       - HASHICORP_VAULT_UNSEAL_TOKEN
       - HASHICORP_VAULT_URL
       - MONGO_URI
-      - APP_URL
       - KRATOS_PUBLIC_URL
       - KRATOS_ADMIN_URL
       - DATA_PROCESSOR_URL
@@ -172,6 +171,7 @@ services:
       - ENCRYPTION_SALT=1234567890123456
       - ORY_WEBHOOK_SECRET=super-secret-ory-webhook-key
       - CHROMA_HOST
+      - APP_URL=${DASHBOARD_APP_URL}
       - CHROMA_API_KEY=${CHROMA_SERVER_AUTHN_CREDENTIALS}
     ports:
       - "${API_PORT}:${API_PORT}"

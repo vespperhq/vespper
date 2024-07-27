@@ -74,3 +74,6 @@ services:
     build:
       context: "."
       dockerfile: services/dashboard/Dockerfile
+      args:
+        - DASHBOARD_API_URL
+        - DASHBOARD_ORY_URL

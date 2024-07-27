@@ -55,9 +55,9 @@ export async function processWebhook(
   const { access_token: slackToken } = slackIntegration.credentials;
   const slackClient = new SlackClient(slackToken);
 
-  const messages = await slackClient.getChannelHistoryGracefully(channelId);
-  const pdMessage = messages?.find((message) =>
-    message.text?.includes(pdEvent.data.id),
+  const pdMessage = await slackClient.waitAndFetchMessage(
+    channelId,
+    pdEvent.data.id,
   );
   if (!pdMessage) {
     throw new Error("Could not find Slack message");

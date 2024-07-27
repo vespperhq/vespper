@@ -47,3 +47,12 @@ Thumbs.db
 # LLM config files. This file is specific to each user
 config/litellm/config.yaml
 config/litellm/.env
+
+# Terraform & Deployment files
+.terraform
+.terraform.lock.hcl
+.terraform.tfstate.lock.info
+terraform.tfstate
+terraform.tfstate.backup
+merlinn-aws
+merlinn-aws.pub
