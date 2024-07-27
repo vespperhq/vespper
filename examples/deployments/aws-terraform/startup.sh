@@ -49,7 +49,7 @@ usermod -aG docker ubuntu
 
 echo "About to clone the repository..."
 git clone https://github.com/merlinn-co/merlinn.git
-git config --global safe.directory '/home/ubuntu/merlinn'
+git config --global --add safe.directory '*'
 sudo chmod -R 777 merlinn
 cd merlinn
 # TODO: this is only for testing. remove after it works
