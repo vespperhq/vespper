@@ -4,8 +4,8 @@ This guide provides an example deployment to AWS EC2 Compute using [Terraform](h
 
 More specifically, this deployment will do the following:
 
-- Create a security group with the necessary ports open (22 and 8000)
-- Launch an EC2 instance with Ubuntu 22.04 and deploy Merlinn using Docker Compose
+- Create a security group with the necessary ports open (3000, 5173, 4433, 4455)
+- Launch an EC2 instance (t3.large) with Ubuntu 22.04 and deploy Merlinn using Git + Docker Compose.
 - Create a data volume for Merlinn's data
 - Mount the data volume to the EC2 instance
 - Format the data volume with ext4
