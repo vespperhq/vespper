@@ -1,5 +1,5 @@
 data "http" "startup_script_remote" {
-  url = "https://raw.githubusercontent.com/merlinn-co/merlinn/terraform-deploy/examples/deployments/aws-terraform/startup.sh"
+  url = "https://raw.githubusercontent.com/merlinn-co/merlinn/main/examples/deployments/aws-terraform/startup.sh"
 }
 
 data "template_file" "user_data" {

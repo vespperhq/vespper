@@ -50,7 +50,6 @@ usermod -aG docker ubuntu
 echo "About to clone the repository..."
 git clone https://github.com/merlinn-co/merlinn.git && cd merlinn
 git config --global --add safe.directory '*'
-git checkout terraform-deploy
 
 echo "Injecting environment variables..."
 cp config/litellm/.env.example config/litellm/.env
