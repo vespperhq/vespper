@@ -70,16 +70,10 @@ Define the following environment variables. Make sure you insert the desired `re
 export TF_VAR_slack_bot_token="your slack bot token"
 export TF_VAR_slack_app_token="your slack app token"
 export TF_VAR_slack_signing_secret="your slack signing secret"
-export TF_VAR_open
-# AWS region to deploy the merlinn instance to
-export TF_VAR_region="us-east-1"
-#enable public access to the merlinn instance on port 8000
-export TF_VAR_public_access="true"
-#optional - if you want to restore from a snapshot
-export TF_VAR_merlinn_data_restore_from_snapshot_id=""
-#optional - if you want to snapshot the data volume before destroying the instance
-export TF_VAR_merlinn_data_volume_snapshot_before_destroy="true"
+export TF_VAR_openai_token="your openai api key"
 ```
+
+> Note: if you want to change your setup (use custom models, change ports etc), you can SSH into your machine and change your setup there.
 
 Now run apply:
 
@@ -87,42 +81,36 @@ Now run apply:
 terraform apply -auto-approve
 ```
 
-### 5. Check your public IP and that Merlinn is running
+### 5. Check that Merlinn is running
 
-Get the public IP of your instance
+Follow these steps to make sure everything is working:
 
-```bash
-terraform output instance_public_ip
-```
+#### 5.1 Get the public IP of your instance
 
-Check that Merlinn is running (It should take up several minutes for the instance to be ready)
+Run the following command in your terminal:
 
 ```bash
 export instance_public_ip=$(terraform output instance_public_ip | sed 's/"//g')
-curl -v http://$instance_public_ip:3000/
 ```
 
-#### 5.1 SSH to your instance
+#### 5.2 Connect to your instance:
 
-To SSH to your instance:
+Connect to your EC2 via SSH:
 
 ```bash
 ssh -i ./merlinn-aws ubuntu@$instance_public_ip
 ```
 
-#### 5.2 Make sure Docker process is complete
+#### 5.3 Make sure Docker process is complete
 
-When Terraform creates the EC2 instance, it defines a startup script that we run. The script is located next to this README.md, at `examples/deployments/aws-terraform`. The script mainly clones this repo and runs `docker compose up -d`.
-
-You need to monitor the health of the script and make sure it was executed successfully.
-To do that, run the following command:
+Check the status of the startup script:
 
 ```bash
 tail -f /var/log/cloud-init-output.log
 ```
 
 This command would tail the log file that the EC2 writes to when running the startup script.
-The startup script should take about 10-13 minutes to complete.
+The startup script should take about 10-13 minutes to complete. You can have a look at it at `examples/deployments/aws-terraform/startup.sh`
 
 When it's done, you should see a similar message at the bottom:
 
@@ -135,7 +123,7 @@ You can also double check all the containers are up using `docker ps`.
 
 ### 6. Try to access the UI
 
-Use the public IP from before (run `terraform output instance_public_ip` if you don't have it already) and navigate in the browser to `http:{instance_public_ip}:3000`. This should open the Merlinn dashboard, where you can sign up and configure your organization & integrations!
+Use the public IP from before (run `terraform output instance_public_ip` if you don't have it already) and navigate in the browser to `http:{instance_public_ip}:5173`. This should open the Merlinn UI, where you can sign up and configure your organization & integrations!
 
 ### 7. Destroy your Merlinn instance
 
