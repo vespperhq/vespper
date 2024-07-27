@@ -22,7 +22,7 @@ variable "region" {
 variable "instance_type" {
   description = "AWS EC2 Instance Type"
   type        = string
-  default     = "t3.medium"
+  default     = "t3.large"
 }
 
 
