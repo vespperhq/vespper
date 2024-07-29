@@ -13,7 +13,10 @@ export const catchAsync = (
       if (error instanceof AppError) {
         next(error);
       } else {
-        const newError = new AppError(error.message || "Internal error", 500);
+        const newError = AppError({
+          message: error.message || "Internal error",
+          statusCode: 500,
+        });
         newError.stack = error.stack;
         next(newError);
       }

@@ -53,9 +53,15 @@ router.post(
       (integration) => integration.vendor.name === "Prometheus",
     ) as PrometheusIntegration;
     if (!prometheusIntegration) {
-      throw new AppError("Prometheus integration was not found", 500);
+      throw AppError({
+        message: "Prometheus integration was not found",
+        statusCode: 500,
+      });
     } else if (!slackIntegration) {
-      throw new AppError("Slack integration was not found", 500);
+      throw AppError({
+        message: "Slack integration was not found",
+        statusCode: 500,
+      });
     }
 
     slackIntegration = (
@@ -147,7 +153,11 @@ router.post(
       return res.status(200).send("ok");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      throw new AppError(error.message, 500, ErrorCode.AGENT_RUN_FAILED);
+      throw AppError({
+        message: error.message,
+        statusCode: 500,
+        internalCode: ErrorCode.AGENT_RUN_FAILED,
+      });
     }
   }),
 );

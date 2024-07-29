@@ -26,7 +26,7 @@ const verifySignature = catchAsync(
       .digest("hex");
 
     if (!req.headers["x-hub-signature-256"]) {
-      throw new AppError("Missing signature", 400);
+      throw AppError({ message: "Missing signature", statusCode: 400 });
     }
     const trusted = Buffer.from(`sha256=${signature}`, "ascii");
     const untrusted = Buffer.from(
@@ -49,7 +49,7 @@ router.post(
   catchAsync(async (req: Request, res: Response) => {
     const githubOrgId = req.body.organization.id;
     if (!githubOrgId) {
-      throw new AppError("Missing installation ID", 400);
+      throw AppError({ message: "Missing installation ID", statusCode: 400 });
     }
     const { action, issue, sender, repository, comment } = req.body;
     if (sender.type === "Bot") {
@@ -65,7 +65,7 @@ router.post(
       .populate("organization")) as GithubIntegration;
 
     if (!githubIntegration) {
-      throw new AppError("No github integration", 404);
+      throw AppError({ message: "No github integration", statusCode: 404 });
     }
 
     githubIntegration = (
@@ -125,7 +125,7 @@ router.post(
     // );
 
     // if (!moderationResult) {
-    //   throw new AppError(
+    //   throw AppError({ message:
     //     "Text was found that violates our content policy",
     //     400,
     //     ErrorCode.MODERATION_FAILED,

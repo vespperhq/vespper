@@ -25,17 +25,20 @@ router.get(
   "/import",
   catchAsync(async (req: Request, res: Response) => {
     if (req.user!.role !== "owner") {
-      throw new AppError("Only owners can invite members", 403);
+      throw AppError({
+        message: "Only owners can invite members",
+        statusCode: 403,
+      });
     }
 
     const { source } = req.query;
     const allowedSources = ["PagerDuty", "Opsgenie"];
 
     if (!allowedSources.includes(source as string)) {
-      throw new AppError(
-        `Source is invalid. Allowed sources: ${allowedSources.join(", ")}`,
-        400,
-      );
+      throw AppError({
+        message: `Source is invalid. Allowed sources: ${allowedSources.join(", ")}`,
+        statusCode: 400,
+      });
     }
 
     let integration = (await integrationModel.getIntegrationByName(
@@ -45,10 +48,10 @@ router.get(
       },
     )) as IIntegration;
     if (!integration) {
-      throw new AppError(
-        `Your organization do not have an integration with ${source}`,
-        404,
-      );
+      throw AppError({
+        message: `Your organization do not have an integration with ${source}`,
+        statusCode: 404,
+      });
     }
 
     switch (source) {
@@ -62,7 +65,10 @@ router.get(
 
         const usersData = await opsgenieClient.getUsers();
         if (!usersData) {
-          throw new AppError(`Could not fetch users from ${source}`, 500);
+          throw AppError({
+            message: `Could not fetch users from ${source}`,
+            statusCode: 500,
+          });
         }
         return res.status(200).json({ users: usersData.data });
       }
@@ -77,12 +83,18 @@ router.get(
         const pagerdutyClient = new PagerDutyClient(access_token);
         const users = await pagerdutyClient.getUsers();
         if (!users) {
-          throw new AppError(`Could not fetch users from ${source}`, 500);
+          throw AppError({
+            message: `Could not fetch users from ${source}`,
+            statusCode: 500,
+          });
         }
         return res.status(200).json({ users });
       }
       default: {
-        throw new AppError(`Source ${source} is not supported`, 400);
+        throw AppError({
+          message: `Source ${source} is not supported`,
+          statusCode: 400,
+        });
       }
     }
   }),
@@ -92,7 +104,10 @@ router.post(
   "/",
   catchAsync(async (req: Request, res: Response) => {
     if (req.user!.role !== "owner") {
-      throw new AppError("Only owners can invite members", 403);
+      throw AppError({
+        message: "Only owners can invite members",
+        statusCode: 403,
+      });
     }
 
     const emails = req.body.emails as string[];
@@ -103,7 +118,10 @@ router.post(
       });
 
       if (seatsState.value + emails.length > seatsState.limit) {
-        throw new AppError("You have exceeded your plan's seats", 400);
+        throw AppError({
+          message: "You have exceeded your plan's seats",
+          statusCode: 400,
+        });
       }
       await incrementPlanFieldState({
         fieldCode: PlanFieldCode.seats,

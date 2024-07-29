@@ -39,7 +39,11 @@ export const getDBUser = catchAsync(
       },
     });
     if (!user) {
-      throw new AppError("No internal user", 401, ErrorCode.NO_INTERNAL_USER);
+      throw AppError({
+        message: "No internal user",
+        statusCode: 401,
+        internalCode: ErrorCode.NO_INTERNAL_USER,
+      });
     }
     req.user = user as IUser;
     next();

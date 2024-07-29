@@ -8,7 +8,7 @@ export const getSlackUser = catchAsync(
     const claimedToken = req.headers["x-slack-app-token"];
     const actualToken = process.env.SLACK_APP_TOKEN as string;
     if (claimedToken !== actualToken) {
-      throw new AppError("Token is invalid", 401);
+      throw AppError({ message: "Token is invalid", statusCode: 401 });
     }
     const email = req.headers["x-slack-email"];
     const team = req.headers["x-slack-team"];
@@ -18,7 +18,11 @@ export const getSlackUser = catchAsync(
       "metadata.team.id": team,
     });
     if (!slackIntegration) {
-      throw new AppError("No slack integration", 401, ErrorCode.NO_INTEGRATION);
+      throw AppError({
+        message: "No slack integration",
+        statusCode: 401,
+        internalCode: ErrorCode.NO_INTEGRATION,
+      });
     }
 
     const { organization } = slackIntegration;

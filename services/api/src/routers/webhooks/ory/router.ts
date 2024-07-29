@@ -9,7 +9,7 @@ router.post("/after-signup", async (req: Request, res: Response) => {
   const actualKey = req.headers["authorization"];
   const expectedKey = process.env.ORY_WEBHOOK_SECRET as string;
   if (actualKey !== expectedKey) {
-    throw new AppError("Unauthorized", 403);
+    throw AppError({ message: "Unauthorized", statusCode: 403 });
   }
 
   const {
@@ -17,7 +17,10 @@ router.post("/after-signup", async (req: Request, res: Response) => {
     traits: { email },
   } = req.body;
   if (!oryId || !email) {
-    throw new AppError("Missing required fields: oryId, email", 400);
+    throw AppError({
+      message: "Missing required fields: oryId, email",
+      statusCode: 400,
+    });
   }
   const user = await userModel.getOne({ oryId });
   if (!user) {
@@ -44,7 +47,7 @@ router.post("/after-signup", async (req: Request, res: Response) => {
       .populate("organization");
 
     if (!user) {
-      throw new AppError("User was not found", 404);
+      throw AppError({ message: "User was not found", statusCode: 404 });
     }
 
     const event: SystemEvent = {

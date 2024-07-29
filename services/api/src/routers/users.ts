@@ -68,12 +68,15 @@ router.post(
   catchAsync(async (req: Request, res: Response) => {
     const { oryId, email } = req.body;
     if (!oryId || !email) {
-      throw new AppError("Payload must contain the Ory ID", 400);
+      throw AppError({
+        message: "Payload must contain the Ory ID",
+        statusCode: 400,
+      });
     }
     const existingUser = await userModel.getOne({ oryId });
 
     if (existingUser) {
-      throw new AppError("user already exists", 400);
+      throw AppError({ message: "user already exists", statusCode: 400 });
     } else {
       const user = await userModel.create({
         oryId,
@@ -109,9 +112,12 @@ router.put(
     const { id } = req.params;
 
     if (!id) {
-      throw new AppError("Payload must contain an ID", 400);
+      throw AppError({
+        message: "Payload must contain an ID",
+        statusCode: 400,
+      });
     } else if (!Object.keys(data).length) {
-      throw new AppError("Payload must not be empty", 400);
+      throw AppError({ message: "Payload must not be empty", statusCode: 400 });
     }
 
     const user = await userModel
@@ -119,7 +125,7 @@ router.put(
       .populate("organization");
 
     if (!user) {
-      throw new AppError("User was not found", 404);
+      throw AppError({ message: "User was not found", statusCode: 404 });
     }
     return res.status(200).json(user);
   }),
@@ -131,7 +137,10 @@ router.put(
     const { id } = req.params;
 
     if (!id) {
-      throw new AppError("Payload must contain an ID", 400);
+      throw AppError({
+        message: "Payload must contain an ID",
+        statusCode: 400,
+      });
     }
 
     const user = await userModel
@@ -139,7 +148,7 @@ router.put(
       .populate("organization");
 
     if (!user) {
-      throw new AppError("User was not found", 404);
+      throw AppError({ message: "User was not found", statusCode: 404 });
     }
 
     const event: SystemEvent = {
@@ -165,11 +174,17 @@ router.delete(
 
     const user = await userModel.getOneById(id);
     if (!user) {
-      throw new AppError("User was not found", 404);
+      throw AppError({ message: "User was not found", statusCode: 404 });
     } else if (!req.user!.organization._id.equals(user.organization._id)) {
-      throw new AppError("Users not in the same organization", 403);
+      throw AppError({
+        message: "Users not in the same organization",
+        statusCode: 403,
+      });
     } else if (req.user!.role !== "owner") {
-      throw new AppError("Only owners can delete other users", 403);
+      throw AppError({
+        message: "Only owners can delete other users",
+        statusCode: 403,
+      });
     }
 
     await userModel.deleteOneById(id);

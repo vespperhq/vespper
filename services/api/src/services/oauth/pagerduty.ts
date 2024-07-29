@@ -11,7 +11,10 @@ export async function refreshToken(integrationId: string) {
       integrationId,
     )) as PagerDutyIntegration;
     if (!integration) {
-      throw new AppError("Could not find the given integration.", 404);
+      throw AppError({
+        message: "Could not find the given integration.",
+        statusCode: 404,
+      });
     }
     const populatedIntegration = (
       await secretManager.populateCredentials([integration])
@@ -51,9 +54,12 @@ export async function refreshToken(integrationId: string) {
     }
     if (error instanceof AxiosError) {
       if (error.response) {
-        throw new AppError(JSON.stringify(error.response.data), 500);
+        throw AppError({
+          message: JSON.stringify(error.response.data),
+          statusCode: 500,
+        });
       }
-      throw new AppError(error.message, 500);
+      throw AppError({ message: error.message, statusCode: 500 });
     }
     throw error;
   }

@@ -27,7 +27,10 @@ router.post(
     const { name } = req.body;
 
     if (req.user!.organization) {
-      throw new AppError("You already belong to an organization", 400);
+      throw AppError({
+        message: "You already belong to an organization",
+        statusCode: 400,
+      });
     }
 
     const plan = await planModel.getOne({ name: "free" });
@@ -73,7 +76,10 @@ router.put(
   "/:id",
   catchAsync(async (req: Request, res: Response) => {
     if (req.user!.role !== "owner") {
-      throw new AppError("Only owners can update organization data", 403);
+      throw AppError({
+        message: "Only owners can update organization data",
+        statusCode: 403,
+      });
     }
 
     const { id } = req.params;
@@ -91,7 +97,10 @@ router.delete(
   "/:id",
   catchAsync(async (req: Request, res: Response) => {
     if (req.user!.role !== "owner") {
-      throw new AppError("Only owners can delete organizations", 403);
+      throw AppError({
+        message: "Only owners can delete organizations",
+        statusCode: 403,
+      });
     }
     const { id } = req.params;
 

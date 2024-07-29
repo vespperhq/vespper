@@ -23,13 +23,17 @@ const router = express.Router();
 
 const getCompletions = async (req: Request, res: Response) => {
   if (!req.user) {
-    throw new AppError("No internal user", 403, ErrorCode.NO_INTERNAL_USER);
+    throw AppError({
+      message: "No internal user",
+      statusCode: 403,
+      internalCode: ErrorCode.NO_INTERNAL_USER,
+    });
   } else if (req.user.status === "invited") {
-    throw new AppError(
-      "User hasn't accepted the invitation yet",
-      403,
-      ErrorCode.INVITATION_NOT_ACCEPTED,
-    );
+    throw AppError({
+      message: "User hasn't accepted the invitation yet",
+      statusCode: 403,
+      internalCode: ErrorCode.INVITATION_NOT_ACCEPTED,
+    });
   }
 
   if (isEnterprise()) {
@@ -39,11 +43,11 @@ const getCompletions = async (req: Request, res: Response) => {
       userId: String(req.user!._id),
     });
     if (!queriesState.isAllowed) {
-      throw new AppError(
-        `You have exceeded your queries' quota`,
-        429,
-        ErrorCode.QUOTA_EXCEEDED,
-      );
+      throw AppError({
+        message: `You have exceeded your queries' quota`,
+        statusCode: 429,
+        internalCode: ErrorCode.QUOTA_EXCEEDED,
+      });
     }
 
     // Update quota
@@ -65,7 +69,11 @@ const getCompletions = async (req: Request, res: Response) => {
     })
     .populate("vendor")) as IIntegration[];
   if (!integrations.length) {
-    throw new AppError("No integrations at all", 404, ErrorCode.NO_INTEGRATION);
+    throw AppError({
+      message: "No integrations at all",
+      statusCode: 404,
+      internalCode: ErrorCode.NO_INTEGRATION,
+    });
   }
 
   let output: string | null = null;
@@ -78,7 +86,7 @@ const getCompletions = async (req: Request, res: Response) => {
   // const moderationResult = await validateModeration(message.content as string);
 
   // if (!moderationResult) {
-  //   throw new AppError(
+  //   throw AppError({ message:
   //     "Text was found that violates our content policy",
   //     400,
   //     ErrorCode.MODERATION_FAILED,
@@ -133,12 +141,12 @@ const getCompletions = async (req: Request, res: Response) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(error);
-      throw new AppError(
-        error.message,
-        500,
-        ErrorCode.AGENT_RUN_FAILED,
-        error.stack,
-      );
+      throw AppError({
+        message: error.message,
+        statusCode: 500,
+        internalCode: ErrorCode.AGENT_RUN_FAILED,
+        stack: error.stack,
+      });
     }
   } else {
     try {
@@ -153,7 +161,11 @@ const getCompletions = async (req: Request, res: Response) => {
       observationId = result.observationId!;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      throw new AppError(error.message, 500, ErrorCode.MODEL_RUN_FAILED);
+      throw AppError({
+        message: error.message,
+        statusCode: 500,
+        internalCode: ErrorCode.MODEL_RUN_FAILED,
+      });
     }
   }
 
@@ -211,10 +223,11 @@ router.post(
     const { traceId, observationId, value, text } = req.body;
     if (isLangfuseEnabled()) {
       if (!traceId || !observationId || !value) {
-        throw new AppError(
-          "Bad request. Need to supply traceId, observationId and value",
-          400,
-        );
+        throw AppError({
+          message:
+            "Bad request. Need to supply traceId, observationId and value",
+          statusCode: 400,
+        });
       }
       const langfuse = new Langfuse({
         secretKey: process.env.LANGFUSE_SECRET_KEY as string,

@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { AppError } from "../errors";
+import { AppError, ErrorPayload } from "../errors";
 import { PostHogClient } from "../telemetry/posthog";
 import { uuid } from "uuidv4";
 
-const captureErrorInTelemetry = (error: AppError, req: Request) => {
+const captureErrorInTelemetry = (error: ErrorPayload, req: Request) => {
   const posthog = new PostHogClient();
 
   const distinctId = req.user?._id.toString() || uuid();
@@ -13,28 +13,29 @@ const captureErrorInTelemetry = (error: AppError, req: Request) => {
     distinctId,
     properties: {
       message: error.message,
+      context: error.context,
     },
   });
 };
-const productionError = (error: AppError, req: Request, res: Response) => {
+const productionError = (error: ErrorPayload, req: Request, res: Response) => {
   captureErrorInTelemetry(error, req);
 
   // Send a lean error message
   res.status(error.statusCode).json({
-    status: error.status,
+    status: error.statusCode,
     message: error.message,
     code: error.internalCode,
   });
 };
 
 // Send a detailed error message, for debugging purposes
-const developmentError = (error: AppError, req: Request, res: Response) => {
+const developmentError = (error: ErrorPayload, req: Request, res: Response) => {
   console.error("developmentError error: ", error);
 
   captureErrorInTelemetry(error, req);
 
   res.status(error.statusCode).json({
-    status: error.status,
+    status: error.statusCode,
     message: error.message,
     code: error.internalCode,
     error: error,
@@ -43,7 +44,7 @@ const developmentError = (error: AppError, req: Request, res: Response) => {
 };
 
 export const errorHandler = (
-  error: AppError,
+  error: ErrorPayload,
   req: Request,
   res: Response,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -65,9 +66,10 @@ export const invalidPathHandler = (
   _res: Response,
   next: NextFunction,
 ) => {
-  const error = new AppError(
-    `Path ${req.originalUrl} does not exist for ${req.method} method`,
-    404,
-  );
+  const error = AppError({
+    message: `Path ${req.originalUrl} does not exist for ${req.method} method`,
+    statusCode: 404,
+    internalCode: undefined,
+  });
   next(error);
 };

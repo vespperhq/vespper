@@ -23,7 +23,10 @@ router.get(
   "/",
   catchAsync(async (req: Request, res: Response) => {
     if (req.user!.role !== "owner") {
-      throw new AppError("Only owners can access indexes", 403);
+      throw AppError({
+        message: "Only owners can access indexes",
+        statusCode: 403,
+      });
     }
 
     const index = await indexModel.getOne({
@@ -38,7 +41,10 @@ router.post(
   "/",
   catchAsync(async (req: Request, res: Response) => {
     if (req.user!.role !== "owner") {
-      throw new AppError("Only owners are allowed to create indexes", 403);
+      throw AppError({
+        message: "Only owners are allowed to create indexes",
+        statusCode: 403,
+      });
     }
 
     if (isEnterprise()) {
@@ -47,18 +53,18 @@ router.post(
         organizationId: String(req.user!.organization._id),
       });
       if (!attemptsState.isAllowed) {
-        throw new AppError(
-          `You have exceeded your indexing attempts' quota`,
-          429,
-          ErrorCode.QUOTA_EXCEEDED,
-        );
+        throw AppError({
+          message: `You have exceeded your indexing attempts' quota`,
+          statusCode: 429,
+          internalCode: ErrorCode.QUOTA_EXCEEDED,
+        });
       }
     }
 
     // TODO: use a proper messaging solution instead of plain API request
     const { dataSources } = req.body;
     if (!dataSources) {
-      throw new AppError("No data sources provided", 400);
+      throw AppError({ message: "No data sources provided", statusCode: 400 });
     }
 
     const integrations = await Promise.all(
@@ -70,7 +76,10 @@ router.post(
           },
         );
         if (!integration) {
-          throw new AppError(`No such integration "${source}"`, 404);
+          throw AppError({
+            message: `No such integration "${source}"`,
+            statusCode: 404,
+          });
         }
         return integration;
       }),
@@ -118,15 +127,21 @@ router.delete(
   "/:id",
   catchAsync(async (req: Request, res: Response) => {
     if (req.user!.role !== "owner") {
-      throw new AppError("Only owners can delete indexes", 403);
+      throw AppError({
+        message: "Only owners can delete indexes",
+        statusCode: 403,
+      });
     }
 
     const { id } = req.params;
     const index = await indexModel.getOneById(id);
     if (!index) {
-      throw new AppError("No such embeddings db", 404);
+      throw AppError({ message: "No such embeddings db", statusCode: 404 });
     } else if (!req.user!.organization._id.equals(index.organization._id)) {
-      throw new AppError("User is not a member of this organization", 403);
+      throw AppError({
+        message: "User is not a member of this organization",
+        statusCode: 403,
+      });
     }
 
     try {

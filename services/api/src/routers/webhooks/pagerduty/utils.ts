@@ -8,18 +8,19 @@ export const checkPagerDutySignature = catchAsync(
     const signatures = req.headers["x-pagerduty-signature"] as string;
 
     if (!signatures) {
-      throw new AppError(
-        "Unauthorized webhook request. Signatures are not present in the request",
-        403,
-      );
+      throw AppError({
+        message:
+          "Unauthorized webhook request. Signatures are not present in the request",
+        statusCode: 403,
+      });
     }
 
     const isValid = pdVerifier.verify(JSON.stringify(req.body), signatures);
     if (!isValid) {
-      throw new AppError(
-        "Unauthorized webhook request. Signatures are invalid",
-        403,
-      );
+      throw AppError({
+        message: "Unauthorized webhook request. Signatures are invalid",
+        statusCode: 403,
+      });
     }
 
     return next();

@@ -13,15 +13,19 @@ export function getSecretFromRequest(req: Request) {
   } else {
     const authHeader = req.headers["authorization"] as string;
     if (!authHeader) {
-      throw new AppError(
-        "Request does not contain a secret header (either custom or auth header)",
-        400,
-      );
+      throw AppError({
+        message:
+          "Request does not contain a secret header (either custom or auth header)",
+        statusCode: 400,
+      });
     }
 
     // Check it's a valid Bearer token
     if (!authHeader.startsWith("Bearer ")) {
-      throw new AppError("Request does not contain a valid Bearer token", 400);
+      throw AppError({
+        message: "Request does not contain a valid Bearer token",
+        statusCode: 400,
+      });
     }
 
     const [, authHeaderSecret] = authHeader.split(" ");
@@ -41,7 +45,7 @@ export const checkWebhookSecret = catchAsync(
       .populate("organization");
 
     if (!webhook) {
-      throw new AppError("Secret is invalid", 400);
+      throw AppError({ message: "Secret is invalid", statusCode: 400 });
     }
     req.webhook = webhook as IWebhook;
 

@@ -25,16 +25,23 @@ router.post(
     const vendor = await vendorModel.getOne({ name: vendorName });
     const organization = await organizationModel.getOneById(organizationId);
     if (!vendor) {
-      throw new AppError(
-        "Could not find a PagerDuty vendor. Make sure a vendor is defined.",
-        404,
-      );
+      throw AppError({
+        message:
+          "Could not find a PagerDuty vendor. Make sure a vendor is defined.",
+        statusCode: 404,
+      });
     } else if (!organization) {
-      throw new AppError("Could not find the given organization.", 404);
+      throw AppError({
+        message: "Could not find the given organization.",
+        statusCode: 404,
+      });
     }
 
     if (!req.user!.organization._id.equals(organizationId)) {
-      throw new AppError("User is not a member of this organization", 403);
+      throw AppError({
+        message: "User is not a member of this organization",
+        statusCode: 403,
+      });
     }
 
     const extendedMetadata: Record<string, string | object> = {};
@@ -103,13 +110,19 @@ router.put(
 
     const integration = await integrationModel.getOneById(id);
     if (!integration) {
-      throw new AppError("No such integration", 404);
+      throw AppError({ message: "No such integration", statusCode: 404 });
     }
 
     if (!req.user!.organization._id.equals(integration.organization._id)) {
-      throw new AppError("User is not a member of this organization", 403);
+      throw AppError({
+        message: "User is not a member of this organization",
+        statusCode: 403,
+      });
     } else if (req.user!.role !== "owner") {
-      throw new AppError("User is not allowed to perform this action", 403);
+      throw AppError({
+        message: "User is not allowed to perform this action",
+        statusCode: 403,
+      });
     }
 
     return res.status(200).json({ integration });
@@ -141,7 +154,7 @@ router.get(
     const actualServiceKey = req.headers["x-slackbot-service-key"];
     const expectedServiceKey = process.env.SLACKBOT_SERVICE_KEY as string;
     if (actualServiceKey !== expectedServiceKey) {
-      throw new AppError("Unauthorized", 403);
+      throw AppError({ message: "Unauthorized", statusCode: 403 });
     }
 
     const integrations = await integrationModel
@@ -162,7 +175,10 @@ router.delete(
   getDBUser,
   catchAsync(async (req: Request, res: Response) => {
     if (req.user!.role !== "owner") {
-      throw new AppError("Only owners can delete integrations", 403);
+      throw AppError({
+        message: "Only owners can delete integrations",
+        statusCode: 403,
+      });
     }
 
     const integration = await integrationModel.getOne({
@@ -171,11 +187,14 @@ router.delete(
     });
 
     if (!integration) {
-      throw new AppError("No such integration", 404);
+      throw AppError({ message: "No such integration", statusCode: 404 });
     } else if (
       !req.user!.organization._id.equals(integration.organization._id)
     ) {
-      throw new AppError("User is not a member of this organization", 403);
+      throw AppError({
+        message: "User is not a member of this organization",
+        statusCode: 403,
+      });
     }
 
     await secretManager.deleteCredentials([integration]);

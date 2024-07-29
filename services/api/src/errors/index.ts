@@ -10,32 +10,41 @@ export enum ErrorCode {
   NO_INDEX = 37,
 }
 
-export class AppError extends Error {
-  public override readonly message: string;
-  public readonly statusCode: number;
-  public readonly status: "fail" | "error";
-  public readonly internalCode?: ErrorCode;
-  constructor(
-    message: string,
-    statusCode: number,
-    internalCode?: ErrorCode,
-    stack?: string,
-  ) {
-    super(message);
-    this.stack = stack;
-    this.message = message;
-    this.statusCode = statusCode;
-    this.status = `${statusCode}`.startsWith("4") ? "fail" : "error";
-    this.internalCode = internalCode;
-    Error.captureStackTrace(this, this.constructor);
-  }
-
-  public toJSON() {
-    return {
-      message: this.message,
-      status: this.status,
-      statusCode: this.statusCode,
-      internalCode: this.internalCode,
-    };
-  }
+export interface ErrorPayload {
+  message: string;
+  statusCode: number;
+  internalCode?: ErrorCode;
+  stack?: string;
+  context?: Record<string, unknown>;
 }
+
+export const AppError = ({
+  message,
+  statusCode,
+  internalCode,
+  stack,
+  context,
+}: ErrorPayload) => {
+  const status = `${statusCode}`.startsWith("4") ? "fail" : "error";
+
+  const appError = {
+    message,
+    statusCode,
+    status,
+    internalCode,
+    context,
+    stack,
+    toJSON() {
+      return {
+        message: this.message,
+        status: this.status,
+        statusCode: this.statusCode,
+        internalCode: this.internalCode,
+      };
+    },
+  };
+
+  Error.captureStackTrace(appError, AppError);
+
+  return appError;
+};
