@@ -107,8 +107,6 @@ You can find the installation video [here](https://www.loom.com/share/1f562cb067
 
    2. Define your **OpenAI key** and place it inside `config/litellm/.env` as `OPENAI_API_KEY`. You can get your API key [here](https://platform.openai.com/api-keys). Rest assured, you won't be charged unless you use the API. For more details on pricing, check [here](https://openai.com/pricing).
 
-   3. **(Optional)** Define custom endpoints. If you want to use other vendors (AWS Bedrock, Azure OpenAI, Anthropic, Hugging Face models, etc), checkout LiteLLM Proxy documentation. You simply need to change `config/litellm/.env` & `config/litellm/config.yaml`. Checkout the comments there & LiteLLM's documentation. **Note** You have to use a vendor that supports function calling.
-
 3. Copy the `.env.example` file:
 
    ```bash

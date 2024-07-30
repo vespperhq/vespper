@@ -2,21 +2,11 @@
 ###  LLM Setup file  ####
 #########################
 
-# In this file, you can define your chat & embedding models
-# We use LiteLLM as a proxy to interact with different vendors in an OpenAI-compatible format
-# You can check the supported models in LiteLLM documentation:
-# https://docs.litellm.ai/docs/providers
-
-# In each vendor page, you can find a section called "OpenAI Proxy Usage".
-# For example, this is AWS Bedrock's: https://docs.litellm.ai/docs/providers/bedrock#openai-proxy-usage
-# This page shows how to use embeddings models: https://docs.litellm.ai/docs/embedding/supported_embedding#quick-start
-
-# In order to use merlinn, you need to provide 2 models: chat model and an embedding model. Default are OpenAI's GPT-3.5 and Text-Embedding-3-Large.
+# In order to use merlinn, you need to provide 2 models: chat model and an embedding model. Our Opensource version supports OpenAI's models.
 # You must keep the naming convention of the model_list as it is. Namely, model_name: chat-model and model_name: embedding-model
 
-# If you just want to use OpenAI, use the default setting
 model_list:
-  ###  OpenAI (Default) ####
+  ###  OpenAI is the current supported model, reach our to us for more support ####
   - model_name: chat-model
     litellm_params:
       model: openai/gpt-4o-mini
