@@ -72,9 +72,6 @@ router.get(
 
       return res.status(200).send("Successfully integrated PagerDuty!");
     } catch (error) {
-      if (error instanceof AppError) {
-        throw error;
-      }
       if (error instanceof AxiosError) {
         if (error.response) {
           throw AppError({

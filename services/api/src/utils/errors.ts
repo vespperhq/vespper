@@ -10,16 +10,15 @@ export const catchAsync = (
   return (req: Request, res: Response, next: NextFunction) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleError = (error: any) => {
-      if (error instanceof AppError) {
-        next(error);
-      } else {
-        const newError = AppError({
-          message: error.message || "Internal error",
-          statusCode: 500,
-        });
-        newError.stack = error.stack;
-        next(newError);
-      }
+      const newError = AppError({
+        message: error.message || "Internal error",
+        statusCode: error.statusCode || 500,
+        internalCode: error.internalCode || "internal_error",
+        stack: error.stack,
+        context: error.context,
+      });
+      newError.stack = error.stack;
+      next(newError);
     };
 
     const isAsync = fn.constructor.name === "AsyncFunction";

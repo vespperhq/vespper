@@ -79,9 +79,6 @@ router.get(
 
       return res.send("App installed successfully");
     } catch (error) {
-      if (error instanceof AppError) {
-        throw error;
-      }
       if (error instanceof AxiosError) {
         if (error.response) {
           throw AppError({

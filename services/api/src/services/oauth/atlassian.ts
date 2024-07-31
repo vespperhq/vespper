@@ -46,9 +46,6 @@ export async function refreshToken(integrationId: string) {
     });
   } catch (error) {
     console.log(error);
-    if (error instanceof AppError) {
-      throw error;
-    }
     if (error instanceof AxiosError) {
       if (error.response) {
         throw AppError({
