@@ -4,7 +4,16 @@ from litellm import embedding
 from llama_index.core.bridge.pydantic import Field
 from llama_index.core.embeddings import BaseEmbedding
 
+from tenacity import (
+    retry,
+    stop_after_attempt,
+    wait_random_exponential,
+)
 
+
+# For exponential backoff. Source:
+# https://github.com/openai/openai-cookbook/blob/main/examples/How_to_handle_rate_limits.ipynb
+@retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
 def get_embeddings(api_key: str, api_base: str, model_name: str, input: List[str]):
     if not api_key:
         # If key is not provided, we assume the consumer has configured
