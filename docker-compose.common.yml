@@ -151,7 +151,6 @@ services:
     profiles: ["app"]
     environment:
       - TELEMETRY_ENABLED
-      - OPENAI_API_KEY
       - SMTP_CONNECTION_URL
       - SLACK_APP_TOKEN
       - SECRET_MANAGER_TYPE
@@ -199,7 +198,6 @@ services:
     profiles: ["app"]
     environment:
       - TELEMETRY_ENABLED
-      - OPENAI_API_KEY
       - SECRET_MANAGER_TYPE
       - SECRET_MANAGER_DIRECTORY
       - HASHICORP_VAULT_ROOT_TOKEN

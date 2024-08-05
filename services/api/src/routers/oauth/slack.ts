@@ -27,6 +27,7 @@ router.get(
     } else if (!state) {
       throw AppError({ message: "No state was provided", statusCode: 400 });
     }
+
     try {
       const params = new URLSearchParams();
       params.append("client_id", process.env.SLACK_CLIENT_ID as string);
