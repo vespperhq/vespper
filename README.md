@@ -38,7 +38,7 @@ Merlinn is an AI-powered on-call engineer. It can automatically jump into incide
 
 ## Why ❓
 
-Most people don't like to do on-call shifts. It requires engineers to be swift and solve problems quickly. Moreover, it takes time to reach to the root cause of the problem. That's why we developed Merlinn. We believe Gen AI can help on-call developrs solve issues faster.
+Most people don't like to do on-call shifts. It requires engineers to be swift and solve problems quickly. Moreover, it takes time to reach to the root cause of the problem. That's why we developed Merlinn. We believe Gen AI can help on-call developers solve issues faster.
 
 ## Table of Contents
 
