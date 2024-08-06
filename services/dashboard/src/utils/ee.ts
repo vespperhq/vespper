@@ -1,5 +1,5 @@
-// import { MERLINN_CLOUD_REGION } from "../constants";
+import { MERLINN_CLOUD_REGION } from "../constants";
 
 export function isEnterprise() {
-  return true;
+  return !!MERLINN_CLOUD_REGION;
 }
