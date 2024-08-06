@@ -24,7 +24,7 @@ export const checkAuth = async function (
     req.session = session;
     next();
   } catch (error) {
-    // next(error);
+    next(error);
   }
 };
 
