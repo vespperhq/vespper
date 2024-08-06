@@ -20,7 +20,7 @@ const app = express();
 app.use(
   cors({
     credentials: true,
-    origin: process.env.APP_URL,
+    origin: process.env.DASHBOARD_APP_URL,
   }),
 );
 
