@@ -165,12 +165,12 @@ services:
       - PAGERDUTY_SECRET
       - LITELLM_URL
       - LOG_PARSER_URL
+      - DASHBOARD_APP_URL
       - NODE_ENV=development
       - METADATA_ENCRYPTION_KEY=f78d8202-bb2a-49fe-bd63-a586cd921226
       - ENCRYPTION_SALT=1234567890123456
       - ORY_WEBHOOK_SECRET=super-secret-ory-webhook-key
       - CHROMA_HOST
-      - APP_URL=${DASHBOARD_APP_URL}
       - CHROMA_API_KEY=${CHROMA_SERVER_AUTHN_CREDENTIALS}
     ports:
       - "${API_PORT}:${API_PORT}"
