@@ -13,6 +13,7 @@ import {
   featuresRouter,
 } from "./routers";
 import { errorHandler, invalidPathHandler } from "./middlewares/errors";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
@@ -22,7 +23,7 @@ app.use(
     origin: process.env.DASHBOARD_APP_URL,
   }),
 );
-
+app.use(cookieParser());
 app.use(bodyParser.json({ limit: "1mb" }));
 app.use(express.static("public"));
 

@@ -6,7 +6,8 @@ import { uuid } from "uuidv4";
 const captureErrorInTelemetry = (error: ErrorPayload, req: Request) => {
   const posthog = new PostHogClient();
 
-  const distinctId = req.user?._id.toString() || uuid();
+  const userId = req.cookies.ajs_user_id.toString();
+  const distinctId = userId || uuid();
 
   posthog.capture({
     event: "app_error",
