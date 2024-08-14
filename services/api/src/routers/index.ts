@@ -1,4 +1,3 @@
-export { router as oauthRouter } from "./oauth";
 export { router as webhooksRouter } from "./webhooks";
 export { router as chatRouter } from "./chat";
 export { router as usersRouter } from "./users";
