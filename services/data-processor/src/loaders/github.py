@@ -26,7 +26,12 @@ def get_repos(token: str, repos_to_sync=None):
             continue
         owner, repo = r.full_name.split("/")
         default_branch = r.default_branch
-        latest_commit = r.get_commits()[0]
+
+        try:
+            latest_commit = r.get_commits()[0]
+        except GithubException as e:
+            print(f"Error fetching commits for {r.full_name}. Error: {e}")
+            continue
 
         repos_to_ingest.append((owner, repo, default_branch, latest_commit.sha))
     return repos_to_ingest
