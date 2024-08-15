@@ -12,8 +12,17 @@ Created at: {created_at}
 """
 
 
-async def get_incidents(access_token: str):
-    headers = {"Authorization": f"Bearer {access_token}"}
+async def get_incidents(integration: Integration):
+    access_token = integration.access_token
+    integration_type = integration.type
+    headers = {}
+    if integration_type == "basic":
+        headers["Authorization"] = f"Token token={access_token}"
+    elif integration_type == "oauth":
+        headers["Authorization"] = f"Bearer {access_token}"
+    else:
+        raise ValueError(f"Invalid integration type: {integration_type}")
+
     limit = 100
     offset = 0
     resolved_incidents = []
@@ -39,8 +48,7 @@ async def get_incidents(access_token: str):
 
 
 async def fetch_pagerduty_documents(integration: Integration):
-    access_token = integration.credentials["access_token"]
-    incidents = await get_incidents(access_token)
+    incidents = await get_incidents(integration)
 
     documents = []
     for incident in incidents:

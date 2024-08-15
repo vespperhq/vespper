@@ -50,10 +50,14 @@ async def get_documents(
             continue
 
         # Loader might be an async code, so we need to await it
-        if asyncio.iscoroutinefunction(loader):
-            docs = await loader(integration)
-        else:
-            docs = loader(integration)
+        try:
+            if asyncio.iscoroutinefunction(loader):
+                docs = await loader(integration)
+            else:
+                docs = loader(integration)
+        except Exception as e:
+            print(f"Could not load {vendor_name}. Error: {e}")
+            continue
 
         progress_bar.set_description(f"Transforming {vendor_name}")
         pipeline = IngestionPipeline(
