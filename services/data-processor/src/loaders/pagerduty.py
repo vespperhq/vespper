@@ -13,7 +13,7 @@ Created at: {created_at}
 
 
 async def get_incidents(integration: Integration):
-    access_token = integration.credentials.access_token
+    access_token = integration.credentials["access_token"]
     integration_type = integration.type
     headers = {}
     if integration_type == "basic":
