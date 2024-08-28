@@ -52,6 +52,6 @@ export const createAgent = async (
     agent: agentSeq,
     tools,
     memory,
-    maxIterations: 3,
+    maxIterations: 1,
   });
 };
