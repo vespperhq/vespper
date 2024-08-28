@@ -50,7 +50,7 @@ const createAgent = async (
     agent: agentSeq,
     tools,
     memory,
-    maxIterations: 1,
+    maxIterations: 3,
   });
 };
 
