@@ -117,29 +117,36 @@ export const prefix = {
   {document}
   `,
   extractLogStructureKeys: `  
-  Given a log record, return the key paths of the severity and message in a JSON format.
+  Given some log records, return the key paths of the severity and message in a JSON format.
+  Key paths are the paths to the severity and message fields in the log record.
 
   Examples:
-  Log records:
+  Input:
   [{{"message": "Successfully updated user 123", "timestamp": "some-time", "severityText": "INFO"}},
   {{"message": "Successfully updated user 456", "timestamp": "some-time", "severityText": "INFO"}}]
 
-  Output:
+  Expected output:
+  \`\`\`json
   {{
     "severityKey": "severityText",
     "messageKey": "message"
   }}
+  \`\`\`
 
-  Log record:
+  Input:
   [{{"timestamp": "some-time", "severity": {{"severityNumber": 3, "severityText": "INFO"}}, "logRecord": {{"body": "Successfully updated user 123"}}}},
   {{"timestamp": "some-time2", "severity": {{"severityNumber": 3, "severityText": "INFO"}}, "logRecord": {{"body": "Successfully updated user 456"}}}}
   ]
 
-  Output:
+  Expected output:
+  \`\`\`json
   {{
     "severityKey": "severity.severityText",
     "messageKey": "logRecord.body"
   }}
+  \`\`\`
+
+  Return your answer as a valid JSON.
 
   Begin!
   

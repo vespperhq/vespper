@@ -1,7 +1,7 @@
 import { TOOL_SOURCES_SUFFIX, TOOL_SOURCES_DIVIDER } from "./constants";
 
 export const buildOutput = (text: string, sources?: string[]): string => {
-  if (!sources) {
+  if (!sources || sources.length === 0) {
     return text;
   }
 

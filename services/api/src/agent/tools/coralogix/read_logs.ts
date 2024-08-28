@@ -10,6 +10,7 @@ import {
 } from "../../../utils/dates";
 import { buildOutput } from "../utils";
 import { CoralogixClient } from "../../../clients";
+import { getPrettyLogAnalysis } from "./utils";
 
 export const fetchLogs = async (
   query: string,
@@ -29,10 +30,7 @@ export const fetchLogs = async (
 };
 
 export default async function (integration: CoralogixIntegration) {
-  const { logsKey } = integration.credentials;
-  const { region, domainURL } = integration.metadata;
-
-  // const fields = integration.settings?.tools?.readLogs?.allowedFields;
+  const { domainURL } = integration.metadata;
   return new DynamicStructuredTool({
     name: "read_coralogix_logs",
     description: `Read logs from Coralogix`,
@@ -42,22 +40,20 @@ export default async function (integration: CoralogixIntegration) {
         const startDate = getTimestamp({ amount, scale });
         const endDate = new Date().toISOString();
 
-        const client = new CoralogixClient({ logsKey }, region);
-        const result = await client.getLogs({
-          syntax: "QUERY_SYNTAX_DATAPRIME",
+        const { analysis, parsedLogs } = await getPrettyLogAnalysis({
           query,
-          startDate,
-          endDate,
+          integration,
+          timeframe,
         });
 
-        if (!result.result?.results) {
+        if (!parsedLogs.result?.results) {
           return `Coraloigx returned empty result. Information: ${JSON.stringify(
-            result,
+            parsedLogs,
           )}`;
         }
 
-        const logsExist = result.result.results.length > 0;
-        const logsStr = JSON.stringify(result).slice(0, 10000);
+        const logsExist = parsedLogs.result.results.length > 0;
+        const limitedAnalysis = JSON.stringify(analysis).slice(0, 10000);
 
         let output: string;
         if (logsExist) {
@@ -66,9 +62,9 @@ export default async function (integration: CoralogixIntegration) {
           )}&time=from:${startDate},to:${endDate}&page=0&querySyntax=dataprime&permalink=true`;
           const markdownLink = `[Coralogix Logs Link](${link})`;
           const sources = [markdownLink];
-          output = buildOutput(logsStr, sources);
+          output = buildOutput(limitedAnalysis, sources);
         } else {
-          output = logsStr;
+          output = limitedAnalysis;
         }
 
         return output;

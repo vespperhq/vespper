@@ -31,6 +31,9 @@
       "program": "${workspaceFolder}/node_modules/.bin/nx",
       "args": ["dev", "api"],
       "sourceMaps": true,
+      "env": {
+        "TELEMETRY_ENABLED": "false"
+      },
       "cwd": "${workspaceFolder}",
       "internalConsoleOptions": "neverOpen"
     },

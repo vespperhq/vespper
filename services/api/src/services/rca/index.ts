@@ -24,7 +24,7 @@ import { secretManager } from "../../common/secrets";
 import { RunContext } from "../../agent/types";
 import { ToolLoader } from "../../agent/tools/types";
 import { toolLoaders as coralogixToolLoaders } from "../../agent/tools/coralogix";
-import { getLogClusters } from "./logs";
+import { getPrettyLogAnalysis } from "../../agent/tools/coralogix/utils";
 import { Timeframe } from "../../utils/dates";
 
 async function generateQueries(
@@ -125,43 +125,19 @@ async function analyzeLogs(
     [VendorName.Coralogix]: coralogixToolLoaders as ToolLoader<IIntegration>[],
   };
 
-  const logVendor = integrations.find(
+  const logIntegration = integrations.find(
     (integration) => logVendorToolLoaders[integration.vendor.name],
   );
-  if (!logVendor) {
+  if (!logIntegration) {
     return;
   }
 
-  const clusters = await getLogClusters(logVendor, timeframe);
-  const excludedLevels = ["DEBUG", "INFO", "Information"];
-  const formattedClusters = clusters
-    .filter((cluster) => !excludedLevels.includes(cluster.Level))
-    .map((cluster, index) => {
-      const {
-        Level,
-        EventTemplate,
-        Occurrences,
-        Percentage,
-        ...additionalInfo
-      } = cluster;
-      return `
-      Cluster: ${index + 1}
-      Log level: ${Level}
-      Log template: ${EventTemplate}
-      Occurrences: ${Occurrences}
-      Percentage: ${Percentage}
-      Addtitonal Cluster Info: ${JSON.stringify(additionalInfo, null, 2)}
-    `;
-    })
-    .join("\n----------------\n");
+  const { analysis } = await getPrettyLogAnalysis({
+    integration: logIntegration,
+    timeframe,
+  });
 
-  // Branch 3 - combine both branches
-  const finalLogAnalysis = `
-    Log aggregation/cluster analysis:
-    ${formattedClusters}
-  `;
-
-  return finalLogAnalysis;
+  return analysis;
 }
 
 export async function runRCA(

@@ -3,12 +3,19 @@ import { DynamicStructuredTool } from "langchain/tools";
 import { PromptTemplate } from "langchain/prompts";
 import { CoralogixIntegration } from "@merlinn/db";
 import { DATAPRIME_CHEATSHEET } from "./constants";
-import { getCommonLogFields, getPrettyLogSample } from "./utils";
+import {
+  getCommonLogFields,
+  getPrettyLogAnalysis,
+  getPrettyLogSample,
+} from "./utils";
 import { buildOutput } from "../utils";
 import { JsonOutputParser } from "langchain/schema/output_parser";
 import { chatModel } from "../../../agent/model";
-import { getTimestamp, timeframe2values } from "../../../utils/dates";
-import { CoralogixClient } from "../../../clients";
+import {
+  getTimestamp,
+  Timeframe,
+  timeframe2values,
+} from "../../../utils/dates";
 import { RunContext } from "../../../agent/types";
 
 const PROMPT_TEMPLATE = `
@@ -99,34 +106,40 @@ export default async function (
           throw new Error("No queries generated");
         }
 
-        const [amount, scale] = timeframe2values["Last 24 hours"];
+        const [amount, scale] = timeframe2values["Last 2 days"];
         const startDate = getTimestamp({ amount, scale });
         const endDate = new Date().toISOString();
-        const client = new CoralogixClient({ logsKey }, region);
         const results = (
           await Promise.all(
             queries.map(async (query: string) => {
-              const result = await client.getLogs({
-                syntax: "QUERY_SYNTAX_DATAPRIME",
-                query,
-                startDate,
-                endDate,
-              });
-              if (!result.result?.results) {
-                return `Coraloigx returned empty result. Information: ${JSON.stringify(
-                  result,
-                )}`;
-              }
+              try {
+                const { analysis, parsedLogs } = await getPrettyLogAnalysis({
+                  query,
+                  integration,
+                  timeframe: Timeframe.Last2Days,
+                });
 
-              return result;
+                if (
+                  !parsedLogs.result?.results ||
+                  parsedLogs.result?.results.length === 0
+                ) {
+                  return `Coraloigx returned empty result. Information: ${JSON.stringify(
+                    parsedLogs,
+                  )}`;
+                }
+
+                return analysis;
+              } catch (error) {
+                return null;
+              }
             }),
           )
         )
-          .filter((result) => result.result?.results?.length > 0)
+          .filter(Boolean)
           .reduce(
             (acc, val, index) => {
               acc.queries.push(queries[index]);
-              acc.results.push(val.result.results);
+              acc.results.push(val);
               return acc;
             },
             { queries: [], results: [] },
@@ -139,12 +152,8 @@ export default async function (
           return `[Coralogix Logs Link](${link})`;
         });
 
-        // TODO: this is a temporary solution, to look at more
-        // specific and fewer log results for now.
-        const logs = results.results.sort(
-          (a: string[], b: string[]) => a.length - b.length,
-        );
-        const logsStr = JSON.stringify(logs).slice(0, 10000);
+        const analyses = results.results;
+        const logsStr = JSON.stringify(analyses).slice(0, 10000);
         const output = buildOutput(logsStr, sources);
 
         return output;

@@ -133,12 +133,16 @@ export class CoralogixClient {
       return { result: { results: logs } };
     } else {
       if (result.result) {
-        result.result.results = result.result.results.map((o) => ({
-          ...o,
-          userData: JSON.stringify(flatten(JSON.parse(o.userData))),
-        }));
+        const newResult = JSON.parse(JSON.stringify(result));
+        newResult.result.results = newResult.result.results.map(
+          (o: CoralogixLogRecord) => ({
+            ...o,
+            userData: JSON.stringify(flatten(JSON.parse(o.userData))),
+          }),
+        );
+        return newResult;
       }
+      return result;
     }
-    return result;
   };
 }

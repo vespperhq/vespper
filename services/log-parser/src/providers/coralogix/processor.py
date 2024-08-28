@@ -16,6 +16,13 @@ def parse_logs(logs: List[str]) -> Tuple[pd.DataFrame, pd.DataFrame]:
 
 
 def get_log_lines(df: pd.DataFrame, severity_key: str, message_key: str) -> List[str]:
+    if severity_key not in df.columns and message_key not in df.columns:
+        raise ValueError(
+            f"DataFrame is missing required columns: {severity_key} and/or {message_key}"
+        )
+
+    if severity_key not in df.columns:
+        return (df["timestamp"] + " " + df[message_key]).to_list()
     return (df["timestamp"] + " " + df[severity_key] + ": " + df[message_key]).to_list()
 
 
@@ -118,7 +125,14 @@ def parse_raw_logs(logs: str):
 
     logs = []
     for _, row in jsonObj.iterrows():
-        batch = row["result"]
+        batch = row.get("result")
+        warning = row.get("warning")
+
+        # Currently we skip if there is a warning.
+        # Maybe we should use that in the future.
+        if warning and not pd.isna(warning):
+            continue
+
         for result in batch["results"]:
             logs.append(result)
     return logs
