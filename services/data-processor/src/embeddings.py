@@ -27,7 +27,7 @@ def get_embeddings(
         api_base=api_base,
         model=model_name,
         input=input,
-        dimensions=dimensions,
+        # dimensions=dimensions,
     )
     return [result["embedding"] for result in response.data]
 

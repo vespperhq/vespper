@@ -39,7 +39,9 @@ class ChromaDBVectorStore(BaseVectorStore):
             return False
 
     async def create_index(self) -> None:
-        return self.chroma.create_collection(name=self.collection_name)
+        return self.chroma.create_collection(
+            name=self.collection_name, metadata={"hnsw:space": "cosine"}
+        )
 
     async def delete_index(self) -> None:
         return self.chroma.delete_collection(name=self.collection_name)

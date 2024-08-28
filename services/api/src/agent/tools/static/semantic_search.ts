@@ -5,6 +5,14 @@ import { buildOutput } from "../utils";
 import { indexModel } from "@merlinn/db";
 import { getVectorStore, nodesToText } from "../../rag";
 
+function normalizeCosineScore(score: number): number {
+  // Cosine similarity ranges from -1 to 1
+  // Normalize to a range of 0 to 100
+  const normalizedScore = ((score + 1) / 2) * 100;
+
+  return Math.round(normalizedScore);
+}
+
 export default async function (context: RunContext) {
   const index = await indexModel.getOne({
     organization: context.organizationId,
@@ -20,65 +28,77 @@ export default async function (context: RunContext) {
           }
           const vectorStore = getVectorStore(index.name, index.type);
           const documents = await vectorStore.query({ query, topK: 3 });
+          documents.sort((a, b) => b.score - a.score);
+
           const text = nodesToText(documents);
 
           // Create sources
           const sourcesCounter: Record<string, number> = {};
           const sources = documents.map((document) => {
-            const { url, title = "" } = (() => {
+            const {
+              url,
+              title = "",
+              score,
+            } = (() => {
+              let url;
+              let title;
               switch (document.metadata.source) {
                 case "Notion": {
                   const { workspace_name, page_id } = document.metadata;
-                  const url = `https://www.notion.so/${workspace_name}/${page_id.replaceAll("-", "")}`;
-                  return { url };
+                  url = `https://www.notion.so/${workspace_name}/${page_id.replaceAll("-", "")}`;
+                  break;
                 }
                 case "Slack": {
                   const { workspace_url, channel_id, ts } = document.metadata;
-                  const url = `${workspace_url}/archives/${channel_id}/p${ts}`;
-                  return { url };
+                  url = `${workspace_url}/archives/${channel_id}/p${ts}`;
+                  break;
                 }
                 case "Github": {
                   const {
-                    url,
+                    url: githubUrl,
                     repo_path,
                     file_path,
                     file_name,
                     commit_sha,
                     doc_type,
                   } = document.metadata;
-                  const title =
+                  title =
                     doc_type === "code_file"
                       ? file_name
                       : doc_type === "issue"
-                        ? `Issue #${url.split("/").pop()}`
+                        ? `Issue #${githubUrl.split("/").pop()}`
                         : null;
-                  if (url) {
-                    const formattedUrl = url.replace(
+                  if (githubUrl) {
+                    const formattedUrl = githubUrl.replace(
                       /api\.github\.com\/[^/]+/,
                       "github.com",
                     );
-                    return { url: formattedUrl, title };
+                    url = formattedUrl;
+                    break;
                   }
 
                   const [owner, repo] = repo_path.split("/");
                   const filePath = file_path.split(`${repo}/`)[1];
                   const manualUrl = `https://github.com/${owner}/${repo}/tree/${commit_sha}/${filePath}`;
-                  return { url: manualUrl, title };
+                  url = manualUrl;
+                  break;
                 }
                 case "PagerDuty": {
-                  return {
-                    url: document.metadata.link,
-                    title: "PagerDuty Alert",
-                  };
+                  url = document.metadata.link;
+                  title = "PagerDuty Alert";
+                  break;
                 }
                 case "Confluence": {
-                  const { url, title } = document.metadata;
-                  return { url, title };
+                  url = document.metadata.url;
+                  title = document.metadata.title;
+                  break;
                 }
                 default: {
                   throw new Error("Unsupported source");
                 }
               }
+
+              return { url, title, score: document.score };
             })();
 
             sourcesCounter[document.metadata.source] =
@@ -86,9 +106,11 @@ export default async function (context: RunContext) {
             const nSource = sourcesCounter[document.metadata.source];
 
             const suffix = nSource && nSource > 1 ? ` #${nSource}` : "";
-            const sourceName =
+            const normalizedScore = normalizeCosineScore(score);
+            let sourceName =
               title ||
               (`${document.metadata.source.trim()} Link${suffix}` as string);
+            sourceName = `${sourceName} (Score: ${normalizedScore}%)`;
             return { sourceName, url };
           });
 
