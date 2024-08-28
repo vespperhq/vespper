@@ -142,6 +142,7 @@ async function extractLogStructuralKeys(logRecords: string[]) {
     return { severityKey, messageKey };
   } catch (error) {
     console.error("Error generating queries", error);
+    console.error("invalid logRecords", logRecords);
     throw error;
   }
 }

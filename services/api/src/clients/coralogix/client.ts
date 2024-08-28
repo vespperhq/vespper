@@ -39,11 +39,19 @@ export class CoralogixClient {
     const { apiURL } = domains.management[this.region];
     const metadata = { syntax, startDate, endDate };
     try {
-      const { data } = await this.axios.post<string>(apiURL, {
+      let response = await this.axios.post<string>(apiURL, {
         query,
         metadata,
       });
-      return data;
+
+      if (!response.data) {
+        response = await this.axios.post<string>(apiURL, {
+          query,
+          metadata: { ...metadata, tier: "TIER_ARCHIVE" },
+        });
+      }
+
+      return response.data;
     } catch (error) {
       console.log(error);
       throw error;
@@ -57,12 +65,22 @@ export class CoralogixClient {
     const { apiURL } = domains.management[this.region];
     const metadata = { syntax, startDate, endDate };
     try {
-      const { data } = await this.axios.post<CoralogixQueryResult>(apiURL, {
+      let response = await this.axios.post<CoralogixQueryResult>(apiURL, {
         query,
         metadata,
       });
 
-      const result = this.parseResult(data);
+      // TODO: By default, the TIER that is used is TIER_FREQUENT_SEARCH
+      // Sometimes, the logs are not found in the TIER_FREQUENT_SEARCH, so we try to get them from TIER_ARCHIVE
+      // This is a simple/dumb way to do it. Probably there is a smarter way.
+      if (!response.data) {
+        response = await this.axios.post<CoralogixQueryResult>(apiURL, {
+          query,
+          metadata: { ...metadata, tier: "TIER_ARCHIVE" },
+        });
+      }
+
+      const result = this.parseResult(response.data);
       return result;
     } catch (error) {
       console.log(error);
