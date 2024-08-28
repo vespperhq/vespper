@@ -27,5 +27,5 @@ export const embedModel = new OpenAIEmbedding({
   apiKey,
   additionalSessionOptions: { baseURL },
   model: "embedding-model",
-  dimensions: 768,
+  dimensions: 3072,
 });

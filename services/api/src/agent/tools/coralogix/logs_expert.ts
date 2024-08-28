@@ -82,14 +82,13 @@ export default async function (
   const { logsKey } = integration.credentials;
   const { region, domainURL } = integration.metadata;
 
-  const commonFields = await getCommonLogFields(logsKey, region);
-  const logSample = await getPrettyLogSample(logsKey, region, 2);
-
   return new DynamicStructuredTool({
     name: "logs_expert_tool",
     description: TOOL_DESCRIPTION,
     func: async ({ request }) => {
       try {
+        const commonFields = await getCommonLogFields(logsKey, region);
+        const logSample = await getPrettyLogSample(logsKey, region, 2);
         const prompt = await PromptTemplate.fromTemplate(
           PROMPT_TEMPLATE,
         ).format({

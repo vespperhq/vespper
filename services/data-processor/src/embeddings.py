@@ -14,7 +14,9 @@ from tenacity import (
 # For exponential backoff. Source:
 # https://github.com/openai/openai-cookbook/blob/main/examples/How_to_handle_rate_limits.ipynb
 @retry(wait=wait_random_exponential(min=1, max=60), stop=stop_after_attempt(6))
-def get_embeddings(api_key: str, api_base: str, model_name: str, input: List[str]):
+def get_embeddings(
+    api_key: str, api_base: str, model_name: str, input: List[str], dimensions: int
+):
     if not api_key:
         # If key is not provided, we assume the consumer has configured
         # their LiteLLM proxy server with their API key.
@@ -25,6 +27,7 @@ def get_embeddings(api_key: str, api_base: str, model_name: str, input: List[str
         api_base=api_base,
         model=model_name,
         input=input,
+        dimensions=dimensions,
     )
     return [result["embedding"] for result in response.data]
 
@@ -39,6 +42,9 @@ class LiteLLMEmbedding(BaseEmbedding):
     )
     api_base: str = Field(
         default="unknown", description="The base URL of the LiteLLM proxy."
+    )
+    dimensions: int = Field(
+        default=3072, description="The number of dimensions of the embedding model."
     )
 
     @classmethod
@@ -57,6 +63,7 @@ class LiteLLMEmbedding(BaseEmbedding):
             api_base=self.api_base,
             model_name=self.model_name,
             input=[query],
+            dimensions=self.dimensions,
         )
         return embeddings[0]
 
@@ -66,6 +73,7 @@ class LiteLLMEmbedding(BaseEmbedding):
             api_base=self.api_base,
             model_name=self.model_name,
             input=[text],
+            dimensions=self.dimensions,
         )
         return embeddings[0]
 
@@ -75,4 +83,5 @@ class LiteLLMEmbedding(BaseEmbedding):
             api_base=self.api_base,
             model_name=self.model_name,
             input=texts,
+            dimensions=self.dimensions,
         )
