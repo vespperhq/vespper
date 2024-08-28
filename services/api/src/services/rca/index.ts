@@ -24,7 +24,10 @@ import { secretManager } from "../../common/secrets";
 import { RunContext } from "../../agent/types";
 import { ToolLoader } from "../../agent/tools/types";
 import { toolLoaders as coralogixToolLoaders } from "../../agent/tools/coralogix";
-import { getPrettyLogAnalysis } from "../../agent/tools/coralogix/utils";
+import {
+  getPrettyLogAnalysis,
+  limitLogs,
+} from "../../agent/tools/coralogix/utils";
 import { Timeframe } from "../../utils/dates";
 
 async function generateQueries(
@@ -132,11 +135,17 @@ async function analyzeLogs(
     return;
   }
 
-  const { analysis } = await getPrettyLogAnalysis({
+  const { analysis, parsedLogs } = await getPrettyLogAnalysis({
     integration: logIntegration,
     timeframe,
   });
 
+  if (!analysis) {
+    return `
+    Could not do log aggregation. Here are the raw logs instead:
+    ${limitLogs(JSON.stringify(parsedLogs))}
+    `;
+  }
   return analysis;
 }
 

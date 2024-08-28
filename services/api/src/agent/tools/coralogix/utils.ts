@@ -146,6 +146,33 @@ async function extractLogStructuralKeys(logRecords: string[]) {
   }
 }
 
+export async function getLogs({
+  query,
+  integration,
+  timeframe,
+}: {
+  query: string;
+  integration: IIntegration;
+  timeframe: Timeframe;
+}) {
+  const { logsKey } = (integration as CoralogixIntegration).credentials;
+  const { region } = (integration as CoralogixIntegration).metadata;
+
+  const [amount, scale] = timeframe2values[timeframe];
+  const startDate = getTimestamp({ amount, scale });
+  const endDate = new Date().toISOString();
+
+  const client = new CoralogixClient({ logsKey }, region);
+  const logs = await client.getLogs({
+    syntax: "QUERY_SYNTAX_DATAPRIME",
+    query,
+    startDate,
+    endDate,
+  });
+
+  return logs;
+}
+
 export async function getLogClusters({
   query = "",
   integration,
@@ -155,7 +182,7 @@ export async function getLogClusters({
   integration: IIntegration;
   timeframe: Timeframe;
 }): Promise<{
-  clusters: LogCluster[];
+  clusters: LogCluster[] | null;
   parsedLogs: CoralogixQueryResult;
 }> {
   switch (integration.vendor.name) {
@@ -196,7 +223,7 @@ export async function getLogClusters({
         console.error(
           `Error clustering logs for query ${query}. Error: ${error}`,
         );
-        throw error;
+        return { clusters: null, parsedLogs };
       }
     }
     default: {
@@ -214,7 +241,7 @@ export async function getPrettyLogAnalysis({
   integration: IIntegration;
   timeframe: Timeframe;
 }): Promise<{
-  analysis: string;
+  analysis: string | null;
   parsedLogs: CoralogixQueryResult;
 }> {
   const { clusters, parsedLogs } = await getLogClusters({
@@ -222,16 +249,18 @@ export async function getPrettyLogAnalysis({
     integration,
     timeframe,
   });
-  const formattedClusters = clusters
-    .map((cluster, index) => {
-      const {
-        Level,
-        EventTemplate,
-        Occurrences,
-        Percentage,
-        ...additionalInfo
-      } = cluster;
-      return `
+  let analysis = null;
+  if (clusters) {
+    const formattedClusters = clusters
+      .map((cluster, index) => {
+        const {
+          Level,
+          EventTemplate,
+          Occurrences,
+          Percentage,
+          ...additionalInfo
+        } = cluster;
+        return `
       Cluster: ${index + 1}
       Log level: ${Level}
       Log template: ${EventTemplate}
@@ -239,16 +268,21 @@ export async function getPrettyLogAnalysis({
       Percentage: ${Percentage}
       Addtitonal Cluster Info: ${JSON.stringify(additionalInfo, null, 2)}
     `;
-    })
-    .join("\n----------------\n");
+      })
+      .join("\n----------------\n");
 
-  // Branch 3 - combine both branches
-  const formattedAnalysis = `
+    // Branch 3 - combine both branches
+    analysis = `
     Log aggregation/cluster analysis:
     ${formattedClusters}
   `;
+  }
 
-  return { analysis: formattedAnalysis, parsedLogs };
+  return { analysis, parsedLogs };
+}
+
+export function limitLogs(logsStr: string, limit = 10000) {
+  return logsStr.slice(0, limit);
 }
 
 // (async () => {

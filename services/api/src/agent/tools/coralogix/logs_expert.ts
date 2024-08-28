@@ -7,6 +7,7 @@ import {
   getCommonLogFields,
   getPrettyLogAnalysis,
   getPrettyLogSample,
+  limitLogs,
 } from "./utils";
 import { buildOutput } from "../utils";
 import { JsonOutputParser } from "langchain/schema/output_parser";
@@ -128,7 +129,21 @@ export default async function (
                   )}`;
                 }
 
-                return analysis;
+                if (!analysis) {
+                  const logsStr = limitLogs(JSON.stringify(parsedLogs));
+                  const output = `
+                  Here are the log results for query: ${query}
+                  ${logsStr}
+                  `;
+                  return output;
+                }
+
+                const output = `
+                Here is a log analysis for query: ${query}
+                Analysis:
+                ${analysis}
+                `;
+                return output;
               } catch (error) {
                 return null;
               }
