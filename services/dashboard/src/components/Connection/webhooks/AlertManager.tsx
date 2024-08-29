@@ -45,6 +45,10 @@ export const ConnectAlertManagerWebhook = ({ data }: ConnectionProps) => {
   const { mutateAsync: createWebhook } = useCreateWebhook();
 
   const handleGenerate = async (secret: string) => {
+    if (navigator) {
+      navigator.clipboard.writeText(secret);
+    }
+
     const promise = createWebhook({
       vendorName: ConnectionName.AlertManager,
       organizationId,

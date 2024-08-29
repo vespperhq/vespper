@@ -17,6 +17,10 @@ export const ConnectPageDutyWebhook = ({ data }: any) => {
   const { mutateAsync: createWebhook } = useCreateWebhook();
 
   const handleGenerate = async (secret: string) => {
+    if (navigator) {
+      navigator.clipboard.writeText(secret);
+    }
+
     const promise = createWebhook({
       vendorName: ConnectionName.PagerDuty,
       organizationId,
