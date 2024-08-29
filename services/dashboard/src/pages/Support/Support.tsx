@@ -61,7 +61,7 @@ function SupportPage() {
               <Button variant="solid" color="neutral">
                 <Link
                   overlay
-                  href="https://calendly.com/dudu-merlinn/30min"
+                  href="https://calendly.com/dudu-merlinn/30-minute-meeting"
                   target="_blank"
                   underline="none"
                   sx={{ all: "unset" }}
