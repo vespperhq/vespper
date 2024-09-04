@@ -123,11 +123,12 @@ Additionally, if you want to work on our Python services (currently only the `da
    ```bash
    yarn install
    ```
-2. Run the infrastructure services using docker:
+2. Create a `.env` file as described in the [quickstart guide](https://github.com/merlinn-co/merlinn?tab=readme-ov-file#quick-installation-%EF%B8%8F).
+3. Run the infrastructure services using docker:
    ```bash
-   docker compose up --profile infra
+   docker compose --profile infra up
    ```
-3. Run the dev jobs of the services. For example:
+4. Run the dev jobs of the services. For example:
    ```bash
    nx dev api
    ```
