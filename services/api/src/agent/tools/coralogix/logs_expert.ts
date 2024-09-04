@@ -9,6 +9,7 @@ import {
   getCommonLogValues,
   getPrettyLogAnalysis,
   getPrettyLogSample,
+  getQueriesHistory,
   limitLogs,
 } from "./utils";
 import { buildOutput } from "../utils";
@@ -46,6 +47,9 @@ Here are the common values that you can use in your query (they were taken from 
 
 Here is a sample of logs so you'd know how they look like:
 {logSample}
+
+Here is a sample of queries that the team has already used (can be really useful! in most cases, you should use them as a reference):
+{queriesHistory}
 
 You should return your answer as a block of Thought, Observation and Answer.
 The thought section should contain a thought that you have about the request.
@@ -105,6 +109,8 @@ export default async function (
         const logSample = await getPrettyLogSample(logsKey, region, 2);
         const commonFields = await getCommonLogFields(logsKey, region);
         const filteredFields = await filterHighCardinalityFields(logSample);
+        const queriesHistory = await getQueriesHistory(integration);
+
         const commonValues = await getCommonLogValues(
           filteredFields,
           logsKey,
@@ -116,6 +122,7 @@ export default async function (
         const prettyCommonValues = Object.entries(commonValues)
           .map(([key, value]) => `${key}: ${value.join(", ")}`)
           .join("\n");
+        const prettyQueriesHistory = queriesHistory.join("\n");
 
         const prompt = await PromptTemplate.fromTemplate(
           PROMPT_TEMPLATE,
@@ -124,6 +131,7 @@ export default async function (
           cheatsheet: DATAPRIME_CHEATSHEET,
           commonFields: prettyCommonFields,
           commonValues: prettyCommonValues,
+          queriesHistory: prettyQueriesHistory,
           logSample: logSample,
           request,
         });

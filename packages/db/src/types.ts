@@ -199,6 +199,7 @@ export interface CoralogixIntegration extends BaseConnection {
   credentials: {
     logsKey: string; // Logs Query Key in Coralogix
     artKey: string; // Alerts, Rules and Tags Key
+    auditKey: string; // Audit API Key
   };
   metadata: {
     region: "EU1" | "AP1" | "US1" | "EU2" | "AP2" | "US2";

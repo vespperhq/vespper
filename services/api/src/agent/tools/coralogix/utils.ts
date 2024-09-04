@@ -324,32 +324,40 @@ export async function getPrettyLogAnalysis({
   return { analysis, parsedLogs };
 }
 
-// export async function getQueriesHistory() {
-//   const limit = 30;
-//   const query = `source logs | filter $l.subsystemname == 'dataprime-api' && action_details.operation.operation_payload.tracingMetadata.queryText != null && action_details.operation.operation_payload.tracingMetadata.queryText != '' && !action_details.operation.operation_payload.tracingMetadata.queryText.contains('action_details.operation.operation_payload.tracingMetadata.queryText') | choose action_details.operation.operation_payload.tracingMetadata.queryText | limit ${limit}`;
-// }
+export async function getQueriesHistory(integration: CoralogixIntegration) {
+  const limit = 30;
+  const { auditKey } = integration.credentials;
+  const { region } = integration.metadata;
+
+  const [amount, scale] = timeframe2values["Last 7 days"];
+  const startDate = getTimestamp({ amount, scale });
+  const endDate = new Date().toISOString();
+
+  const client = new CoralogixClient({ logsKey: auditKey }, region);
+  const query = `source logs | filter $l.subsystemname == 'dataprime-api' && action_details.operation.operation_payload.tracingMetadata.queryText != null && action_details.operation.operation_payload.tracingMetadata.queryText != '' && !action_details.operation.operation_payload.tracingMetadata.queryText.contains('action_details.operation.operation_payload.tracingMetadata.queryText') | choose action_details.operation.operation_payload.tracingMetadata.queryText | limit ${limit}`;
+
+  const logs = await client.getRawLogs({
+    syntax: "QUERY_SYNTAX_DATAPRIME",
+    query,
+    startDate,
+    endDate,
+  });
+
+  const parsedLogs = client.parseResult(logs);
+  const queries = parsedLogs.result.results.reduce((total, r) => {
+    const data = JSON.parse(r.userData);
+    const query =
+      data[
+        "action_details.operation.operation_payload.tracingMetadata.queryText"
+      ];
+    if (query && !total.includes(query)) {
+      total.push(query);
+    }
+    return total;
+  }, [] as string[]);
+  return queries;
+}
 
 export function limitLogs(logsStr: string, limit = 10000) {
   return logsStr.slice(0, limit);
 }
-
-// (async () => {
-//   await connectToDB(process.env.MONGO_URI as string);
-
-//   let integrations = (await integrationModel
-//     .get()
-//     .populate("vendor")) as IIntegration[];
-//   integrations = await secretManager.populateCredentials(integrations);
-
-//   const logVendor = integrations.find(
-//     (integration) => integration.vendor.name === "Coralogix",
-//   );
-
-//   if (!logVendor) {
-//     throw new Error("No Coralogix integration found");
-//   }
-
-//   const clusters = await getLogClusters(logVendor);
-
-//   console.log(clusters);
-// })();

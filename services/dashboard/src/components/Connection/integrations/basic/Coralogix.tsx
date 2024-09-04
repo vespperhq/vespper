@@ -20,6 +20,12 @@ const fieldsConfigurations: FieldConfiguration[] = [
     input: { type: "secret" },
   },
   {
+    key: "auditKey",
+    label: "Audit API Key",
+    type: "credentials",
+    input: { type: "secret" },
+  },
+  {
     key: "region",
     label: "Region",
     type: "metadata",
