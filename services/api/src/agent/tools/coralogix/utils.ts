@@ -7,7 +7,10 @@ import {
   timeframe2values,
 } from "../../../utils/dates";
 import { CoralogixClient } from "../../../clients/coralogix";
-import { extractLogStructureKeysPrompt } from "../../../agent/prompts";
+import {
+  extractLogStructureKeysPrompt,
+  filterHighCardinalityFieldsPrompt,
+} from "../../../agent/prompts";
 import { JsonOutputParser } from "langchain/schema/output_parser";
 import { chatModel } from "../../../agent/model";
 
@@ -54,25 +57,45 @@ export const getCommonLogFields = async (
 };
 
 export const getCommonLogValues = async (
-  field: string,
+  fields: string[],
   apiKey: string,
   region: CoralogixRegionKey,
+  limit: number = 20,
 ) => {
   const startDate = String(getTimestamp({ amount: 7, scale: "days" }));
   const endDate = String(getTimestamp({}));
 
   const client = new CoralogixClient({ logsKey: apiKey }, region);
-  const query = `source logs | distinct ${field} | limit 100`;
+  const query = `source logs | distinct ${fields.join(", ")} | limit 1000`;
   const { result } = await client.getLogs({
     query,
     startDate,
     endDate,
   });
 
-  const values = result.results.map(
-    (obj) => Object.values(JSON.parse(obj.userData))[0],
+  const values = result.results.reduce(
+    (total, obj) => {
+      const data = JSON.parse(obj.userData);
+      const keys = Object.keys(data);
+      keys.forEach((key) => {
+        if (total[key]) {
+          if (total[key].size < limit) {
+            total[key].add(data[key]);
+          }
+        } else {
+          total[key] = new Set([data[key]]);
+        }
+      });
+      return total;
+    },
+    {} as Record<string, Set<string>>,
   );
-  return values;
+  // Transform sets to lists
+  const transformedValues: Record<string, string[]> = {};
+  for (const [key, set] of Object.entries(values)) {
+    transformedValues[key] = Array.from(set);
+  }
+  return transformedValues;
 };
 
 export const getLogSample = async (
@@ -122,6 +145,25 @@ interface LogCluster extends Record<string, unknown> {
   EventTemplate: string;
   Occurrences: number;
   Percentage: number;
+}
+
+export async function filterHighCardinalityFields(logSample: string) {
+  const queriesPrompt = await filterHighCardinalityFieldsPrompt.format({
+    logRecords: logSample,
+  });
+  const parser = new JsonOutputParser();
+  try {
+    const { content } = await chatModel.invoke(queriesPrompt);
+    const { fields } = await parser.parse(content as string);
+    if (!fields) {
+      throw new Error("Failed to extract log structure keys");
+    }
+    return fields;
+  } catch (error) {
+    console.error("Error generating queries", error);
+    console.error("invalid logRecords", logSample);
+    throw error;
+  }
 }
 
 interface ParseLogsResponse {
@@ -281,6 +323,11 @@ export async function getPrettyLogAnalysis({
 
   return { analysis, parsedLogs };
 }
+
+// export async function getQueriesHistory() {
+//   const limit = 30;
+//   const query = `source logs | filter $l.subsystemname == 'dataprime-api' && action_details.operation.operation_payload.tracingMetadata.queryText != null && action_details.operation.operation_payload.tracingMetadata.queryText != '' && !action_details.operation.operation_payload.tracingMetadata.queryText.contains('action_details.operation.operation_payload.tracingMetadata.queryText') | choose action_details.operation.operation_payload.tracingMetadata.queryText | limit ${limit}`;
+// }
 
 export function limitLogs(logsStr: string, limit = 10000) {
   return logsStr.slice(0, limit);

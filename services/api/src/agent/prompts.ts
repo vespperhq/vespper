@@ -153,6 +153,32 @@ export const prefix = {
   Log records:
   {logRecords}
   `,
+  filterHighCardinalityFields: `
+  Given some log records and their fields, return the fields that don't have a high cardinality.
+  Meaning, exclude fields which seem to have a lot of different values. This usually means fields
+  such as user ids, session ids, messages, log body, timestamps, etc.
+
+  Your output should be in JSON format which contains just one key called "fields" and its value should be the array of fields that don't have a high cardinality.
+
+  For example, given the following log records:
+  \`\`\`json
+  [
+    {{"userId": 123, "timestamp": "2021-01-01T00:00:00Z", "message": "User logged in", "service": "demo-app"}},
+    {{"userId": 456, "timestamp": "2021-01-01T00:00:00Z", "message": "User logged in", "service": "demo-app"}},
+    {{"userId": 789, "timestamp": "2021-01-01T00:00:00Z", "message": "User logged in", "service": "demo-app"}}
+  ]
+  \`\`\`
+
+  The output should be:
+  \`\`\`json
+  {{"fields": ["service"]}}
+  \`\`\`
+
+  That's it! Begin!
+
+  Log records:
+  {logRecords}
+  `,
 };
 
 export const investigationTemplate = ChatPromptTemplate.fromMessages([
@@ -194,4 +220,8 @@ export const investigationLeanTemplate = PromptTemplate.fromTemplate(
 
 export const extractLogStructureKeysPrompt = PromptTemplate.fromTemplate(
   prefix.extractLogStructureKeys,
+);
+
+export const filterHighCardinalityFieldsPrompt = PromptTemplate.fromTemplate(
+  prefix.filterHighCardinalityFields,
 );

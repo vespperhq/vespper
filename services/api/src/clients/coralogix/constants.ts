@@ -79,4 +79,42 @@ export const domains: Record<string, CoralogixDomain> = {
       apiURL: "https://api.cx498.coralogix.com/api/v1/external/alerts",
     },
   },
+  opensearch: {
+    EU1: {
+      domain: "coralogix.com",
+      region: "eu-west-1",
+      description: "[EU1 – Ireland]",
+      apiURL: "https://api.coralogix.com/data/os-api",
+    },
+    AP1: {
+      domain: "coralogix.in",
+      region: "ap-south1",
+      description: "[AP1 – India]",
+      apiURL: "https://api.app.coralogix.in/data/os-api",
+    },
+    US1: {
+      domain: "coralogix.us",
+      region: "us-east2",
+      description: "[US1 – Ohio]",
+      apiURL: "https://api.coralogix.us/data/os-api",
+    },
+    EU2: {
+      domain: "eu2.coralogix.com",
+      region: "eu-north-1",
+      description: "[EU2 – Stockholm]",
+      apiURL: "https://api.eu2.coralogix.com/data/os-api",
+    },
+    AP2: {
+      domain: "coralogixsg.com",
+      region: "ap-southeast-1",
+      description: "[AP2 – Singapore]",
+      apiURL: "https://api.coralogixsg.com/data/os-api",
+    },
+    US2: {
+      domain: "cx498.coralogix.com",
+      region: "us-west-2",
+      description: "[US2 – Oregon]",
+      apiURL: "https://api.cx498.coralogix.com/data/os-api",
+    },
+  },
 };

@@ -106,6 +106,10 @@ Whitespace between operators is ignored, supporting multiline queries.
   \`\`\`shell
   source logs
   \`\`\`
+- **Fetch all logs based on subsystem name**
+  \`\`\`shell
+  source logs | filter $l.subsystemname == "dlp"
+  \`\`\`
 - **Fetch all logs that contain 500 in their msg **
   \`\`\`shell
   source logs | filter msg.contains('500')
