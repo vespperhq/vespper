@@ -92,7 +92,7 @@ export function attachMessages(app: App) {
 
       const response = await say({
         text: output,
-        thread_ts: message.thread_ts, // Use the thread timestamp if available
+        thread_ts: message.thread_ts || message.ts, // Use the thread timestamp if available
         metadata: message_metadata,
       });
       const { ok, channel, ts } = response;
