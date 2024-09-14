@@ -1,5 +1,13 @@
 services:
   # Infra services
+  envoy-common:
+    image: envoyproxy/envoy:v1.22-latest
+    container_name: envoy
+    profiles: ["app", "infra"]
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config/envoy/envoy.yaml:/etc/envoy/envoy.yaml
   postgres-common:
     image: postgres
     container_name: postgres
@@ -192,7 +200,7 @@ services:
       - SLACK_BOT_TOKEN
       - SLACK_SIGNING_SECRET
       - API_URL
-      - PORT=3003
+      - PORT=SLACKBOT_PORT
       - NODE_ENV=development
     ports:
       - "${SLACKBOT_PORT}:${SLACKBOT_PORT}"

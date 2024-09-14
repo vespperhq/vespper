@@ -137,9 +137,23 @@ Additionally, if you want to work on our Python services (currently only the `da
    nx dev dashboard
    nx dev slackbot
    nx dev data-processor
+   nx dev log-parser
    ```
 
 That's it. Now you can make changes and work with the code. If you have any problems, please write to us on Slack, in #tech-support. The different ports are listed in the `.env` file.
+
+### Debugging
+
+Sometimes, you might want to debug a service using a debugger. In that case, you can use our VS Code configuration.
+
+Simply go to your Run and Debug tab, select the service you want to debug (API: Debug, Slackbot: Debug, etc.) and hit the green play button.
+
+### Switching between Docker containers & local code
+
+Sometimes you'd want some of the services to run in docker compose, while others will run locally (e.g. Slackbot).
+
+To switch between the two, you can simply stop the docker contaienr and run `nx dev <service>`. Our reverse proxy (envoy) takes care
+of routing the requests to the available service (either locally or in docker).
 
 ## Conventions
 

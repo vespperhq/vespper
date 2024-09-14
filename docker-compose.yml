@@ -1,5 +1,9 @@
 services:
   # Infra services
+  envoy:
+    extends:
+      file: docker-compose.common.yml
+      service: envoy-common
   postgres:
     extends:
       file: docker-compose.common.yml

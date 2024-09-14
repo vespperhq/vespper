@@ -6,7 +6,7 @@ import { uuid } from "uuidv4";
 const captureErrorInTelemetry = (error: ErrorPayload, req: Request) => {
   const posthog = new PostHogClient();
 
-  const userId = req.cookies.ajs_user_id.toString();
+  const userId = req.cookies.ajs_user_id?.toString();
   const distinctId = userId || uuid();
 
   posthog.capture({
@@ -31,8 +31,8 @@ const productionError = (error: ErrorPayload, req: Request, res: Response) => {
 
 // Send a detailed error message, for debugging purposes
 const developmentError = (error: ErrorPayload, req: Request, res: Response) => {
-  console.error("developmentError error: ", error);
-
+  console.error("error: ", error.message);
+  console.error("stacktrace:", error.stack);
   captureErrorInTelemetry(error, req);
 
   res.status(error.statusCode).json({
