@@ -1,0 +1,94 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Slackbot: Debug",
+      "cwd": "${workspaceFolder}/services/slackbot",
+      "program": "${workspaceFolder}/node_modules/ts-node/dist/bin.js",
+      "args": ["${workspaceFolder}/services/slackbot/src/app.ts"],
+      "envFile": "${workspaceFolder}/services/slackbot/.env"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Workspace: Deploy",
+      "program": "${workspaceFolder}/node_modules/ts-node/dist/bin.js",
+      "args": ["${workspaceFolder}/tools/scripts/deploy.ts", "api"],
+      "sourceMaps": true,
+      "cwd": "${workspaceFolder}",
+      "envFile": "${workspaceFolder}/.env",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "API: Debug",
+      "program": "${workspaceFolder}/node_modules/.bin/nx",
+      "args": ["dev", "api"],
+      "sourceMaps": true,
+      "env": {
+        "TELEMETRY_ENABLED": "false"
+      },
+      "cwd": "${workspaceFolder}",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "API: Debug TypeScript",
+      "runtimeExecutable": "yarn",
+      "args": [
+        "runFile",
+        "${file}"
+        // "Q2HI9P83ZC9UXT",
+        // "66841ebc489b57392f102e08",
+        // "PagerDuty"
+      ],
+      "sourceMaps": true,
+      "cwd": "${workspaceFolder}/services/api",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "API: Debug Jest current file",
+      "program": "${workspaceFolder}/services/api/node_modules/.bin/jest",
+      "args": ["${file}", "--config", "jest.config.js"],
+      "console": "integratedTerminal",
+      "windows": {
+        "program": "${workspaceFolder}/services/api/node_modules/jest/bin/jest"
+      }
+    },
+    {
+      "name": "Data Processor: Debug Current File",
+      "type": "debugpy",
+      "justMyCode": false,
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/services/data-processor/",
+      "envFile": "${workspaceFolder}/services/data-processor/.env"
+    },
+    {
+      "type": "debugpy",
+      "name": "Data Processor: Debug",
+      "request": "launch",
+      "program": "src/main.py",
+      "cwd": "${workspaceFolder}/services/data-processor/",
+      "justMyCode": false
+    },
+    {
+      "type": "debugpy",
+      "name": "Log Parser: Debug",
+      "request": "launch",
+      "program": "src/main.py",
+      "cwd": "${workspaceFolder}/services/log-parser/",
+      "justMyCode": false
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+on: push
+
+name: Run CI
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      DISPLAY: :99
+    permissions:
+      contents: "read"
+      actions: "read"
+    outputs:
+      affected_services: ${{ steps.get-affected-projects.outputs.affected_services }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          # We need to fetch all branches and commits so that Nx affected has a base to compare against.
+          fetch-depth: 0
+      - name: Derive appropriate SHAs for base and head for `nx affected` commands
+        uses: nrwl/nx-set-shas@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          cache: "yarn"
+          node-version: 18
+      - name: Install Yarn
+        run: npm install -g yarn
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      # This line is needed for nx affected to work when CI is running on a PR
+      - run: git branch --track main origin/main
+        if: ${{ github.event_name == 'pull_request' }}
+      - name: Run lint
+        run: npx nx affected --base=$NX_BASE --head=$NX_HEAD -t lint
+      - name: Run tests
+        run: npx nx affected --base=$NX_BASE --head=$NX_HEAD -t test
+      # Get all the affected services for the next step.
+      # Nx calls them "apps" internally.
+      # IMPORTANT: we exclude dashboard manually here, since Vercel takes care of the deployment for us
+      # Need to find a better way.
+      # One possible solution is to introduce a convention for services (web-*, js-*, py-*)
+      # This will allow us to exclude based on patterns.
+      - name: Print affected services
+        run: npx nx show projects --affected --type app --exclude dashboard
+      - name: Store affected services
+        id: get-affected-projects
+        run: |
+          {
+            echo 'affected_services<<EOF'
+            npx nx show projects --affected --type app --exclude dashboard
+            echo EOF
+          } >> "$GITHUB_OUTPUT"

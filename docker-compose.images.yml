@@ -1,0 +1,72 @@
+services:
+  # Infra services
+  envoy:
+    extends:
+      file: docker-compose.common.yml
+      service: envoy-common
+  postgres:
+    extends:
+      file: docker-compose.common.yml
+      service: postgres-common
+  litellm:
+    extends:
+      file: docker-compose.common.yml
+      service: litellm-common
+  mongo:
+    extends:
+      file: docker-compose.common.yml
+      service: mongo-common
+  chroma:
+    extends:
+      file: docker-compose.common.yml
+      service: chroma-common
+  vector-admin:
+    extends:
+      file: docker-compose.common.yml
+      service: vector-admin-common
+  ory-kratos-migrate:
+    extends:
+      file: docker-compose.common.yml
+      service: ory-kratos-migrate-common
+  ory-kratos:
+    extends:
+      file: docker-compose.common.yml
+      service: ory-kratos-common
+  # ory-kratos-admin-ui:
+  #   extends:
+  #     file: docker-compose.common.yml
+  #     service: ory-kratos-admin-ui-common
+  ory-kratos-self-serve-ui:
+    extends:
+      file: docker-compose.common.yml
+      service: ory-kratos-self-serve-ui-common
+  vault:
+    extends:
+      file: docker-compose.common.yml
+      service: vault-common
+  # App services
+  api:
+    extends:
+      file: docker-compose.common.yml
+      service: api-common
+    image: merlinnco/api:latest
+  slackbot:
+    extends:
+      file: docker-compose.common.yml
+      service: slackbot-common
+    image: merlinnco/slackbot:latest
+  data-processor:
+    extends:
+      file: docker-compose.common.yml
+      service: data-processor-common
+    image: merlinnco/data-processor:latest
+  log-parser:
+    extends:
+      file: docker-compose.common.yml
+      service: log-parser-common
+    image: merlinnco/log-parser:latest
+  dashboard:
+    extends:
+      file: docker-compose.common.yml
+      service: dashboard-common
+    image: merlinnco/dashboard:latest

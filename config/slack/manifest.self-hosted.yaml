@@ -1,0 +1,47 @@
+display_information:
+  name: Merlinn
+  description: AI assistant for fast incident resolution
+  background_color: "#2c2d30"
+features:
+  bot_user:
+    display_name: Merlinn
+    always_online: false
+  slash_commands:
+    - command: /merlinn
+      description: Manage Merlinn
+      should_escape: false
+oauth_config:
+  scopes:
+    bot:
+      - app_mentions:read
+      - channels:history
+      - channels:join
+      - channels:read
+      - chat:write
+      - chat:write.public
+      - im:history
+      - incoming-webhook
+      - metadata.message:read
+      - reactions:read
+      - reactions:write
+      - users.profile:read
+      - users:read
+      - users:read.email
+      - files:read
+      - commands
+      - team:read
+      - groups:read
+      - groups:history
+settings:
+  event_subscriptions:
+    bot_events:
+      - app_home_opened
+      - app_mention
+      - message.channels
+      - message.im
+      - reaction_added
+  interactivity:
+    is_enabled: true
+  org_deploy_enabled: false
+  socket_mode_enabled: true
+  token_rotation_enabled: false

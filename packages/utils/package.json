@@ -1,0 +1,19 @@
+{
+  "name": "@merlinn/utils",
+  "version": "0.0.1",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc",
+    "build:watch": "tsc -w"
+  },
+  "dependencies": {
+    "@google-cloud/secret-manager": "^5.1.0",
+    "@litehex/node-vault": "^0.2.2",
+    "@merlinn/db": "*",
+    "@merlinn/utils": "*",
+    "tslib": "^2.3.0"
+  },
+  "main": "dist/index.js",
+  "types": "dist/*/**.d.ts",
+  "private": true
+}

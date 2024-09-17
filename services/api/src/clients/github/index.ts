@@ -1,0 +1,1 @@
+export { GithubClient } from "./client";

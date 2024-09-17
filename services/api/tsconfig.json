@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "./",
+    "baseUrl": "./",
+    "outDir": "./dist",
+    "resolveJsonModule": true
+  },
+  "files": ["./src/index.d.ts"],
+  "include": ["./**/*.ts"],
+  "exclude": ["./dist", "./scripts"]
+}

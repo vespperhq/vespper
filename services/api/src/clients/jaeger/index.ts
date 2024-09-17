@@ -1,0 +1,1 @@
+export { JaegerClient } from "./client";

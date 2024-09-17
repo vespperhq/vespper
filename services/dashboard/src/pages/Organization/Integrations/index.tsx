@@ -1,0 +1,1 @@
+export { OrganizationIntegrationsPage } from "./Integrations";

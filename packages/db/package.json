@@ -1,0 +1,17 @@
+{
+  "name": "@merlinn/db",
+  "version": "0.0.1",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc",
+    "build:watch": "tsc -w"
+  },
+  "dependencies": {
+    "mongoose": "^8.3.2",
+    "mongoose-field-encryption": "^7.0.1",
+    "tslib": "^2.3.0"
+  },
+  "main": "dist/index.js",
+  "types": "dist/*/**.d.ts",
+  "private": true
+}

@@ -1,0 +1,25 @@
+{
+  "name": "dashboard",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "targets": {
+    "container": {
+      "executor": "@nx-tools/nx-container:build",
+      "defaultConfiguration": "local",
+      "options": {
+        "engine": "docker",
+        "file": "services/dashboard/Dockerfile",
+        "platforms": ["linux/amd64"]
+      },
+      "configurations": {
+        "local": {
+          "tags": ["dashboard:latest"],
+          "push": false
+        },
+        "production": {
+          "push": true,
+          "tags": ["merlinnco/dashboard:latest"]
+        }
+      }
+    }
+  }
+}

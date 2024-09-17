@@ -1,0 +1,22 @@
+{
+  "extends": "./node_modules/@tsconfig/recommended/tsconfig.json",
+  "compileOnSave": true,
+  "compilerOptions": {
+    "rootDir": "./",
+    "baseUrl": "./",
+    "target": "es2022",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+    "importHelpers": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "skipDefaultLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "exclude": ["node_modules", "tmp"]
+}

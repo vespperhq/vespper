@@ -1,0 +1,1 @@
+export { OrganizationKnowledgeGraphPage } from "./KnowledgeGraph";

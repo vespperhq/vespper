@@ -1,0 +1,45 @@
+{
+  "name": "data-processor",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "./src",
+  "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "cwd": "services/data-processor",
+        "commands": ["poetry run python src/main.py"]
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "cwd": "services/data-processor",
+        "commands": ["npx ts-node ../../tools/scripts/deploy.ts data-processor"]
+      }
+    },
+    "container": {
+      "executor": "@nx-tools/nx-container:build",
+      "defaultConfiguration": "local",
+      "options": {
+        "context": "services/data-processor",
+        // "file": "services/data-processor/Dockerfile",
+        "engine": "docker",
+        "platforms": ["linux/amd64"]
+      },
+      "configurations": {
+        "local": {
+          "tags": ["data-processor:latest"],
+          "push": false
+        },
+        "production": {
+          "push": true,
+          "tags": ["merlinnco/data-processor:latest"]
+        }
+      }
+    }
+  },
+  "tags": []
+}
