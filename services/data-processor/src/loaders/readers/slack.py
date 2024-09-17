@@ -103,8 +103,11 @@ class SlackReader(BasePydanticReader):
 
         """Read a message."""
 
+        # TODO: this method reads all the thread messages and creates one document
+        # At the moment, we don't use the usernames + timestamps. This can be a nice improvement.
         messages_text: List[str] = []
         next_cursor = None
+        most_recent_update = None
         while True:
             try:
                 # https://slack.com/api/conversations.replies
@@ -128,6 +131,18 @@ class SlackReader(BasePydanticReader):
                         **conversations_replies_kwargs  # type: ignore
                     )
                 messages = result["messages"]
+
+                for message in messages:
+                    last_edited = float(
+                        message.get("edited", {}).get("ts", message["ts"])
+                    )
+                    last_edited_utc = datetime.utcfromtimestamp(last_edited)
+                    if (
+                        most_recent_update is None
+                        or last_edited_utc > most_recent_update
+                    ):
+                        most_recent_update = last_edited_utc
+
                 messages_text.extend(message["text"] for message in messages)
                 if not result["has_more"]:
                     break
@@ -143,7 +158,10 @@ class SlackReader(BasePydanticReader):
                     time.sleep(int(e.response.headers["retry-after"]))
                 else:
                     logger.error(f"Error parsing conversation replies: {e}")
-        return "\n\n".join(messages_text)
+
+        most_recent_update = most_recent_update.isoformat(timespec="milliseconds") + "Z"
+
+        return ("\n\n".join(messages_text), most_recent_update)
 
     def _read_channel(self, channel_id: str, reverse_chronological: bool) -> str:
         from slack_sdk.errors import SlackApiError
@@ -162,6 +180,7 @@ class SlackReader(BasePydanticReader):
                     "channel": channel_id,
                     "cursor": next_cursor,
                     "latest": str(self.latest_date_timestamp),
+                    "include_all_metadata": True,
                 }
                 if self.earliest_date_timestamp is not None:
                     conversations_history_kwargs["oldest"] = str(
@@ -175,18 +194,34 @@ class SlackReader(BasePydanticReader):
                 logger.info(
                     f"{len(conversation_history)} messages found in {channel_id}"
                 )
-                result_messages.extend(
-                    (
-                        {
-                            **message,
-                            "text": self._read_message(channel_id, message["ts"]),
-                        }
-                        if message.get("thread_ts")
-                        == message["ts"]  # Message is a parent message of a thread
-                        else message
-                    )
-                    for message in tqdm(conversation_history, desc="Reading messages")
-                )
+
+                for message in tqdm(conversation_history, desc="Reading messages"):
+                    if message.get("thread_ts") == message["ts"]:
+                        # Message is a thread parent message. Let's explore this thread!
+                        text, most_recent_update = self._read_message(
+                            channel_id, message["ts"]
+                        )
+                        result_messages.append(
+                            {
+                                **message,
+                                "text": text,
+                                "updated_at": most_recent_update,
+                            }
+                        )
+                    else:
+                        last_edited = float(
+                            message.get("edited", {}).get("ts", message["ts"])
+                        )
+                        result_messages.append(
+                            {
+                                **message,
+                                "updated_at": datetime.utcfromtimestamp(
+                                    last_edited
+                                ).isoformat(timespec="milliseconds")
+                                + "Z",
+                            }
+                        )
+
                 if not result["has_more"]:
                     break
                 next_cursor = result["response_metadata"]["next_cursor"]
@@ -222,11 +257,20 @@ class SlackReader(BasePydanticReader):
             )
             # Remove messages with empty text
             messages = [message for message in messages if message["text"] != ""]
+            # debugging step
+            for message in messages:
+                if "glorious poop" in message["text"]:
+                    print("this is it boys")
+
             documents = [
                 Document(
                     id_=message["ts"],
                     text=message["text"],
-                    metadata={"channel_id": channel_id, "ts": message["ts"]},
+                    metadata={
+                        "channel_id": channel_id,
+                        "ts": message["ts"],
+                        "updated_at": message["updated_at"],
+                    },
                 )
                 for message in messages
             ]

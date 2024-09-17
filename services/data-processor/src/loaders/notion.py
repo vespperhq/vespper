@@ -1,6 +1,6 @@
 from db.types import Integration
 from notion_client import Client
-from llama_index.readers.notion import NotionPageReader
+from loaders.readers.notion import NotionPageReader
 
 
 def fetch_notion_documents(integration: Integration):

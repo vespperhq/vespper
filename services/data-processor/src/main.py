@@ -49,11 +49,9 @@ async def start_build_index(
 
     # TODO: we re-create the index every time. We need to consider
     # changing this in the future
-    existing_index = await get_index_by_organization_id(organization_id)
-    if existing_index:
-        await delete_index_by_id(existing_index["_id"])
-
-    index = await create_index(organization_id, data_sources, "chromadb")
+    index = await get_index_by_organization_id(organization_id)
+    if not index:
+        index = await create_index(organization_id, data_sources, "chromadb")
 
     background_tasks.add_task(
         build_index,

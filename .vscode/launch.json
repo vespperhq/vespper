@@ -8,10 +8,9 @@
       "type": "node",
       "request": "launch",
       "name": "Slackbot: Debug",
-      "cwd": "${workspaceFolder}/services/slackbot",
-      "program": "${workspaceFolder}/node_modules/ts-node/dist/bin.js",
-      "args": ["${workspaceFolder}/services/slackbot/src/app.ts"],
-      "envFile": "${workspaceFolder}/services/slackbot/.env"
+      "cwd": "${workspaceFolder}",
+      "program": "${workspaceFolder}/node_modules/.bin/nx",
+      "args": ["dev", "slackbot"]
     },
     {
       "type": "node",
@@ -32,7 +31,10 @@
       "args": ["dev", "api"],
       "sourceMaps": true,
       "env": {
-        "TELEMETRY_ENABLED": "false"
+        "TELEMETRY_ENABLED": "false",
+        "LANGFUSE_SECRET_KEY": "sk-lf-17e73530-d170-4e27-af09-ed2d5c880b5d",
+        "LANGFUSE_PUBLIC_KEY": "pk-lf-fa24bd19-d299-4dc5-bd63-3b32237e1bec",
+        "LANGFUSE_HOST": "https://us.cloud.langfuse.com"
       },
       "cwd": "${workspaceFolder}",
       "internalConsoleOptions": "neverOpen"

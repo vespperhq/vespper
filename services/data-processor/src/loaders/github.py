@@ -2,13 +2,13 @@ from tqdm.auto import tqdm
 from github import Github, Auth, GithubException
 
 # from llama_index.core import SimpleDirectoryReader
-from llama_index.readers.github.repository.github_client import GithubClient
+from loaders.utils.github_client import GithubClient
 from llama_index.readers.github import (
     GitHubIssuesClient,
 )
 from db.types import Integration
-from loaders.raw_readers.github_repo import GithubRepositoryReader
-from loaders.raw_readers.github_issues import GitHubRepositoryIssuesReader
+from loaders.readers.github_repo import GithubRepositoryReader
+from loaders.readers.github_issues import GitHubRepositoryIssuesReader
 
 
 def get_repos(token: str, repos_to_sync=None):
@@ -70,6 +70,8 @@ async def fetch_github_documents(
             # # TODO: this can crash if the repo is huge, because of Github API Rate limit.
             # # Need to find a way to "wait" maybe or to filter garbage.
             code_client = GithubClient(token, fail_on_http_error=False, verbose=True)
+
+            # TODO: updated_at timestamp doesn't seem to work (our code treats same docs as new)
             loader = GithubRepositoryReader(
                 github_client=code_client,
                 owner=owner,

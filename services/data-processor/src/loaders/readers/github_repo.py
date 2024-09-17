@@ -446,6 +446,10 @@ class GithubRepositoryReader(BaseReader):
             )
         return blobs_and_full_paths
 
+    async def _get_latest_commit(self, path) -> str:
+        commits = await self._github_client.get_commits(self._owner, self._repo, path)
+        return commits[0]
+
     async def _generate_documents(
         self,
         blobs_and_paths: List[Tuple[GitTreeResponseModel.GitTreeObject, str]],
@@ -472,6 +476,7 @@ class GithubRepositoryReader(BaseReader):
         documents = []
         async for blob_data, full_path in buffered_iterator:
             print_if_verbose(self._verbose, f"generating document for {full_path}")
+            latest_commit = await self._get_latest_commit(full_path)
             assert (
                 blob_data.encoding == "base64"
             ), f"blob encoding {blob_data.encoding} not supported"
@@ -525,6 +530,7 @@ class GithubRepositoryReader(BaseReader):
                     "file_path": full_path,
                     "file_name": full_path.split("/")[-1],
                     "url": url,
+                    "updated_at": latest_commit.commit.author.date,
                 },
             )
             documents.append(document)

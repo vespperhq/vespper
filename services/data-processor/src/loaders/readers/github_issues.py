@@ -183,6 +183,7 @@ class GitHubRepositoryIssuesReader(BaseReader):
                 extra_info = {
                     "state": issue["state"],
                     "created_at": issue["created_at"],
+                    "updated_at": issue["updated_at"],
                     # url is the API URL
                     "url": issue["url"],
                     # source is the HTML URL, more convenient for humans

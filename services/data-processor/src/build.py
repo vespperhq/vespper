@@ -42,14 +42,8 @@ async def build_index(
 
         store = get_vector_store(index_name, index_type)
 
-        try:
-            if await store.is_index_live():
-                print("Index exists. Delete old one...")
-                await store.delete_index()
-        except Exception as e:
-            print("Could not delete index", e)
-            print("Trying to move forward")
-        await store.create_index()
+        if not await store.is_index_live():
+            await store.create_index()
 
         async def update_status(vendor_name: str, status: str):
             await db.index.update_one(
@@ -57,14 +51,20 @@ async def build_index(
                 {"$set": {f"state.integrations.{vendor_name}": status}},
             )
 
+        vector_store = store.get_llama_index_store()
         documents, stats = await get_documents(
+            index=index,
+            vector_store=vector_store,
             organization_id=organization_id,
             data_sources=data_sources,
             on_progress=partial(update_status, status="in_progress"),
             on_complete=partial(update_status, status="completed"),
         )
+        # Delete nodes of documents that are about to be re-indexed
+        if len(documents) > 0:
+            docs_to_delete = list(set([document.ref_doc_id for document in documents]))
+            vector_store.delete(ref_doc_id=docs_to_delete)
 
-        vector_store = store.get_llama_index_store()
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         embed_model = LiteLLMEmbedding(
             api_base=litellm_url,
