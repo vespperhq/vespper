@@ -26,6 +26,10 @@ This error usually happens when the Slack keys (`SLACK_BOT_TOKEN`, `SLACK_APP_TO
 
 If they are correct, try to restart the `slackbot` service by running `docker compose up slackbot -d`. Sometimes users update `.env` but do not restart the service itself, which causing it to take out-dated variables.
 
+### `429: Too Many Requests`
+
+This error might appear in LiteLLM's logs. It's a bit misleading, and most of the times it means you don't have enough credits left. Go to your LLM provider (OpenAI, Anthropic, etc.) and check your credits.
+
 ### Environment variabels are out-dated
 
 If you use VSC Code, sometimes it loads environment variables from the `.env` file automatically. In most cases, it happens because of the python extension. In our `settings.json`, we set `"python.envFile": ""` which shoud prevent that. However, if that doesn't work, try to run the project from a separate terminal (not VS Code).

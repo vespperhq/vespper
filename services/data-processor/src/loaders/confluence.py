@@ -1,7 +1,7 @@
 from collections import namedtuple
 import os
 import requests
-from loaders.raw_readers.confluence import ConfluenceReader
+from loaders.readers.confluence import ConfluenceReader
 from atlassian import Confluence
 
 from db.types import Integration

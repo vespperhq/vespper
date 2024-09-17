@@ -88,6 +88,7 @@ export default async function (context: RunContext) {
                   title = "PagerDuty Alert";
                   break;
                 }
+                case "Jira":
                 case "Confluence": {
                   url = document.metadata.url;
                   title = document.metadata.title;

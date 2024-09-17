@@ -1,6 +1,6 @@
 import chromadb
 from chromadb.config import Settings
-from llama_index.vector_stores.chroma import (
+from .raw_vector_stores.chromadb import (
     ChromaVectorStore as LIChromaVectorStore,
 )
 from rag.base import BaseVectorStore

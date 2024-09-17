@@ -6,7 +6,7 @@ from slack_sdk import WebClient
 
 from typing import List
 
-from loaders.raw_readers.slack import SlackReader
+from loaders.readers.slack import SlackReader
 
 
 def join_channels(client: WebClient, channel_ids: List[str]):
@@ -27,7 +27,6 @@ def fetch_slack_documents(integration: Integration):
         types=["public_channel", "private_channel"],
     )
     channel_ids = [channel["id"] for channel in channels["channels"]]
-
     id2name = {channel["id"]: channel["name"] for channel in channels["channels"]}
 
     # Try to join the channels, to avoid "not_in_channel" in Slack.

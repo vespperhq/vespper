@@ -8,10 +8,9 @@
       "type": "node",
       "request": "launch",
       "name": "Slackbot: Debug",
-      "cwd": "${workspaceFolder}/services/slackbot",
-      "program": "${workspaceFolder}/node_modules/ts-node/dist/bin.js",
-      "args": ["${workspaceFolder}/services/slackbot/src/app.ts"],
-      "envFile": "${workspaceFolder}/services/slackbot/.env"
+      "cwd": "${workspaceFolder}",
+      "program": "${workspaceFolder}/node_modules/.bin/nx",
+      "args": ["dev", "slackbot"]
     },
     {
       "type": "node",

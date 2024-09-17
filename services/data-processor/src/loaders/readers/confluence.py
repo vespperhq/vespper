@@ -163,6 +163,7 @@ class ConfluenceReader(BaseReader):
         if not start:
             start = 0
 
+        expand = "body.export_view.value,version"
         pages: List = []
         if space_key:
             pages.extend(
@@ -172,7 +173,7 @@ class ConfluenceReader(BaseReader):
                     max_num_results=max_num_results,
                     space=space_key,
                     status=page_status,
-                    expand="body.export_view.value",
+                    expand=expand,
                     content_type="page",
                 )
             )
@@ -183,7 +184,7 @@ class ConfluenceReader(BaseReader):
                     cursor=cursor,
                     cql=f'type="page" AND label="{label}"',
                     max_num_results=max_num_results,
-                    expand="body.export_view.value",
+                    expand=expand,
                 )
             )
         elif cql:
@@ -193,7 +194,7 @@ class ConfluenceReader(BaseReader):
                     cursor=cursor,
                     cql=cql,
                     max_num_results=max_num_results,
-                    expand="body.export_view.value",
+                    expand=expand,
                 )
             )
         elif page_ids:
@@ -217,7 +218,7 @@ class ConfluenceReader(BaseReader):
                     self._get_data_with_retry(
                         self.confluence.get_page_by_id,
                         page_id=page_id,
-                        expand="body.export_view.value",
+                        expand=expand,
                     )
                 )
 
@@ -342,6 +343,7 @@ class ConfluenceReader(BaseReader):
                 "page_id": page["id"],
                 "status": page["status"],
                 "url": self.base_url + page["_links"]["webui"],
+                "updated_at": page["version"]["when"],
             },
         )
 
