@@ -2,7 +2,7 @@ import { App, GenericMessageEvent } from "@slack/bolt";
 import { addFeedbackReactions, addReaction, getMyId } from "./utils/slack";
 import { BotNames } from "./constants";
 import { extractEventId, parseMessage } from "./lib";
-import { getCompletion } from "./api/chat";
+import { getCompletion, errorMap } from "./api/chat";
 
 export function attachMessages(app: App) {
   app.message(async ({ message: msg, say, client }) => {
@@ -101,38 +101,10 @@ export function attachMessages(app: App) {
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      // TODO: Need to organize this mess of error handling
-      console.error("error: ", error.message);
-      let messageText;
-      if (error.response?.status === 404 && error.response?.data.code === 37) {
-        messageText = `Seems like you haven't created a knowledge graph yet :cry: You must create one so I'll be able to answer your questions.\nPlease go the <https://app.merlinn.co|dashboard> to create one or visit our <https://docs.merlinn.co|docs> to learn more.`;
-      } else if (error.response?.status === 403) {
-        if (error.response.data.code === 29) {
-          messageText = `Seems like you are not invited to use me :cry: Make sure an admin invites you, using your email: ${user.profile?.email}`;
-        } else if (error.response.data.code === 30) {
-          messageText = `Seems like you don't have access to the beta :cry:`;
-        } else if (error.response.data.code === 31) {
-          messageText = `Seems like you haven't accepted your invitation. Please go to your mailbox and accept it.`;
-        }
-      } else if (
-        error.response?.status === 401 &&
-        error.response?.data.code === 32
-      ) {
-        messageText = `Seems like you haven't configured Slack yet 😊 Please go to the dashboard, configure Slack and try again`;
-      } else if (
-        error.response?.status === 400 &&
-        error.response?.data.code === 35
-      ) {
-        messageText = `Your message seems to violate our terms of use.`;
-      } else if (
-        error.response?.status === 429 &&
-        error.response?.data.code === 36
-      ) {
-        messageText = `You've exceeded your daily quota of questions. Please try again tommorow or upgrade your plan 😣`;
-      } else {
-        messageText =
-          "I'm really sorry but there's an unexpected problem and I'm currently unavailable";
-      }
+      const errorCode = error.response?.data?.code as keyof typeof errorMap;
+      const messageText =
+        errorMap[errorCode] ||
+        "I'm really sorry but there's an unexpected problem and I'm currently unavailable";
       client.chat
         .postEphemeral({
           channel: message.channel,
