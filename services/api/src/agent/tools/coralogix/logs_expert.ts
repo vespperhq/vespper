@@ -2,6 +2,7 @@ import { z } from "zod";
 import { DynamicStructuredTool } from "langchain/tools";
 import { PromptTemplate } from "langchain/prompts";
 import { CoralogixIntegration } from "@merlinn/db";
+import { CallbackHandler } from "langfuse-langchain";
 import { DATAPRIME_CHEATSHEET } from "./constants";
 import {
   filterHighCardinalityFields,
@@ -20,17 +21,8 @@ import {
   Timeframe,
   timeframe2values,
 } from "../../../utils/dates";
+import { isLangfuseEnabled } from "../../../utils/ee";
 import { RunContext } from "../../../agent/types";
-
-// const TEMP_COMMONG_TAGS = `
-// Here are the common fields that you can use in your query (they were taken from the environment itself):\n
-
-// resource.attributes.cloud_account_id, resource.attributes.cloud_availability_zone, resource.attributes.cloud_platform, resource.attributes.cloud_provider, resource.attributes.cloud_region, resource.attributes.cx_otel_integration_name, resource.attributes.host_id, resource.attributes.host_image_id, resource.attributes.host_name, resource.attributes.host_type, resource.attributes.k8s_cluster_name, resource.attributes.k8s_container_name, resource.attributes.k8s_container_restart_count, resource.attributes.k8s_deployment_name, resource.attributes.k8s_namespace_name, resource.attributes.k8s_node_name, resource.attributes.k8s_pod_name, resource.attributes.k8s_pod_uid, resource.attributes.os_type, resourceSchemaUrl, attributes.cluster_name, attributes.log_file_path, attributes.log_iostream, attributes.logtag, attributes.time, observedTimeUnixNano, timeUnixNano, date, level, service, controller, threadId, caller, message, status, time, url, method, requestAborted, tenantId, userId, correlationId, clientIp, platform, body, PRIORITY, SYSLOG_FACILITY, _UID, _GID, _CAP_EFFECTIVE, _BOOT_ID, _MACHINE_ID, _HOSTNAME, _RUNTIME_SCOPE, _SYSTEMD_SLICE, _TRANSPORT, _STREAM_ID, SYSLOG_IDENTIFIER, _PID, _COMM, _EXE, _CMDLINE, _SELINUX_CONTEXT, _SYSTEMD_CGROUP, _SYSTEMD_UNIT, _SYSTEMD_INVOCATION_ID, MESSAGE, exception, errorType, DeviceId, PatchProperties, FieldKey, AttemptedDefaultValue, FieldType, Query, connectorId, connectorGroupNfId, connectorsCount, zitiConnectorsCount, @timestamp, msg, run_time, source, name, id, AuthenticationScheme, EventId, EventName, DbContextType, fileName, queryId, connectionOpenedTime, queryExecutionTime, queryReadResultsTime, timezoneSetTime, records, ApplicationGroupId, RequestSignature, RequestUrl, startTime, categoryName, level.level, level.levelStr, level.colour, context.TENANT, context.DOCID, context.USERID, pid, query, endTime, limit, parameters, FailureMessage, applicationId, connectionType, duration, httpVersion, isConnectivityCheck, requestedHost, routeId, routeProvider, statusCode, uri, userAgent\n\n
-// `;
-
-// const TEMP_LOG_SAMPLE = `
-// resource.attributes.cloud_account_id: 636375568718\nresource.attributes.cloud_availability_zone: us-east-1c\nresource.attributes.cloud_platform: aws_ec2\nresource.attributes.cloud_provider: aws\nresource.attributes.cloud_region: us-east-1\nresource.attributes.cx_otel_integration_name: coralogix-integration-helm\nresource.attributes.host_id: i-0c74fd375858e256b\nresource.attributes.host_image_id: ami-065265c6ca4531afa\nresource.attributes.host_name: ip-10-21-70-83.ec2.internal\nresource.attributes.host_type: m6g.xlarge\nresource.attributes.k8s_cluster_name: staging-us-east-1\nresource.attributes.k8s_container_name: identity\nresource.attributes.k8s_container_restart_count: 0\nresource.attributes.k8s_deployment_name: identity\nresource.attributes.k8s_namespace_name: dev-0\nresource.attributes.k8s_node_name: ip-10-21-70-83.ec2.internal\nresource.attributes.k8s_pod_name: identity-d4f8c7575-9msqp\nresource.attributes.k8s_pod_uid: 695421c8-e8ca-473e-ad7f-bb0cb0942a46\nresource.attributes.os_type: linux\nresourceSchemaUrl: https://opentelemetry.io/schemas/1.6.1\nattributes.cluster_name: staging-us-east-1\nattributes.log_file_path: /var/log/pods/dev-0_identity-d4f8c7575-9msqp_695421c8-e8ca-473e-ad7f-bb0cb0942a46/identity/0.log\nattributes.log_iostream: stdout\nattributes.logtag: F\nattributes.time: 2024-08-28T12:59:58.578342483Z\nobservedTimeUnixNano: 1724849998635745800\ntimeUnixNano: 1724849998578342400\ndate: 2024-08-28 12:59:58.5742\nlevel: INFO\nservice: Identity\ncontroller: InternalUsersData\nthreadId: 11\ncaller: ExecutionContext.RunInternal\nmessage: Request => Status: 200, Time: 4ms, Url: "http://identity/internal/api/v1/InternalUsersData?userIds=auth0%7C66cea1b652764c475e7d1d1c&userType=1", Method: "GET", tenantId: "automation-118f4063-bc6b-4e4f-92a6-b18e8adf78c4", userId: "auth0|66cea1b5b822319b3984c3ce", requestAborted: false\nstatus: 200\ntime: 4\nurl: http://identity/internal/api/v1/InternalUsersData?userIds=auth0%7C66cea1b652764c475e7d1d1c&userType=1\nmethod: GET\nrequestAborted: false\ntenantId: automation-118f4063-bc6b-4e4f-92a6-b18e8adf78c4\nuserId: auth0|66cea1b5b822319b3984c3ce\ncorrelationId: e0ab7c2a-e5d3-4f51-9c6b-1fc14d8f5028\nclientIp: 10.21.52.41\nplatform: Browser\n\n--------------------------------------\n\nresource.attributes.cloud_account_id: 636375568718\nresource.attributes.cloud_availability_zone: us-east-1a\nresource.attributes.cloud_platform: aws_ec2\nresource.attributes.cloud_provider: aws\nresource.attributes.cloud_region: us-east-1\nresource.attributes.cx_otel_integration_name: coralogix-integration-helm\nresource.attributes.host_id: i-0d1f249ffc6cb2286\nresource.attributes.host_image_id: ami-065265c6ca4531afa\nresource.attributes.host_name: ip-10-21-18-97.ec2.internal\nresource.attributes.host_type: m6g.xlarge\nresource.attributes.k8s_cluster_name: staging-us-east-1\nresource.attributes.k8s_container_name: extensions\nresource.attributes.k8s_container_restart_count: 0\nresource.attributes.k8s_deployment_name: extensions\nresource.attributes.k8s_namespace_name: default\nresource.attributes.k8s_node_name: ip-10-21-18-97.ec2.internal\nresource.attributes.k8s_pod_name: extensions-b8cbd7c88-gm8fg\nresource.attributes.k8s_pod_uid: c0d415e8-ce20-445b-bebc-a4e812fa185b\nresource.attributes.os_type: linux\nresourceSchemaUrl: https://opentelemetry.io/schemas/1.6.1\nattributes.cluster_name: staging-us-east-1\nattributes.log_file_path: /var/log/pods/default_extensions-b8cbd7c88-gm8fg_c0d415e8-ce20-445b-bebc-a4e812fa185b/extensions/0.log\nattributes.log_iostream: stdout\nattributes.logtag: F\nattributes.time: 2024-08-28T12:59:58.895803912Z\nobservedTimeUnixNano: 1724849999077313500\ntimeUnixNano: 1724849998895804000\ndate: 2024-08-28 12:59:58.8879\nlevel: DEBUG\nservice: Extensions\nthreadId: 40\ncaller: ExecutionContext.RunInternal\nmessage: Metadata or package entity not found, skipping risk calculation for now
-// `;
 
 const PROMPT_TEMPLATE = `
 You are a Coralogix logs expert. Given a request in natural language, you should generate {nQueries} queries in a DataPrime syntax.
@@ -137,7 +129,22 @@ export default async function (
         });
 
         const parser = new JsonOutputParser();
-        const { content } = await chatModel.invoke(prompt);
+        const callbacks = [];
+        if (isLangfuseEnabled()) {
+          const span = context.trace!.span({
+            name: "generateQueries",
+            metadata: {
+              commonFields: prettyCommonFields,
+              commonValues: prettyCommonValues,
+              queriesHistory: prettyQueriesHistory,
+              logSample: logSample,
+              request,
+            },
+          });
+          const handler = new CallbackHandler({ root: span });
+          callbacks.push(handler);
+        }
+        const { content } = await chatModel.invoke(prompt, { callbacks });
         const { queries } = await parser.parse(content as string);
         if (!queries || queries.length === 0) {
           throw new Error("No queries generated");
@@ -156,6 +163,15 @@ export default async function (
                   timeframe,
                 });
 
+                if (isLangfuseEnabled()) {
+                  context.trace!.span({
+                    name: "getLogs",
+                    metadata: {
+                      query,
+                      analysis,
+                    },
+                  });
+                }
                 if (
                   !parsedLogs.result?.results ||
                   parsedLogs.result?.results.length === 0
