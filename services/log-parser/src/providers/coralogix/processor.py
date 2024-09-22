@@ -90,18 +90,21 @@ def get_enriched_clusters(df: pd.DataFrame):
         return df
 
     df_enriched_clusters = df.groupby("EventTemplate").apply(process_template_group)
-    df_enriched_clusters = df_enriched_clusters.reset_index().drop(
-        columns=["level_1", "Content"]
-    )
+    df_enriched_clusters = df_enriched_clusters.reset_index()
     df_enriched_clusters["percentage"] = (
         df_enriched_clusters["occurrences"] / len(df) * 100
     )
     df_enriched_clusters = df_enriched_clusters.sort_values(
         "occurrences", ascending=False
     )
+    try:
+        df_enriched_clusters = df_enriched_clusters.drop(columns=["level_1", "Content"])
+    except Exception as e:
+        print("Error: ", e)
 
-    # Remove log groups with only one occurrence
-    df_enriched_clusters = df_enriched_clusters[df_enriched_clusters["occurrences"] > 1]
+    # Get top 10 clusters by occurrences
+    # TODO: we can use the elbow method here to find the optimal number of clusters
+    df_enriched_clusters = df_enriched_clusters.head(10)
 
     records = df_enriched_clusters.to_dict(orient="records")
     for record in records:
@@ -131,6 +134,8 @@ def parse_raw_logs(logs: str):
         # Currently we skip if there is a warning.
         # Maybe we should use that in the future.
         if warning and not pd.isna(warning):
+            continue
+        if type(batch) != dict:
             continue
 
         for result in batch["results"]:

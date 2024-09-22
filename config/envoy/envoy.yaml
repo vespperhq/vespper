@@ -24,7 +24,7 @@ static_resources:
                           route:
                             cluster: api_service
                             prefix_rewrite: "/"
-                            timeout: 90s
+                            timeout: 180s
                         - match:
                             prefix: "/slackbot/"
                           route:
