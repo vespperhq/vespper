@@ -123,7 +123,7 @@ Additionally, if you want to work on our Python services (currently only the `da
    ```bash
    yarn install
    ```
-2. Create a `.env` file as described in the [quickstart guide](https://github.com/vespper/vespper?tab=readme-ov-file#quick-installation-%EF%B8%8F).
+2. Create a `.env` file as described in the [quickstart guide](https://github.com/vespperhq/vespper?tab=readme-ov-file#quick-installation-%EF%B8%8F).
 3. Run the infrastructure services using docker:
    ```bash
    docker compose --profile infra up

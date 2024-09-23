@@ -2,7 +2,7 @@
 
 <div align="center">
     <a href="https://vespper.co">
-      <img src="./assets/logo-wizard.jpg" alt="Vespper-logo" width="30%"/>
+      <img src="./assets/logo-cat.png" alt="Vespper-logo" width="30%"/>
     </a>
 </div>
 <br />
@@ -10,7 +10,7 @@
    <div>
       <a href="https://docs.vespper.com"><strong>Docs</strong></a> ·
       <a href="https://www.loom.com/share/85dc64d021cc40c4b1064389c20782a6?sid=91b063df-8111-40f0-9ea4-793d5fbe3f6f"><strong>Demo</strong></a> ·
-      <a href="https://github.com/vespper/vespper/issues"><strong>Report Bug</strong></a> ·
+      <a href="https://github.com/vespperhq/vespper/issues"><strong>Report Bug</strong></a> ·
       <a href="https://github.com/orgs/vespper/discussions"><strong>Feature Request</strong></a> ·
       <a href="https://vespper.com/blog"><strong>Blog</strong></a> ·
       <a href="https://join.slack.com/t/vesppercommunity/signup"><strong>Slack</strong></a> 
@@ -20,9 +20,9 @@
 <div style="display: flex" style="margin-bottom: 20px">
 <a href="https://vespper.com/?utm_source=github"><img src="https://img.shields.io/badge/Website-blue?logo=googlechrome&logoColor=orange"/></a>
   <a href="https://calendly.com/dudu-vespper/45-minute-meeting"><img src="https://img.shields.io/badge/Book%20a%20Call-blue" /></a>
-<a href="https://github.com/vespper/vespper/blob/main/LICENSE.md"><img src="https://img.shields.io/badge/License-Apache 2.0-red.svg?style=flat-square" alt="Apache 2.0 License"></a>
-<a href="https://github.com/vespper/vespper/actions/workflows/ci.yml/badge.svg?branch=main">
-<img src="https://github.com/vespper/vespper/actions/workflows/ci.yml/badge.svg?branch=main" alt="main-workflow">
+<a href="https://github.com/vespperhq/vespper/blob/main/LICENSE.md"><img src="https://img.shields.io/badge/License-Apache 2.0-red.svg?style=flat-square" alt="Apache 2.0 License"></a>
+<a href="https://github.com/vespperhq/vespper/actions/workflows/ci.yml/badge.svg?branch=main">
+<img src="https://github.com/vespperhq/vespper/actions/workflows/ci.yml/badge.svg?branch=main" alt="main-workflow">
 </a>
 <a href="https://github.com/prettier/prettier">
 <img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square" alt="code style: prettier">
@@ -121,7 +121,7 @@ You can find the installation video [here](https://www.loom.com/share/1f562cb067
 
 5. Update these variables:
 
-   - `SLACK_BOT_TOKEN`, `SLACK_APP_TOKEN` and `SLACK_SIGNING_SECRET` - These variables are needed in order to talk to Vespper on Slack. Please follow [this guide](https://github.com/vespper/vespper/tree/main/config/slack/README.md) to create a new Slack app in your organization.
+   - `SLACK_BOT_TOKEN`, `SLACK_APP_TOKEN` and `SLACK_SIGNING_SECRET` - These variables are needed in order to talk to Vespper on Slack. Please follow [this guide](https://github.com/vespperhq/vespper/tree/main/config/slack/README.md) to create a new Slack app in your organization.
 
    - (Optional) `SMTP_CONNECTION_URL` - This variable is needed in order to invite new members to your Vespper organization via email and allow them to use the bot. It's not mandatory if you just want to test Vespper and play with it. If you do want to send invites to your team members, you can use a service like SendGrid/Mailgun. Should follow this pattern: `smtp://username:password@domain:port`.
 
@@ -172,7 +172,7 @@ That's it 💫 You should be able to visit Vespper's dashboard in http://localho
 
 ### Deployment ☁️
 
-Visit our [example guides](https://github.com/vespper/vespper/tree/main/examples) in order to deploy Vespper to your cloud.
+Visit our [example guides](https://github.com/vespperhq/vespper/tree/main/examples) in order to deploy Vespper to your cloud.
 
 ### Visualize Knowledge Base 🗺️
 
@@ -198,11 +198,11 @@ In order of preference the best way to communicate with us:
 
 ## Contributing to Vespper ⛑️
 
-If you're interested in contributing to Vespper, checkout our [`CONTRIBUTING.md`](https://github.com/vespper/vespper/blob/main/CONTRIBUTING.md) file 💫 🧙‍♂️
+If you're interested in contributing to Vespper, checkout our [`CONTRIBUTING.md`](https://github.com/vespperhq/vespper/blob/main/CONTRIBUTING.md) file 💫 🧙‍♂️
 
 ## Troubleshooting ⚒️
 
-If you encounter any problems/errors/issues with Vespper, checkout our [troubleshooting guide](https://github.com/vespper/vespper/tree/main/TROUBLESHOOTING.md). We try to update it regularly, and fix some of the urgent problems there as soon as possible.
+If you encounter any problems/errors/issues with Vespper, checkout our [troubleshooting guide](https://github.com/vespperhq/vespper/tree/main/TROUBLESHOOTING.md). We try to update it regularly, and fix some of the urgent problems there as soon as possible.
 
 Moreover, feel free to reach out to us at our [support channels](#support-and-feedback-️).
 
@@ -215,13 +215,13 @@ This allows us to:
 - Understand how Vespper is used so we can improve it.
 - Track overall usage for internal purposes and external reporting, such as for fundraising.
 
-Rest assured, the data collected is not shared with third parties and does not include any sensitive information. We aim to be transparent, and you can review the specific data we collect [here](https://github.com/vespper/vespper/blob/main/services/api/src/telemetry/listener.ts).
+Rest assured, the data collected is not shared with third parties and does not include any sensitive information. We aim to be transparent, and you can review the specific data we collect [here](https://github.com/vespperhq/vespper/blob/main/services/api/src/telemetry/listener.ts).
 
 If you prefer not to participate, you can easily opt-out by setting `TELEMETRY_ENABLED=false` inside your `.env`.
 
 ## License 📃
 
-This project is licensed under the Apache 2.0 license - see the [LICENSE](https://github.com/vespper/vespper/tree/main/LICENSE.md) file for details
+This project is licensed under the Apache 2.0 license - see the [LICENSE](https://github.com/vespperhq/vespper/tree/main/LICENSE.md) file for details
 
 ## Learn more 🔍
 

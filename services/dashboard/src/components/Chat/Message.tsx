@@ -1,6 +1,6 @@
 import { Avatar, Box, Typography } from "@mui/joy";
 import { ChatMessage } from "../../types/chat";
-import LogoImage from "../../assets/logo-wizard.svg";
+import LogoImage from "../../assets/logo-cat.png";
 import Markdown from "react-markdown";
 import { useSession } from "../../hooks/useSession";
 // import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";

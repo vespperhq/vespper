@@ -48,7 +48,7 @@ apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin do
 usermod -aG docker ubuntu
 
 echo "About to clone the repository..."
-git clone https://github.com/vespper/vespper.git && cd vespper
+git clone https://github.com/vespperhq/vespper.git && cd vespper
 git config --global --add safe.directory '*'
 
 echo "Injecting environment variables..."

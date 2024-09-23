@@ -44,7 +44,7 @@ In this section, you will configure some more things and extract these 3 variabl
 
 ### Test the Slack app
 
-To test the app, you should launch the slackbot & project. Go back to the [readme](https://github.com/vespper/vespper?tab=readme-ov-file#quick-installation-%EF%B8%8F) and go to step 6 ("launch the project").
+To test the app, you should launch the slackbot & project. Go back to the [readme](https://github.com/vespperhq/vespper?tab=readme-ov-file#quick-installation-%EF%B8%8F) and go to step 6 ("launch the project").
 
 After you launch it, follow these steps to test the Slack app:
 
@@ -56,6 +56,6 @@ This means the basic functionality works.
 
 ## Next Steps
 
-If you were redirected to this guide from the main README.md, please continue to setup your environment [there](https://github.com/vespper/vespper?tab=readme-ov-file#quick-installation-%EF%B8%8F).
+If you were redirected to this guide from the main README.md, please continue to setup your environment [there](https://github.com/vespperhq/vespper?tab=readme-ov-file#quick-installation-%EF%B8%8F).
 
 Also, you can visit our [docs](https://docs.vespper.com/) for more information.

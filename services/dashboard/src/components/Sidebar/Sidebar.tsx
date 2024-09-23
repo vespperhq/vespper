@@ -15,7 +15,7 @@ import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import HelpIcon from "@mui/icons-material/Help";
 import MessageIcon from "@mui/icons-material/Message";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
-import LogoImage from "../../assets/logo-wizard.svg";
+import LogoImage from "../../assets/logo-cat.png";
 import { ColorSchemeToggle } from "../ColorSchemeToggle";
 import { closeSidebar } from "../../utils";
 import { Link, useLocation } from "react-router-dom";
