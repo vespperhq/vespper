@@ -36,7 +36,7 @@
         },
         "production": {
           "push": true,
-          "tags": ["merlinnco/log-parser:latest"]
+          "tags": ["vespperhq/log-parser:latest"]
         }
       }
     }
