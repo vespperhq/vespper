@@ -43,7 +43,7 @@ function execCommand(command: string) {
 
 function getImageTag(serviceName: string) {
   return execCommand(
-    `docker images --filter "reference=europe-west2-docker.pkg.dev/merlinn/production/${serviceName}" --format "{{.Repository}}:{{.Tag}}"`,
+    `docker images --filter "reference=europe-west2-docker.pkg.dev/vespper/production/${serviceName}" --format "{{.Repository}}:{{.Tag}}"`,
   );
 }
 

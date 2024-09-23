@@ -35,7 +35,7 @@ function SupportPage() {
               <Button variant="solid" color="neutral">
                 <Link
                   overlay
-                  href="https://docs.merlinn.co"
+                  href="https://docs.vespper.com"
                   target="_blank"
                   underline="none"
                   sx={{ all: "unset" }}
@@ -61,7 +61,7 @@ function SupportPage() {
               <Button variant="solid" color="neutral">
                 <Link
                   overlay
-                  href="https://calendly.com/dudu-merlinn/30-minute-meeting"
+                  href="https://calendly.com/dudu-vespper/30-minute-meeting"
                   target="_blank"
                   underline="none"
                   sx={{ all: "unset" }}

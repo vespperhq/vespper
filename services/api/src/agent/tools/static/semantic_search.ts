@@ -2,7 +2,7 @@ import { z } from "zod";
 import { DynamicStructuredTool } from "langchain/tools";
 import { RunContext } from "../../types";
 import { buildOutput } from "../utils";
-import { indexModel } from "@merlinn/db";
+import { indexModel } from "@vespper/db";
 import { getVectorStore, nodesToText } from "../../rag";
 
 function normalizeCosineScore(score: number): number {

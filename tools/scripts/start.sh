@@ -1,13 +1,13 @@
-echo "Creating merlinn directory"
-mkdir -p merlinn
-test -e merlinn
+echo "Creating vespper directory"
+mkdir -p vespper
+test -e vespper
 
-# Change directory to merlinn
-cd merlinn
+# Change directory to vespper
+cd vespper
 
 which curl &> /dev/null || echo "curl is not installed. Please install curl and try again."
 
-curl https://raw.githubusercontent.com/merlinn-co/merlinn/main/docker-compose.common.yml --output docker-compose.common.yml
-curl https://raw.githubusercontent.com/merlinn-co/merlinn/main/docker-compose.images.yml --output docker-compose.yml
+curl https://raw.githubusercontent.com/vespper/vespper/main/docker-compose.common.yml --output docker-compose.common.yml
+curl https://raw.githubusercontent.com/vespper/vespper/main/docker-compose.images.yml --output docker-compose.yml
 
 docker compose up -d

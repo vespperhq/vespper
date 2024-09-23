@@ -1,8 +1,8 @@
 import { SecretsBackend } from "./base";
 import { promises as fs } from "fs";
 import path from "path";
-import { Integration } from "@merlinn/db";
-import type { IIntegration } from "@merlinn/db";
+import { Integration } from "@vespper/db";
+import type { IIntegration } from "@vespper/db";
 
 export class FileSecretManager extends SecretsBackend {
   readonly directory: string;

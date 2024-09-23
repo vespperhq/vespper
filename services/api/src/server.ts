@@ -1,6 +1,6 @@
 import { TelemetryListener } from "./telemetry/listener";
 import { app } from "./app";
-import { connectToDB } from "@merlinn/db";
+import { connectToDB } from "@vespper/db";
 import { startAllJobs } from "./jobs";
 import { NotificationsListener } from "./notifications";
 import { isEnterprise } from "./utils/ee";

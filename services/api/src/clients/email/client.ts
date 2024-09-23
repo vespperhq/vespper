@@ -20,7 +20,7 @@ export class EmailClient {
   sendEmail = async ({ to, subject, text, html }: SendEmailParams) => {
     const msg = {
       to,
-      from: '"Merlinn" <info@merlinn.co>',
+      from: '"Merlinn" <info@vespper.com>',
       subject,
       text,
       html,

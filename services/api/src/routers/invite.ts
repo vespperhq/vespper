@@ -2,13 +2,13 @@ import express, { Request, Response } from "express";
 import { checkAuth, getDBUser } from "../middlewares/auth";
 import { createOryIdentity, createRecoveryLink } from "../clients/ory";
 import { EmailClient, OpsgenieClient, PagerDutyClient } from "../clients";
-import { userModel, integrationModel, PlanFieldCode } from "@merlinn/db";
+import { userModel, integrationModel, PlanFieldCode } from "@vespper/db";
 import type {
   IIntegration,
   IOrganization,
   OpsgenieIntegration,
   PagerDutyIntegration,
-} from "@merlinn/db";
+} from "@vespper/db";
 import { EventType, SystemEvent, events } from "../events";
 import { catchAsync } from "../utils/errors";
 import { isEnterprise } from "../utils/ee";
@@ -151,7 +151,7 @@ router.post(
         const subject = "Invitation to Merlinn";
         const html = `You have been invited to Merlinn.
     Please click the following link to join: <a href=${recovery_link}>Click here</a>.
-    Once you are registered, you can sign in to https://app.merlinn.co or start using the Slack bot!`;
+    Once you are registered, you can sign in to https://app.vespper.com or start using the Slack bot!`;
         const client = new EmailClient(smtpConnectionUrl);
         await client.sendEmail({ to: email, subject, html });
       }

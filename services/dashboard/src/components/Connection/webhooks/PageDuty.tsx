@@ -57,7 +57,7 @@ export const ConnectPageDutyWebhook = ({ data }: any) => {
           only “incident.triggered”
         </li>
         <li>
-          Add a custom header called “x-merlinn-secret” and insert your secret.
+          Add a custom header called “x-vespper-secret” and insert your secret.
         </li>
         <li>Click “Add Webhook”</li>
       </OrderedList>

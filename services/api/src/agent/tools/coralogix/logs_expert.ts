@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { DynamicStructuredTool } from "langchain/tools";
 import { PromptTemplate } from "langchain/prompts";
-import { CoralogixIntegration } from "@merlinn/db";
+import { CoralogixIntegration } from "@vespper/db";
 import { CallbackHandler } from "langfuse-langchain";
 import { DATAPRIME_CHEATSHEET } from "./constants";
 import {

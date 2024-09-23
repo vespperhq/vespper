@@ -7,7 +7,7 @@ features:
     display_name: Merlinn
     always_online: false
   slash_commands:
-    - command: /merlinn
+    - command: /vespper
       description: Manage Merlinn
       should_escape: false
 oauth_config:

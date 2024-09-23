@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { userModel, IUser } from "@merlinn/db";
+import { userModel, IUser } from "@vespper/db";
 import { AppError, ErrorCode } from "../errors";
 import { catchAsync } from "../utils/errors";
 // eslint-disable-next-line @typescript-eslint/no-var-requires

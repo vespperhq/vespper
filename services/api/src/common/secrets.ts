@@ -2,7 +2,7 @@ import {
   FileSecretManager,
   GCPSecretManager,
   HashiCorpVaultSecretManager,
-} from "@merlinn/utils";
+} from "@vespper/utils";
 
 export function getSecretManager() {
   const secretManagerType = process.env.SECRET_MANAGER_TYPE || "vault";

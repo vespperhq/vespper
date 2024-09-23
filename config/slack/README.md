@@ -33,29 +33,29 @@ Once the app is installed, continue to the next section where you'll extract som
 In this section, you will configure some more things and extract these 3 variables: `SLACK_SIGNING_SECRET`, `SLACK_APP_TOKEN` and `SLACK_BOT_TOKEN`. They are needed in order for Merlinn's services to interact with your workspace.
 
 1. In the "Basic Information" page, copy the “Signing Secret” from the Slack app settings and paste it into the .env file as `SLACK_SIGNING_SECRET`.
-2. In the same page "Basic Information", go to "App-Level Tokens" and click "Generate Token and Scopes". Give it a meaningful name (e.g merlinn-token) and grant it 2 scopes: `connections:write` and `authorizations:read`. Copy the token and put it in the main `.env` as `SLACK_APP_TOKEN`.
+2. In the same page "Basic Information", go to "App-Level Tokens" and click "Generate Token and Scopes". Give it a meaningful name (e.g vespper-token) and grant it 2 scopes: `connections:write` and `authorizations:read`. Copy the token and put it in the main `.env` as `SLACK_APP_TOKEN`.
 3. In the "OAuth & Permissions", copy the “Bot User OAuth Token” and put it in the main `.env` as `SLACK_BOT_TOKEN`.
 4. Go to "App Home" and enable "Messages Tab" and "Allow users to send Slash commands and messages from the messages tab".
 
 ### **(Optional)** Customize the Slack app
 
 1. You can change the name and background color of the Slackbot in the Slack app settings.
-2. You can use Merlinn's logo as your app's logo. View the logo [here](https://storage.googleapis.com/merlinn-assets/brand/logo-wizard-full.jpg).
+2. You can use Merlinn's logo as your app's logo. View the logo [here](https://storage.googleapis.com/vespper-assets/brand/vespper-cat.png).
 
 ### Test the Slack app
 
-To test the app, you should launch the slackbot & project. Go back to the [readme](https://github.com/merlinn-co/merlinn?tab=readme-ov-file#quick-installation-%EF%B8%8F) and go to step 6 ("launch the project").
+To test the app, you should launch the slackbot & project. Go back to the [readme](https://github.com/vespper/vespper?tab=readme-ov-file#quick-installation-%EF%B8%8F) and go to step 6 ("launch the project").
 
 After you launch it, follow these steps to test the Slack app:
 
 1. Go to your Slack workspace and go to Merlinn's direct messages.
-2. Write `/merlinn help` in the message bar.
+2. Write `/vespper help` in the message bar.
 
 Now you should see the help message of the bot! 🥳
 This means the basic functionality works.
 
 ## Next Steps
 
-If you were redirected to this guide from the main README.md, please continue to setup your environment [there](https://github.com/merlinn-co/merlinn?tab=readme-ov-file#quick-installation-%EF%B8%8F).
+If you were redirected to this guide from the main README.md, please continue to setup your environment [there](https://github.com/vespper/vespper?tab=readme-ov-file#quick-installation-%EF%B8%8F).
 
-Also, you can visit our [docs](https://docs.merlinn.co/) for more information.
+Also, you can visit our [docs](https://docs.vespper.com/) for more information.

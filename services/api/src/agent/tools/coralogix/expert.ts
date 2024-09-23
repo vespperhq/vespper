@@ -2,7 +2,7 @@ import { z } from "zod";
 import { DynamicStructuredTool } from "langchain/tools";
 import CallbackHandler from "langfuse-langchain";
 import { ChatPromptTemplate, MessagesPlaceholder } from "langchain/prompts";
-import { CoralogixIntegration } from "@merlinn/db";
+import { CoralogixIntegration } from "@vespper/db";
 import { default as logsExpertTool } from "./logs_expert";
 import { createAgent } from "../base";
 import { RunContext } from "../../../agent/types";

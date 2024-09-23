@@ -4,8 +4,8 @@
   "private": true,
   "dependencies": {
     "@datadog/datadog-api-client": "^1.21.0",
-    "@merlinn/db": "*",
-    "@merlinn/utils": "*",
+    "@vespper/db": "*",
+    "@vespper/utils": "*",
     "@octokit/types": "^12.4.0",
     "@ory/client": "^1.9.0",
     "@ory/kratos-client": "^1.2.0",

@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import { checkAuth, getDBUser } from "../middlewares/auth";
-import { userModel, PlanFieldCode } from "@merlinn/db";
-import type { IUser } from "@merlinn/db";
+import { userModel, PlanFieldCode } from "@vespper/db";
+import type { IUser } from "@vespper/db";
 import { FilterQuery } from "mongoose";
 import { deleteOryIdentity, getOryIdentity } from "../clients/ory";
 import { EventType, events } from "../events";

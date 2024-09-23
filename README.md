@@ -1,34 +1,34 @@
 # Merlinn - open-source AI on-call developer
 
 <div align="center">
-    <a href="https://merlinn.co">
+    <a href="https://vespper.co">
       <img src="./assets/logo-wizard.jpg" alt="Merlinn-logo" width="30%"/>
     </a>
 </div>
 <br />
 <div align="center">
    <div>
-      <a href="https://docs.merlinn.co"><strong>Docs</strong></a> ·
+      <a href="https://docs.vespper.com"><strong>Docs</strong></a> ·
       <a href="https://www.loom.com/share/85dc64d021cc40c4b1064389c20782a6?sid=91b063df-8111-40f0-9ea4-793d5fbe3f6f"><strong>Demo</strong></a> ·
-      <a href="https://github.com/merlinn-co/merlinn/issues"><strong>Report Bug</strong></a> ·
-      <a href="https://github.com/orgs/merlinn-co/discussions"><strong>Feature Request</strong></a> ·
-      <a href="https://merlinn.co/blog"><strong>Blog</strong></a> ·
-      <a href="https://join.slack.com/t/merlinncommunity/signup"><strong>Slack</strong></a> 
+      <a href="https://github.com/vespper/vespper/issues"><strong>Report Bug</strong></a> ·
+      <a href="https://github.com/orgs/vespper/discussions"><strong>Feature Request</strong></a> ·
+      <a href="https://vespper.com/blog"><strong>Blog</strong></a> ·
+      <a href="https://join.slack.com/t/vesppercommunity/signup"><strong>Slack</strong></a> 
    </div>
 </div>
 <br />
 <div style="display: flex" style="margin-bottom: 20px">
-<a href="https://merlinn.co/?utm_source=github"><img src="https://img.shields.io/badge/Website-blue?logo=googlechrome&logoColor=orange"/></a>
-  <a href="https://calendly.com/dudu-merlinn/45-minute-meeting"><img src="https://img.shields.io/badge/Book%20a%20Call-blue" /></a>
-<a href="https://github.com/merlinn-co/merlinn/blob/main/LICENSE.md"><img src="https://img.shields.io/badge/License-Apache 2.0-red.svg?style=flat-square" alt="Apache 2.0 License"></a>
-<a href="https://github.com/merlinn-co/merlinn/actions/workflows/ci.yml/badge.svg?branch=main">
-<img src="https://github.com/merlinn-co/merlinn/actions/workflows/ci.yml/badge.svg?branch=main" alt="main-workflow">
+<a href="https://vespper.com/?utm_source=github"><img src="https://img.shields.io/badge/Website-blue?logo=googlechrome&logoColor=orange"/></a>
+  <a href="https://calendly.com/dudu-vespper/45-minute-meeting"><img src="https://img.shields.io/badge/Book%20a%20Call-blue" /></a>
+<a href="https://github.com/vespper/vespper/blob/main/LICENSE.md"><img src="https://img.shields.io/badge/License-Apache 2.0-red.svg?style=flat-square" alt="Apache 2.0 License"></a>
+<a href="https://github.com/vespper/vespper/actions/workflows/ci.yml/badge.svg?branch=main">
+<img src="https://github.com/vespper/vespper/actions/workflows/ci.yml/badge.svg?branch=main" alt="main-workflow">
 </a>
 <a href="https://github.com/prettier/prettier">
 <img src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square" alt="code style: prettier">
 </a>
-<a href="https://join.slack.com/t/merlinncommunity/signup">
-<img src="https://img.shields.io/badge/slack-merlinn-E01E5A.svg?logo=slack" alt="slack-logo" />
+<a href="https://join.slack.com/t/vesppercommunity/signup">
+<img src="https://img.shields.io/badge/slack-vespper-E01E5A.svg?logo=slack" alt="slack-logo" />
 </a>
 </div>
 
@@ -49,11 +49,11 @@ Most people don't like to do on-call shifts. It requires engineers to be swift a
 - [Getting started](#getting-started-)
   - [Prerequisites](#prerequisites-)
   - [Quick Installation](#quick-installation-)
-  - [Updating Merlinn](#updating-merlinn-️-)
+  - [Updating Merlinn](#updating-vespper-️-)
   - [Deployment](#deployment-)
   - [Visualize Knowledge Base](#visualize-knowledge-base-)
 - [Support and feedback](#support-and-feedback-️)
-- [Contributing to Merlinn](#contributing-to-merlinn-️)
+- [Contributing to Merlinn](#contributing-to-vespper-️)
 - [Troubleshooting](#troubleshooting-️)
 - [Telemetry](#telemetry-)
 - [License](#license-)
@@ -91,7 +91,7 @@ You can find the installation video [here](https://www.loom.com/share/1f562cb067
 1. Clone the repository:
 
    ```bash
-   git clone git@github.com:merlinn-co/merlinn.git && cd merlinn
+   git clone git@github.com:vespper/vespper.git && cd vespper
    ```
 
 2. Configure LiteLLM Proxy Server:
@@ -121,7 +121,7 @@ You can find the installation video [here](https://www.loom.com/share/1f562cb067
 
 5. Update these variables:
 
-   - `SLACK_BOT_TOKEN`, `SLACK_APP_TOKEN` and `SLACK_SIGNING_SECRET` - These variables are needed in order to talk to Merlinn on Slack. Please follow [this guide](https://github.com/merlinn-co/merlinn/tree/main/config/slack/README.md) to create a new Slack app in your organization.
+   - `SLACK_BOT_TOKEN`, `SLACK_APP_TOKEN` and `SLACK_SIGNING_SECRET` - These variables are needed in order to talk to Merlinn on Slack. Please follow [this guide](https://github.com/vespper/vespper/tree/main/config/slack/README.md) to create a new Slack app in your organization.
 
    - (Optional) `SMTP_CONNECTION_URL` - This variable is needed in order to invite new members to your Merlinn organization via email and allow them to use the bot. It's not mandatory if you just want to test Merlinn and play with it. If you do want to send invites to your team members, you can use a service like SendGrid/Mailgun. Should follow this pattern: `smtp://username:password@domain:port`.
 
@@ -133,25 +133,25 @@ You can find the installation video [here](https://www.loom.com/share/1f562cb067
 That's it. You should be able to visit Merlinn's dashboard in http://localhost:5173.
 Simply create a user **(with the same e-mail as the one in your Slack user)** and start to configure your organization. If something does not work for you, please checkout our [troubleshooting](#troubleshooting-️) or reach out to us via our [support channels](#support-and-feedback-️).
 
-The next steps are to configure your organization a bit more (connect incident management tools, build a knowledge base, etc). Head over to the [connect & configure](https://docs.merlinn.co/Getting%20started/Configure%20&%20connect) section in our docs for more information 💫
+The next steps are to configure your organization a bit more (connect incident management tools, build a knowledge base, etc). Head over to the [connect & configure](https://docs.vespper.com/Getting%20started/Configure%20&%20connect) section in our docs for more information 💫
 
 #### Using DockerHub images
 
-If you want, you can pull our [Docker images](https://hub.docker.com/u/merlinnco) from DockerHub instead of cloning the repo & building from scratch.
+If you want, you can pull our [Docker images](https://hub.docker.com/u/vespper) from DockerHub instead of cloning the repo & building from scratch.
 
 In order to do that, follow these steps:
 
 1. Download configuration files:
 
    ```bash
-   curl https://raw.githubusercontent.com/merlinn-co/merlinn/main/tools/scripts/download_env_files.sh | sh
+   curl https://raw.githubusercontent.com/vespper/vespper/main/tools/scripts/download_env_files.sh | sh
    ```
 
 2. Follow steps 2 and 5 above to configure LiteLLM Proxy and your `.env` file respectively. Namely, you'd need to configure your OpenAI key at `config/litellm/.env` and configure your Slack credentials in the root `.env`.
 
 3. Spin up the environment using docker compose:
    ```bash
-   curl https://raw.githubusercontent.com/merlinn-co/merlinn/main/tools/scripts/start.sh | sh
+   curl https://raw.githubusercontent.com/vespper/vespper/main/tools/scripts/start.sh | sh
    ```
 
 That's it 💫 You should be able to visit Merlinn's dashboard in http://localhost:5173.
@@ -172,7 +172,7 @@ That's it 💫 You should be able to visit Merlinn's dashboard in http://localho
 
 ### Deployment ☁️
 
-Visit our [example guides](https://github.com/merlinn-co/merlinn/tree/main/examples) in order to deploy Merlinn to your cloud.
+Visit our [example guides](https://github.com/vespper/vespper/tree/main/examples) in order to deploy Merlinn to your cloud.
 
 ### Visualize Knowledge Base 🗺️
 
@@ -193,16 +193,16 @@ To learn how to use VectorAdmin, visit the [docs](https://github.com/Mintplex-La
 In order of preference the best way to communicate with us:
 
 - **GitHub Discussions**: Contribute ideas, support requests and report bugs (preferred as there is a static & permanent for other community members).
-- **Slack**: community support. Click [here](https://merlinn.co/#community) to join.
-- **Privately**: contact at support@merlinn.co
+- **Slack**: community support. Click [here](https://vespper.com/#community) to join.
+- **Privately**: contact at support@vespper.com
 
 ## Contributing to Merlinn ⛑️
 
-If you're interested in contributing to Merlinn, checkout our [`CONTRIBUTING.md`](https://github.com/merlinn-co/merlinn/blob/main/CONTRIBUTING.md) file 💫 🧙‍♂️
+If you're interested in contributing to Merlinn, checkout our [`CONTRIBUTING.md`](https://github.com/vespper/vespper/blob/main/CONTRIBUTING.md) file 💫 🧙‍♂️
 
 ## Troubleshooting ⚒️
 
-If you encounter any problems/errors/issues with Merlinn, checkout our [troubleshooting guide](https://github.com/merlinn-co/merlinn/tree/main/TROUBLESHOOTING.md). We try to update it regularly, and fix some of the urgent problems there as soon as possible.
+If you encounter any problems/errors/issues with Merlinn, checkout our [troubleshooting guide](https://github.com/vespper/vespper/tree/main/TROUBLESHOOTING.md). We try to update it regularly, and fix some of the urgent problems there as soon as possible.
 
 Moreover, feel free to reach out to us at our [support channels](#support-and-feedback-️).
 
@@ -215,17 +215,17 @@ This allows us to:
 - Understand how Merlinn is used so we can improve it.
 - Track overall usage for internal purposes and external reporting, such as for fundraising.
 
-Rest assured, the data collected is not shared with third parties and does not include any sensitive information. We aim to be transparent, and you can review the specific data we collect [here](https://github.com/merlinn-co/merlinn/blob/main/services/api/src/telemetry/listener.ts).
+Rest assured, the data collected is not shared with third parties and does not include any sensitive information. We aim to be transparent, and you can review the specific data we collect [here](https://github.com/vespper/vespper/blob/main/services/api/src/telemetry/listener.ts).
 
 If you prefer not to participate, you can easily opt-out by setting `TELEMETRY_ENABLED=false` inside your `.env`.
 
 ## License 📃
 
-This project is licensed under the Apache 2.0 license - see the [LICENSE](https://github.com/merlinn-co/merlinn/tree/main/LICENSE.md) file for details
+This project is licensed under the Apache 2.0 license - see the [LICENSE](https://github.com/vespper/vespper/tree/main/LICENSE.md) file for details
 
 ## Learn more 🔍
 
-Check out the official website at https://merlinn.co for more information.
+Check out the official website at https://vespper.com for more information.
 
 ## Contributors ✨
 

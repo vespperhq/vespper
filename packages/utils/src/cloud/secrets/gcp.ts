@@ -1,7 +1,7 @@
 import { SecretsBackend } from "./base";
 import { SecretManagerServiceClient } from "@google-cloud/secret-manager";
-import { Integration } from "@merlinn/db";
-import type { IIntegration } from "@merlinn/db";
+import { Integration } from "@vespper/db";
+import type { IIntegration } from "@vespper/db";
 
 const projectId = process.env.GCLOUD_PROJECT as string;
 

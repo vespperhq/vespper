@@ -1,7 +1,7 @@
 import { SecretsBackend } from "./base";
 import { Client } from "@litehex/node-vault";
-import { Integration } from "@merlinn/db";
-import type { IIntegration } from "@merlinn/db";
+import { Integration } from "@vespper/db";
+import type { IIntegration } from "@vespper/db";
 
 export class HashiCorpVaultSecretManager extends SecretsBackend {
   readonly client: Client;
