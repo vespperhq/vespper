@@ -1,5 +1,5 @@
 export function isEnterprise() {
-  return !!process.env.MERLINN_CLOUD_REGION;
+  return !!process.env.VESPPER_CLOUD_REGION;
 }
 
 export function isLangfuseEnabled() {

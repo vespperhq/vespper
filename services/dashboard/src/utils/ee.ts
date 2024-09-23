@@ -1,5 +1,5 @@
-import { MERLINN_CLOUD_REGION } from "../constants";
+import { VESPPER_CLOUD_REGION } from "../constants";
 
 export function isEnterprise() {
-  return !!MERLINN_CLOUD_REGION;
+  return !!VESPPER_CLOUD_REGION;
 }

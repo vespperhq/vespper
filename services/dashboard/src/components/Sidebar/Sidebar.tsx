@@ -126,7 +126,7 @@ export const Sidebar = () => {
       />
       <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
         <IconButton size="sm">
-          <img src={LogoImage} />
+          <img src={LogoImage} width={32} />
         </IconButton>
         <Typography level="title-lg">Vespper</Typography>
         <ColorSchemeToggle sx={{ ml: "auto" }} />

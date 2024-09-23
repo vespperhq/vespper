@@ -9,8 +9,8 @@ export const PAGER_DUTY_CLIENT_ID = import.meta.env
   .VITE_PAGER_DUTY_CLIENT_ID as string;
 
 export const ORY_URL = import.meta.env.VITE_ORY_URL as string;
-export const MERLINN_CLOUD_REGION = import.meta.env
-  .VITE_MERLINN_CLOUD_REGION as string;
+export const VESPPER_CLOUD_REGION = import.meta.env
+  .VITE_VESPPER_CLOUD_REGION as string;
 
 // JSON.parse transforms "true"/"false" to native types true/false.
 export const SHOULD_MOCK_API = import.meta.env.VITE_MOCK_API_CALLS

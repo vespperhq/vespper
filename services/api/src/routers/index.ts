@@ -1,3 +1,4 @@
+export { router as webhooksRouter } from "./webhooks";
 export { router as chatRouter } from "./chat";
 export { router as usersRouter } from "./users";
 export { router as integrationsRouter } from "./integrations";

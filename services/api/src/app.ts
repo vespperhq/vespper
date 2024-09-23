@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import {
+  webhooksRouter,
   chatRouter,
   usersRouter,
   integrationsRouter,
@@ -32,6 +33,7 @@ app.get("/", (req: Request, res: Response) => {
 
 // Attach routers to app
 app.use("/users", usersRouter);
+app.use("/webhooks", webhooksRouter);
 app.use("/chat", chatRouter);
 app.use("/integrations", integrationsRouter);
 app.use("/vendors", vendorsRouter);
