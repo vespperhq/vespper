@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { DynamicStructuredTool } from "langchain/tools";
-import type { JaegerIntegration } from "@merlinn/db";
+import type { JaegerIntegration } from "@vespper/db";
 import { JaegerClient } from "../../../clients/jaeger";
 import type { JaegerSpan, JaegerTrace } from "../../../types/vendors";
 import { buildOutput } from "../utils";

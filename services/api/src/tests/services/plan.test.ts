@@ -6,9 +6,9 @@ import {
   planFieldModel,
   PlanFieldKind,
   ResetMode,
-} from "@merlinn/db";
+} from "@vespper/db";
 import { Types } from "mongoose";
-import type { IPlanState } from "@merlinn/db";
+import type { IPlanState } from "@vespper/db";
 import { resetPlanStates } from "../../services/plans/base";
 
 const DUMMY_FIELDS = [

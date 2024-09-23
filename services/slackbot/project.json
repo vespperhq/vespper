@@ -17,7 +17,7 @@
         },
         "production": {
           "push": true,
-          "tags": ["merlinnco/slackbot:latest"]
+          "tags": ["vespper/slackbot:latest"]
         }
       }
     }

@@ -11,7 +11,7 @@ import {
   PlanFieldKind,
   ResetMode,
   UserLevelFieldState,
-} from "@merlinn/db";
+} from "@vespper/db";
 
 interface BaseUpdateParams {
   fieldCode?: PlanFieldCode;

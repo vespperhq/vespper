@@ -47,7 +47,7 @@ For example, you can ask me questions like:
 - "Can you fetch the logs for service Y from the staging environment and check if there are any errors?"
 
 Moreover, here are some pre-defined commands you can use:
-- \`/merlinn help\`: Shows this help message
-- \`/merlinn new-chat\`: Resets the chat history
-- \`/merlinn actions\`: Shows available, pre-defined actions
+- \`/vespper help\`: Shows this help message
+- \`/vespper new-chat\`: Resets the chat history
+- \`/vespper actions\`: Shows available, pre-defined actions
 `;

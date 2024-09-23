@@ -1,5 +1,5 @@
 import { DynamicTool } from "langchain/tools";
-import type { PrometheusIntegration } from "@merlinn/db";
+import type { PrometheusIntegration } from "@vespper/db";
 import { PrometheusDriver } from "prometheus-query";
 
 export default async function (integration: PrometheusIntegration) {

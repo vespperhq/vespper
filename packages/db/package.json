@@ -1,5 +1,5 @@
 {
-  "name": "@merlinn/db",
+  "name": "@vespper/db",
   "version": "0.0.1",
   "scripts": {
     "test": "jest",

@@ -1,6 +1,6 @@
 import { AxiosError } from "axios";
-import { integrationModel } from "@merlinn/db";
-import type { PagerDutyIntegration } from "@merlinn/db";
+import { integrationModel } from "@vespper/db";
+import type { PagerDutyIntegration } from "@vespper/db";
 import { PagerDutyClient } from "../../clients";
 import { AppError } from "../../errors";
 import { secretManager } from "../../common/secrets";

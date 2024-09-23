@@ -1,4 +1,4 @@
-import { indexModel } from "@merlinn/db";
+import { indexModel } from "@vespper/db";
 import { default as semanticSearch } from "./semantic_search";
 import { RunContext } from "../../../agent/types";
 

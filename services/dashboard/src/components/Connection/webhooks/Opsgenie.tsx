@@ -60,7 +60,7 @@ export const ConnectOpsgenieWebhook = ({ data }: ConnectionProps) => {
           https://1234abcd.ngrok.io/webhooks/opsgenie
         </li>
         <li>
-          Add a custom header called x-merlinn-secret and put your secret.
+          Add a custom header called x-vespper-secret and put your secret.
         </li>
         <li>
           Mark the “Add Alert Description to Payload” and “Add Alert Details to

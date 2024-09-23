@@ -49,24 +49,24 @@ services:
     extends:
       file: docker-compose.common.yml
       service: api-common
-    image: merlinnco/api:latest
+    image: vespper/api:latest
   slackbot:
     extends:
       file: docker-compose.common.yml
       service: slackbot-common
-    image: merlinnco/slackbot:latest
+    image: vespper/slackbot:latest
   data-processor:
     extends:
       file: docker-compose.common.yml
       service: data-processor-common
-    image: merlinnco/data-processor:latest
+    image: vespper/data-processor:latest
   log-parser:
     extends:
       file: docker-compose.common.yml
       service: log-parser-common
-    image: merlinnco/log-parser:latest
+    image: vespper/log-parser:latest
   dashboard:
     extends:
       file: docker-compose.common.yml
       service: dashboard-common
-    image: merlinnco/dashboard:latest
+    image: vespper/dashboard:latest

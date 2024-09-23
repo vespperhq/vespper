@@ -1,6 +1,6 @@
 import axios from "axios";
 import { CoralogixQueryResult, CoralogixRegionKey } from "../../../types";
-import { CoralogixIntegration, IIntegration } from "@merlinn/db";
+import { CoralogixIntegration, IIntegration } from "@vespper/db";
 import {
   Timeframe,
   getTimestamp,

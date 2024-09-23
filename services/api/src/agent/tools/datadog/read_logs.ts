@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { DynamicStructuredTool } from "langchain/tools";
 import { v2 } from "@datadog/datadog-api-client";
-import type { DataDogIntegration } from "@merlinn/db";
+import type { DataDogIntegration } from "@vespper/db";
 import { getLogsInstance } from "../../../clients/datadog";
 
 const timeframe2math = {

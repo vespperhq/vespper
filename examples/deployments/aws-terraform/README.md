@@ -56,10 +56,10 @@ terraform init
 
 ### 3. Create SSH key
 
-Generate SSH key to use with your merlinn instance, in order for you to login to your EC2:
+Generate SSH key to use with your vespper instance, in order for you to login to your EC2:
 
 ```bash
-ssh-keygen -t RSA -b 4096 -C "Merlinn AWS Key" -N "" -f ./merlinn-aws && chmod 400 ./merlinn-aws
+ssh-keygen -t RSA -b 4096 -C "Merlinn AWS Key" -N "" -f ./vespper-aws && chmod 400 ./vespper-aws
 ```
 
 ### 4. Set up your Terraform variables and deploy your instance
@@ -98,7 +98,7 @@ export instance_public_ip=$(terraform output instance_public_ip | sed 's/"//g')
 Connect to your EC2 via SSH:
 
 ```bash
-ssh -i ./merlinn-aws ubuntu@$instance_public_ip
+ssh -i ./vespper-aws ubuntu@$instance_public_ip
 ```
 
 #### 5.3 Make sure Docker process is complete

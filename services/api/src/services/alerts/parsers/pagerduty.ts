@@ -1,4 +1,4 @@
-import { integrationModel, PagerDutyIntegration } from "@merlinn/db";
+import { integrationModel, PagerDutyIntegration } from "@vespper/db";
 import { PagerDutyClient } from "../../../clients";
 import { AlertEvent } from "../../../types/internal";
 import { secretManager } from "../../../common/secrets";

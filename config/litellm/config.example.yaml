@@ -2,7 +2,7 @@
 ###  LLM Setup file  ####
 #########################
 
-# In order to use merlinn, you need to provide 2 models: chat model and an embedding model. Our Opensource version supports OpenAI's models.
+# In order to use vespper, you need to provide 2 models: chat model and an embedding model. Our Opensource version supports OpenAI's models.
 # You must keep the naming convention of the model_list as it is. Namely, model_name: chat-model and model_name: embedding-model
 
 model_list:

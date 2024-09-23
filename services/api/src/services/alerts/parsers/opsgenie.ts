@@ -3,12 +3,12 @@ import {
   CoralogixClient,
   GrafanaClient,
 } from "../../../clients";
-import { integrationModel } from "@merlinn/db";
+import { integrationModel } from "@vespper/db";
 import type {
   CoralogixIntegration,
   GrafanaIntegration,
   OpsgenieIntegration,
-} from "@merlinn/db";
+} from "@vespper/db";
 import type { OpsgenieAlert } from "../../../types";
 import type { AlertEvent } from "../../../types/internal";
 import { secretManager } from "../../../common/secrets";
