@@ -1,8 +1,8 @@
-# Merlinn - open-source AI on-call developer
+# Vespper - open-source AI on-call developer
 
 <div align="center">
     <a href="https://vespper.co">
-      <img src="./assets/logo-wizard.jpg" alt="Merlinn-logo" width="30%"/>
+      <img src="./assets/logo-wizard.jpg" alt="Vespper-logo" width="30%"/>
     </a>
 </div>
 <br />
@@ -34,11 +34,11 @@
 
 ## Overview 💫
 
-Merlinn is an AI-powered on-call engineer. It can automatically jump into incidents & alerts with you, and provide you useful & contextual insights and RCA in real time.
+Vespper is an AI-powered on-call engineer. It can automatically jump into incidents & alerts with you, and provide you useful & contextual insights and RCA in real time.
 
 ## Why ❓
 
-Most people don't like to do on-call shifts. It requires engineers to be swift and solve problems quickly. Moreover, it takes time to reach to the root cause of the problem. That's why we developed Merlinn. We believe Gen AI can help on-call developers solve issues faster.
+Most people don't like to do on-call shifts. It requires engineers to be swift and solve problems quickly. Moreover, it takes time to reach to the root cause of the problem. That's why we developed Vespper. We believe Gen AI can help on-call developers solve issues faster.
 
 ## Table of Contents
 
@@ -49,11 +49,11 @@ Most people don't like to do on-call shifts. It requires engineers to be swift a
 - [Getting started](#getting-started-)
   - [Prerequisites](#prerequisites-)
   - [Quick Installation](#quick-installation-)
-  - [Updating Merlinn](#updating-vespper-️-)
+  - [Updating Vespper](#updating-vespper-️-)
   - [Deployment](#deployment-)
   - [Visualize Knowledge Base](#visualize-knowledge-base-)
 - [Support and feedback](#support-and-feedback-️)
-- [Contributing to Merlinn](#contributing-to-vespper-️)
+- [Contributing to Vespper](#contributing-to-vespper-️)
 - [Troubleshooting](#troubleshooting-️)
 - [Telemetry](#telemetry-)
 - [License](#license-)
@@ -62,20 +62,20 @@ Most people don't like to do on-call shifts. It requires engineers to be swift a
 
 ## Key features 🎯
 
-- **Automatic RCA**: Merlinn automatically listens to production incidents/alerts and automatically investigates them for you.
-- **Slack integration**: Merlinn lives inside your Slack. Simply connect it and enjoy an on-call engineer that never sleeps.
-- **Integrations**: Merlinn integrates with popular observability/incident management tools such as Datadog, Coralogix, Opsgenie and Pagerduty. It also integrates to other tools as GitHub, Notion, Jira and Confluence to gain insights on incidents.
-- **Intuitive UX**: Merlinn offers a familiar experience. You can talk to it and ask follow-up questions.
-- **Secure**: Self-host Merlinn and own your data. Always.
-- **Open Source**: We love open-source. Self-host Merlinn and use it for free.
+- **Automatic RCA**: Vespper automatically listens to production incidents/alerts and automatically investigates them for you.
+- **Slack integration**: Vespper lives inside your Slack. Simply connect it and enjoy an on-call engineer that never sleeps.
+- **Integrations**: Vespper integrates with popular observability/incident management tools such as Datadog, Coralogix, Opsgenie and Pagerduty. It also integrates to other tools as GitHub, Notion, Jira and Confluence to gain insights on incidents.
+- **Intuitive UX**: Vespper offers a familiar experience. You can talk to it and ask follow-up questions.
+- **Secure**: Self-host Vespper and own your data. Always.
+- **Open Source**: We love open-source. Self-host Vespper and use it for free.
 
 ## Demo 🎥
 
-Checkout our [demo video](https://www.loom.com/share/85dc64d021cc40c4b1064389c20782a6?sid=1178d76f-5036-4fb2-887b-63b7f4f9aaac) to see Merlinn in action.
+Checkout our [demo video](https://www.loom.com/share/85dc64d021cc40c4b1064389c20782a6?sid=1178d76f-5036-4fb2-887b-63b7f4f9aaac) to see Vespper in action.
 
 ## Getting started 🚀
 
-In order to run Merlinn, you need to clone the repo & run the app using Docker Compose.
+In order to run Vespper, you need to clone the repo & run the app using Docker Compose.
 
 ### Prerequisites 📜
 
@@ -121,16 +121,16 @@ You can find the installation video [here](https://www.loom.com/share/1f562cb067
 
 5. Update these variables:
 
-   - `SLACK_BOT_TOKEN`, `SLACK_APP_TOKEN` and `SLACK_SIGNING_SECRET` - These variables are needed in order to talk to Merlinn on Slack. Please follow [this guide](https://github.com/vespper/vespper/tree/main/config/slack/README.md) to create a new Slack app in your organization.
+   - `SLACK_BOT_TOKEN`, `SLACK_APP_TOKEN` and `SLACK_SIGNING_SECRET` - These variables are needed in order to talk to Vespper on Slack. Please follow [this guide](https://github.com/vespper/vespper/tree/main/config/slack/README.md) to create a new Slack app in your organization.
 
-   - (Optional) `SMTP_CONNECTION_URL` - This variable is needed in order to invite new members to your Merlinn organization via email and allow them to use the bot. It's not mandatory if you just want to test Merlinn and play with it. If you do want to send invites to your team members, you can use a service like SendGrid/Mailgun. Should follow this pattern: `smtp://username:password@domain:port`.
+   - (Optional) `SMTP_CONNECTION_URL` - This variable is needed in order to invite new members to your Vespper organization via email and allow them to use the bot. It's not mandatory if you just want to test Vespper and play with it. If you do want to send invites to your team members, you can use a service like SendGrid/Mailgun. Should follow this pattern: `smtp://username:password@domain:port`.
 
 6. Launch the project:
    ```bash
    docker compose up -d
    ```
 
-That's it. You should be able to visit Merlinn's dashboard in http://localhost:5173.
+That's it. You should be able to visit Vespper's dashboard in http://localhost:5173.
 Simply create a user **(with the same e-mail as the one in your Slack user)** and start to configure your organization. If something does not work for you, please checkout our [troubleshooting](#troubleshooting-️) or reach out to us via our [support channels](#support-and-feedback-️).
 
 The next steps are to configure your organization a bit more (connect incident management tools, build a knowledge base, etc). Head over to the [connect & configure](https://docs.vespper.com/Getting%20started/Configure%20&%20connect) section in our docs for more information 💫
@@ -154,9 +154,9 @@ In order to do that, follow these steps:
    curl https://raw.githubusercontent.com/vespper/vespper/main/tools/scripts/start.sh | sh
    ```
 
-That's it 💫 You should be able to visit Merlinn's dashboard in http://localhost:5173.
+That's it 💫 You should be able to visit Vespper's dashboard in http://localhost:5173.
 
-### Updating Merlinn 🧙‍♂️
+### Updating Vespper 🧙‍♂️
 
 1. Pull the latest changes:
 
@@ -172,7 +172,7 @@ That's it 💫 You should be able to visit Merlinn's dashboard in http://localho
 
 ### Deployment ☁️
 
-Visit our [example guides](https://github.com/vespper/vespper/tree/main/examples) in order to deploy Merlinn to your cloud.
+Visit our [example guides](https://github.com/vespper/vespper/tree/main/examples) in order to deploy Vespper to your cloud.
 
 ### Visualize Knowledge Base 🗺️
 
@@ -196,23 +196,23 @@ In order of preference the best way to communicate with us:
 - **Slack**: community support. Click [here](https://vespper.com/#community) to join.
 - **Privately**: contact at support@vespper.com
 
-## Contributing to Merlinn ⛑️
+## Contributing to Vespper ⛑️
 
-If you're interested in contributing to Merlinn, checkout our [`CONTRIBUTING.md`](https://github.com/vespper/vespper/blob/main/CONTRIBUTING.md) file 💫 🧙‍♂️
+If you're interested in contributing to Vespper, checkout our [`CONTRIBUTING.md`](https://github.com/vespper/vespper/blob/main/CONTRIBUTING.md) file 💫 🧙‍♂️
 
 ## Troubleshooting ⚒️
 
-If you encounter any problems/errors/issues with Merlinn, checkout our [troubleshooting guide](https://github.com/vespper/vespper/tree/main/TROUBLESHOOTING.md). We try to update it regularly, and fix some of the urgent problems there as soon as possible.
+If you encounter any problems/errors/issues with Vespper, checkout our [troubleshooting guide](https://github.com/vespper/vespper/tree/main/TROUBLESHOOTING.md). We try to update it regularly, and fix some of the urgent problems there as soon as possible.
 
 Moreover, feel free to reach out to us at our [support channels](#support-and-feedback-️).
 
 ## Telemetry 🔢
 
-By default, Merlinn automatically sends basic usage statistics from self-hosted instances to our server via PostHog.
+By default, Vespper automatically sends basic usage statistics from self-hosted instances to our server via PostHog.
 
 This allows us to:
 
-- Understand how Merlinn is used so we can improve it.
+- Understand how Vespper is used so we can improve it.
 - Track overall usage for internal purposes and external reporting, such as for fundraising.
 
 Rest assured, the data collected is not shared with third parties and does not include any sensitive information. We aim to be transparent, and you can review the specific data we collect [here](https://github.com/vespper/vespper/blob/main/services/api/src/telemetry/listener.ts).

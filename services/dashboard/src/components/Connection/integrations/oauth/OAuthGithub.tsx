@@ -14,7 +14,7 @@ export const ConnectGithubIntegration = ({ orgId, data }: ConnectionProps) => {
     <ConnectionWrapper>
       <OrderedList style={{ marginTop: 0 }}>
         <li>
-          Authorize Merlinn Github App through{" "}
+          Authorize Vespper Github App through{" "}
           <a
             href={`https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&state=${orgId}&redirect_uri=${redirect_uri}`}
             target="_blank"
@@ -24,7 +24,7 @@ export const ConnectGithubIntegration = ({ orgId, data }: ConnectionProps) => {
           link.
         </li>
         <li>
-          Install Merlinn Github app on your desired organizations through{" "}
+          Install Vespper Github app on your desired organizations through{" "}
           <a
             href="https://github.com/apps/vespper-app/installations/select_target"
             target="_blank"

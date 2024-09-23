@@ -14,7 +14,7 @@ export const ConnectJiraIntegration = ({ orgId, data }: ConnectionProps) => {
     <ConnectionWrapper>
       <OrderedList style={{ marginTop: 10 }}>
         <li>
-          Install the Merlinn Jira integration by clicking{" "}
+          Install the Vespper Jira integration by clicking{" "}
           <a
             href={`https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=${ATLASSIAN_CLIENT_ID}&scope=offline_access%20read%3Ajira-work&redirect_uri=${redirect_uri}&state=${orgId}&response_type=code&prompt=consent`}
             target="_blank"

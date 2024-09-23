@@ -32,7 +32,7 @@ export const ConnectSlackIntegration = ({ orgId, data }: ConnectionProps) => {
     <ConnectionWrapper>
       <OrderedList style={{ marginTop: 10 }}>
         <li>
-          Install the Merlinn Slack bot to the specific Slack channel where
+          Install the Vespper Slack bot to the specific Slack channel where
           incident reports are received through{" "}
           <a
             href={`https://slack.com/oauth/v2/authorize?client_id=${SLACK_CLIENT_ID}&state=${orgId}&redirect_uri=${apiUrl}/oauth/slack/callback&scope=${scopes.join(",")}`}

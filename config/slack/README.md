@@ -1,4 +1,4 @@
-# Merlinn - Slack Bot setup
+# Vespper - Slack Bot setup
 
 <div align="center">
     <img src="../../assets/slack-logo.png" alt="Slack-logo" width="15%"/>
@@ -6,13 +6,13 @@
 
 ## Overview
 
-In this tutorial, you'll learn how to setup your Merlinn Slack Bot.
+In this tutorial, you'll learn how to setup your Vespper Slack Bot.
 
 At the end, you should have a new Slack app in your workspace with the 3 tokens needed: `SLACK_SIGNING_SECRET`, `SLACK_APP_TOKEN` and `SLACK_BOT_TOKEN`.
 
 ## Prerequisites
 
-- Clone the Merlinn repository
+- Clone the Vespper repository
 - Have a Slack workspace where you want to install the Slackbot
 
 ## Setup
@@ -22,7 +22,7 @@ At the end, you should have a new Slack app in your workspace with the 3 tokens 
 1. Go to [api.slack.com](https://api.slack.com) and create a new app.
 2. Click "your apps" and then select "Create New App"
 3. Select "From an app manifest" and choose the workspace where you want to use the Slackbot.
-4. Copy the contents of `config/slack/manifest.yaml` from the Merlinn repository and paste it into the app manifest field.
+4. Copy the contents of `config/slack/manifest.yaml` from the Vespper repository and paste it into the app manifest field.
 5. Click “Create” to create the app.
 6. Click "Install to workspace".
 
@@ -30,7 +30,7 @@ Once the app is installed, continue to the next section where you'll extract som
 
 ### Configure the Slack app
 
-In this section, you will configure some more things and extract these 3 variables: `SLACK_SIGNING_SECRET`, `SLACK_APP_TOKEN` and `SLACK_BOT_TOKEN`. They are needed in order for Merlinn's services to interact with your workspace.
+In this section, you will configure some more things and extract these 3 variables: `SLACK_SIGNING_SECRET`, `SLACK_APP_TOKEN` and `SLACK_BOT_TOKEN`. They are needed in order for Vespper's services to interact with your workspace.
 
 1. In the "Basic Information" page, copy the “Signing Secret” from the Slack app settings and paste it into the .env file as `SLACK_SIGNING_SECRET`.
 2. In the same page "Basic Information", go to "App-Level Tokens" and click "Generate Token and Scopes". Give it a meaningful name (e.g vespper-token) and grant it 2 scopes: `connections:write` and `authorizations:read`. Copy the token and put it in the main `.env` as `SLACK_APP_TOKEN`.
@@ -40,7 +40,7 @@ In this section, you will configure some more things and extract these 3 variabl
 ### **(Optional)** Customize the Slack app
 
 1. You can change the name and background color of the Slackbot in the Slack app settings.
-2. You can use Merlinn's logo as your app's logo. View the logo [here](https://storage.googleapis.com/vespper-assets/brand/vespper-cat.png).
+2. You can use Vespper's logo as your app's logo. View the logo [here](https://storage.googleapis.com/vespper-assets/brand/vespper-cat.png).
 
 ### Test the Slack app
 
@@ -48,7 +48,7 @@ To test the app, you should launch the slackbot & project. Go back to the [readm
 
 After you launch it, follow these steps to test the Slack app:
 
-1. Go to your Slack workspace and go to Merlinn's direct messages.
+1. Go to your Slack workspace and go to Vespper's direct messages.
 2. Write `/vespper help` in the message bar.
 
 Now you should see the help message of the bot! 🥳

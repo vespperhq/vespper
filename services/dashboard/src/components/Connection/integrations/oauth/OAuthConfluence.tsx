@@ -17,7 +17,7 @@ export const ConnectConfluenceIntegration = ({
     <ConnectionWrapper>
       <OrderedList style={{ marginTop: 10 }}>
         <li>
-          Install the Merlinn Confluence integration by clicking{" "}
+          Install the Vespper Confluence integration by clicking{" "}
           <a
             href={`https://auth.atlassian.com/authorize?audience=api.atlassian.com&client_id=${ATLASSIAN_CLIENT_ID}&scope=offline_access%20read%3Aconfluence-space.summary%20read%3Aconfluence-props%20read%3Aconfluence-content.all%20read%3Aconfluence-content.summary%20read%3Aconfluence-content.permission&redirect_uri=${redirect_uri}&state=${orgId}&response_type=code&prompt=consent`}
             target="_blank"

@@ -47,7 +47,7 @@ export const ConnectPageDutyWebhook = ({ data }: any) => {
         <li>Choose Integrations → Generic Webhooks (V3)</li>
         <li>Click “New Webhook”</li>
         <li>
-          If you're running Merlinn locally, put your ngrok tunnel, followed by
+          If you're running Vespper locally, put your ngrok tunnel, followed by
           /webhooks/pagerduty. For example:
           https://1234abcd.ngrok.io/webhooks/pagerduty
         </li>

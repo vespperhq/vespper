@@ -1,7 +1,7 @@
 {
   "name": "slackbot",
   "version": "1.0.0",
-  "description": "Merlinn's slackbot application",
+  "description": "Vespper's slackbot application",
   "main": "index.js",
   "author": "davidlasry696@gmail.com",
   "license": "MIT",

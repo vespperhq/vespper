@@ -38,7 +38,7 @@ Hello, <@%s>! :wave: How can I help you?
 `;
 
 export const HELP_MESSAGE = `
-Hi <@%s>! I'm Merlinn 🧙‍♂️, your AI assistant for all your production questions.
+Hi <@%s>! I'm Vespper 🧙‍♂️, your AI assistant for all your production questions.
 You can simply talk to me in this chat and I'll do my best to help you out.
 
 For example, you can ask me questions like:

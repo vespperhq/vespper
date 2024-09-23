@@ -14,7 +14,7 @@ export const ConnectNotionIntegration = ({ orgId, data }: ConnectionProps) => {
     <ConnectionWrapper>
       <OrderedList style={{ marginTop: 10 }}>
         <li>
-          Install the Merlinn Notion integration by clicking{" "}
+          Install the Vespper Notion integration by clicking{" "}
           <a
             href={`https://api.notion.com/v1/oauth/authorize?client_id=${NOTION_CLIENT_ID}&response_type=code&owner=user&redirect_uri=${redirect_uri}&state=${orgId}`}
             target="_blank"

@@ -30,7 +30,7 @@ export function Message({ message }: Props) {
         {name ? getInitials(name!) : "You"}
       </Avatar>
       <Box display="flex" flexDirection="column">
-        <Typography level="title-md">{isBot ? "Merlinn" : "You"}</Typography>
+        <Typography level="title-md">{isBot ? "Vespper" : "You"}</Typography>
         {!isBot ? (
           <Typography level="body-md">{text}</Typography>
         ) : (

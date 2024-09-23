@@ -148,8 +148,8 @@ router.post(
       // Send Email
       const smtpConnectionUrl = process.env.SMTP_CONNECTION_URL as string;
       if (smtpConnectionUrl) {
-        const subject = "Invitation to Merlinn";
-        const html = `You have been invited to Merlinn.
+        const subject = "Invitation to Vespper";
+        const html = `You have been invited to Vespper.
     Please click the following link to join: <a href=${recovery_link}>Click here</a>.
     Once you are registered, you can sign in to https://app.vespper.com or start using the Slack bot!`;
         const client = new EmailClient(smtpConnectionUrl);

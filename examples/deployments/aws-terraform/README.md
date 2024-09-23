@@ -5,11 +5,11 @@ This guide provides an example deployment to AWS EC2 Compute using [Terraform](h
 More specifically, this deployment will do the following:
 
 - Create a security group with the necessary ports open (3000, 5173, 4433, 4455)
-- Launch an EC2 instance (t3.large) with Ubuntu 22.04 and deploy Merlinn using Git + Docker Compose.
-- Create a data volume for Merlinn's data
+- Launch an EC2 instance (t3.large) with Ubuntu 22.04 and deploy Vespper using Git + Docker Compose.
+- Create a data volume for Vespper's data
 - Mount the data volume to the EC2 instance
 - Format the data volume with ext4
-- Start Merlinn
+- Start Vespper
 
 ## Requirements
 
@@ -28,7 +28,7 @@ More specifically, this deployment will do the following:
 
 ## Installation
 
-Follow the following steps to deploy Merlinn to your AWS environment using Terraform:
+Follow the following steps to deploy Vespper to your AWS environment using Terraform:
 
 ### 0. Navigate to the current folder
 
@@ -59,7 +59,7 @@ terraform init
 Generate SSH key to use with your vespper instance, in order for you to login to your EC2:
 
 ```bash
-ssh-keygen -t RSA -b 4096 -C "Merlinn AWS Key" -N "" -f ./vespper-aws && chmod 400 ./vespper-aws
+ssh-keygen -t RSA -b 4096 -C "Vespper AWS Key" -N "" -f ./vespper-aws && chmod 400 ./vespper-aws
 ```
 
 ### 4. Set up your Terraform variables and deploy your instance
@@ -81,7 +81,7 @@ Now run apply:
 terraform apply -auto-approve
 ```
 
-### 5. Check that Merlinn is running
+### 5. Check that Vespper is running
 
 Follow these steps to make sure everything is working:
 
@@ -123,9 +123,9 @@ You can also double check all the containers are up using `docker ps`.
 
 ### 6. Try to access the UI
 
-Use the public IP from before (run `terraform output instance_public_ip` if you don't have it already) and navigate in the browser to `http:{instance_public_ip}:5173`. This should open the Merlinn UI, where you can sign up and configure your organization & integrations!
+Use the public IP from before (run `terraform output instance_public_ip` if you don't have it already) and navigate in the browser to `http:{instance_public_ip}:5173`. This should open the Vespper UI, where you can sign up and configure your organization & integrations!
 
-### 7. Destroy your Merlinn instance
+### 7. Destroy your Vespper instance
 
 If you wish to destroy all this setup and remove all the resouces, run the following command:
 

@@ -1,4 +1,4 @@
-# Troubleshooting Merlinn
+# Troubleshooting Vespper
 
 In this document, you can find common scenarios where we're currently have problems. If you're interested in some of these
 issues and want to help, feel free to create an [issue](https://github.com/vespper/vespper/issues).
@@ -16,7 +16,7 @@ Once your `.env` is updated, restart your containers using `docker compose up -d
 
 ### `Sending messages to this app has been turned off`
 
-This is not an error, but a scenario where you cannot send messages to Merlinn. It usually means you didn't enable the messages capability. Go to "App Home" and enable "Messages Tab" and "Allow users to send Slash commands and messages from the messages tab".
+This is not an error, but a scenario where you cannot send messages to Vespper. It usually means you didn't enable the messages capability. Go to "App Home" and enable "Messages Tab" and "Allow users to send Slash commands and messages from the messages tab".
 
 More information can be found in the [Slack guide](https://github.com/vespper/vespper/tree/main/config/slack).
 

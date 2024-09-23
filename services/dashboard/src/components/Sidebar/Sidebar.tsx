@@ -128,7 +128,7 @@ export const Sidebar = () => {
         <IconButton size="sm">
           <img src={LogoImage} />
         </IconButton>
-        <Typography level="title-lg">Merlinn</Typography>
+        <Typography level="title-lg">Vespper</Typography>
         <ColorSchemeToggle sx={{ ml: "auto" }} />
       </Box>
 

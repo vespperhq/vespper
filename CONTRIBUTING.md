@@ -1,6 +1,6 @@
-# Contributing to Merlinn
+# Contributing to Vespper
 
-Hey there! Thanks for considering a contribution to Merlinn! We really appreciate it, you're awesome! ❤️
+Hey there! Thanks for considering a contribution to Vespper! We really appreciate it, you're awesome! ❤️
 
 Here’s how you can help out:
 
@@ -12,11 +12,11 @@ This guide will walk you through our development process, where to get help and 
 
 Got questions? We are hanging out on [Slack](https://join.slack.com/t/vesppercommunity/signup), ready to help.
 
-If you’re short on time for coding, no worries! You can still support Merlinn in other ways:
+If you’re short on time for coding, no worries! You can still support Vespper in other ways:
 
 - ⭐ Star the project on GitHub
 - 🐦 Tweet about us
-- 📄 Mention Merlinn in your project’s readme
+- 📄 Mention Vespper in your project’s readme
 - 💡 Submit and vote on Ideas
 - 📝 Create and comment on Issues
 - 🗣️ Talk about us at local meetups or with friends and colleagues
@@ -103,7 +103,7 @@ We work in a monorepo manner using [yarn](https://yarnpkg.com/) and [nx](https:/
 
 ### Prerequisites
 
-To work on Merlinn, you need to have the following pieces of software:
+To work on Vespper, you need to have the following pieces of software:
 
 - **Docker & Docker Compose** - The app works with Docker containers. To run it, you need to have [Docker Desktop](https://docs.docker.com/desktop/), which comes with Docker CLI, Docker Engine and Docker Compose.
 - **NVM** - [NVM](https://github.com/nvm-sh/nvm) is node version manager. It makes installing Node.js super easy and allows to jump between versions on the same machine.

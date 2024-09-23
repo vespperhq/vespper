@@ -55,7 +55,7 @@ export const ConnectOpsgenieWebhook = ({ data }: ConnectionProps) => {
           account”
         </li>
         <li>
-          If you're running Merlinn locally, put your ngrok tunnel, followed by
+          If you're running Vespper locally, put your ngrok tunnel, followed by
           /webhooks/opsgenie. For example:
           https://1234abcd.ngrok.io/webhooks/opsgenie
         </li>

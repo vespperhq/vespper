@@ -1,6 +1,6 @@
 # API
 
-This repo contains the code for the api that serves the Merlinn RCaaS product.
+This repo contains the code for the api that serves the Vespper RCaaS product.
 
 ## Prerequisites
 

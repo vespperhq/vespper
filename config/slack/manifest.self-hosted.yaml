@@ -1,14 +1,14 @@
 display_information:
-  name: Merlinn
+  name: Vespper
   description: AI assistant for fast incident resolution
   background_color: "#2c2d30"
 features:
   bot_user:
-    display_name: Merlinn
+    display_name: Vespper
     always_online: false
   slash_commands:
     - command: /vespper
-      description: Manage Merlinn
+      description: Manage Vespper
       should_escape: false
 oauth_config:
   scopes:

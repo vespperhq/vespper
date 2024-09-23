@@ -178,7 +178,7 @@ export const OrganizationKnowledgeGraphPage = () => {
         <Card sx={{ display: "flex" }}>
           <Typography level="title-lg">Knowledge Graph</Typography>
           <Typography level="body-sm" mt={"10px"}>
-            Creating a knowledge graph is a crucial step in integrating Merlinn.
+            Creating a knowledge graph is a crucial step in integrating Vespper.
             By creating it, you're enabling our system to access contextual data
             in real time.
           </Typography>

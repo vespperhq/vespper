@@ -6,10 +6,10 @@ data "template_file" "user_data" {
   template = data.http.startup_script_remote.response_body
 
   vars = {
-    slack_bot_token         = var.slack_bot_token
-    slack_app_token         = var.slack_app_token
-    slack_signing_secret    = var.slack_signing_secret
-    openai_token            = var.openai_token
+    slack_bot_token      = var.slack_bot_token
+    slack_app_token      = var.slack_app_token
+    slack_signing_secret = var.slack_signing_secret
+    openai_token         = var.openai_token
   }
 }
 
@@ -35,7 +35,7 @@ variable "public_access" {
 
 locals {
   tags = {
-    Name        = "vespper-instance"
+    Name = "vespper-instance"
   }
 }
 
@@ -63,15 +63,15 @@ variable "vespper_data_volume_size" {
 }
 
 variable "vespper_data_volume_snapshot_before_destroy" {
-    description = "Take a snapshot of the vespper data volume before destroying it"
-    type        = bool
-    default     = true
+  description = "Take a snapshot of the vespper data volume before destroying it"
+  type        = bool
+  default     = true
 }
 
 variable "vespper_data_restore_from_snapshot_id" {
-    description = "Restore the vespper data volume from a snapshot"
-    type        = string
-    default     = ""
+  description = "Restore the vespper data volume from a snapshot"
+  type        = string
+  default     = ""
 }
 
 variable "source_ranges" {
@@ -83,7 +83,7 @@ variable "source_ranges" {
 variable "mgmt_source_ranges" {
   default     = ["0.0.0.0/0"]
   type        = list(string)
-  description = "List of CIDR ranges to allow for management of the Merlinn instance. This is used for SSH incoming traffic filtering"
+  description = "List of CIDR ranges to allow for management of the Vespper instance. This is used for SSH incoming traffic filtering"
 }
 
 variable "slack_bot_token" {

@@ -34,7 +34,7 @@ export async function parseMessage(
 ): Promise<ChatMessage> {
   const botMentionString = `<@${botUserId}>`;
   const role = message.user === botUserId ? Roles.assistant : Roles.user;
-  const text = message.text!.replace(botMentionString, "@Merlinn");
+  const text = message.text!.replace(botMentionString, "@Vespper");
 
   const hasImage = message.files && message.files.length;
   if (!hasImage) {

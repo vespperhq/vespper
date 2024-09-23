@@ -79,7 +79,7 @@ export function Chat() {
       >
         <Box position="relative">
           <Input
-            placeholder="Message Merlinn"
+            placeholder="Message Vespper"
             value={input}
             onChange={handleInputChange}
             onKeyUp={({ key }) => {

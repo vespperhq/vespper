@@ -26,7 +26,7 @@ receivers:
     webhook_configs:
       - url: "https://1234abcd.ngrok.io/webhooks/alertmanager"
 # - url: "http://host.docker.internal:3000/webhooks/alertmanager"
-# If you run Merlinn locally
+# If you run Vespper locally
         send_resolved: true
         http_config:
           authorization:
