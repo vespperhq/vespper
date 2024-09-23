@@ -17,7 +17,7 @@ data
 *.launch
 .settings/
 *.sublime-workspace
-merlinn.iml
+vespper.iml
 
 # IDE - VSCode
 .vscode/*
@@ -55,5 +55,5 @@ config/litellm/.env
 .terraform.tfstate.lock.info
 terraform.tfstate
 terraform.tfstate.backup
-merlinn-aws
-merlinn-aws.pub
+vespper-aws
+vespper-aws.pub

@@ -1,8 +1,8 @@
 import express, { Request, Response } from "express";
 import Langfuse from "langfuse";
 import { uuid } from "uuidv4";
-import { integrationModel, PlanFieldCode } from "@merlinn/db";
-import { IIntegration } from "@merlinn/db";
+import { integrationModel, PlanFieldCode } from "@vespper/db";
+import { IIntegration } from "@vespper/db";
 import { runAgent } from "../agent";
 import { getSlackUser } from "../middlewares/slack";
 import { parseMessages } from "../agent/parse";

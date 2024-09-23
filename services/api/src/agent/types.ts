@@ -1,7 +1,7 @@
 import { ChatOpenAI } from "langchain/chat_models/openai";
 import { ChatPromptTemplate } from "langchain/prompts";
 import { AIMessage, HumanMessage, MessageContent } from "langchain/schema";
-import type { IIntegration } from "@merlinn/db";
+import type { IIntegration } from "@vespper/db";
 import { LangfuseTraceClient } from "langfuse";
 
 // Langchain helper types

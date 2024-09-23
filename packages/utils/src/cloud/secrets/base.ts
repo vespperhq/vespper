@@ -1,4 +1,4 @@
-import { IIntegration } from "@merlinn/db";
+import { IIntegration } from "@vespper/db";
 
 export abstract class SecretsBackend {
   abstract fetchSecrets(

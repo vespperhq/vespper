@@ -1,4 +1,4 @@
-import { IIntegration } from "@merlinn/db";
+import { IIntegration } from "@vespper/db";
 import { DynamicStructuredTool, DynamicTool } from "langchain/tools";
 import { RunContext } from "../types";
 

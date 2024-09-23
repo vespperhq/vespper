@@ -1,5 +1,5 @@
 data "http" "startup_script_remote" {
-  url = "https://raw.githubusercontent.com/merlinn-co/merlinn/main/examples/deployments/aws-terraform/startup.sh"
+  url = "https://raw.githubusercontent.com/vespper/vespper/main/examples/deployments/aws-terraform/startup.sh"
 }
 
 data "template_file" "user_data" {
@@ -35,41 +35,41 @@ variable "public_access" {
 
 locals {
   tags = {
-    Name        = "merlinn-instance"
+    Name        = "vespper-instance"
   }
 }
 
 variable "ssh_public_key" {
   description = "SSH Public Key"
   type        = string
-  default     = "./merlinn-aws.pub"
+  default     = "./vespper-aws.pub"
 }
 variable "ssh_private_key" {
   description = "SSH Private Key"
   type        = string
-  default     = "./merlinn-aws"
+  default     = "./vespper-aws"
 }
 
-variable "merlinn_instance_volume_size" {
+variable "vespper_instance_volume_size" {
   description = "The size of the instance volume - the root volume"
   type        = number
   default     = 30
 }
 
-variable "merlinn_data_volume_size" {
-  description = "EBS Volume Size of the attached data volume where your merlinn data is stored"
+variable "vespper_data_volume_size" {
+  description = "EBS Volume Size of the attached data volume where your vespper data is stored"
   type        = number
   default     = 20
 }
 
-variable "merlinn_data_volume_snapshot_before_destroy" {
-    description = "Take a snapshot of the merlinn data volume before destroying it"
+variable "vespper_data_volume_snapshot_before_destroy" {
+    description = "Take a snapshot of the vespper data volume before destroying it"
     type        = bool
     default     = true
 }
 
-variable "merlinn_data_restore_from_snapshot_id" {
-    description = "Restore the merlinn data volume from a snapshot"
+variable "vespper_data_restore_from_snapshot_id" {
+    description = "Restore the vespper data volume from a snapshot"
     type        = string
     default     = ""
 }

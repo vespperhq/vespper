@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from "express";
-import { webhookModel, PlanFieldCode, IWebhook } from "@merlinn/db";
+import { webhookModel, PlanFieldCode, IWebhook } from "@vespper/db";
 import { catchAsync } from "../utils/errors";
 import { isEnterprise } from "../utils/ee";
 import { AppError } from "../errors";
 import { getPlanFieldState } from "../services/plans";
 
 export function getSecretFromRequest(req: Request) {
-  const customHeaderSecret = req.headers["x-merlinn-secret"] as string;
+  const customHeaderSecret = req.headers["x-vespper-secret"] as string;
 
   if (customHeaderSecret) {
     return customHeaderSecret;

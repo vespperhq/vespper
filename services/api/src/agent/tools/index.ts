@@ -6,7 +6,7 @@ import type {
   JaegerIntegration,
   PrometheusIntegration,
   MongoDBIntegration,
-} from "@merlinn/db";
+} from "@vespper/db";
 import { toolLoaders as coralogixToolLoaders } from "./coralogix";
 import { toolLoaders as githubToolLoaders } from "./github";
 import { toolLoaders as datadogToolLoaders } from "./datadog";

@@ -8,7 +8,7 @@ import {
   webhookModel,
   indexModel,
   planStateModel,
-} from "@merlinn/db";
+} from "@vespper/db";
 import { checkAuth, getDBUser } from "../middlewares/auth";
 import { catchAsync } from "../utils/errors";
 import { isEnterprise } from "../utils/ee";

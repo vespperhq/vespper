@@ -1,6 +1,6 @@
 import axios from "axios";
 import { DynamicTool } from "langchain/tools";
-import type { PrometheusIntegration } from "@merlinn/db";
+import type { PrometheusIntegration } from "@vespper/db";
 
 export default async function (integration: PrometheusIntegration) {
   return new DynamicTool({

@@ -10,7 +10,7 @@ Here’s how you can help out:
 
 This guide will walk you through our development process, where to get help and other handy resources. We want to make it easy for you to get involved, whether it’s updating our docs, improving the app, or fixing some bugs.
 
-Got questions? We are hanging out on [Slack](https://join.slack.com/t/merlinncommunity/signup), ready to help.
+Got questions? We are hanging out on [Slack](https://join.slack.com/t/vesppercommunity/signup), ready to help.
 
 If you’re short on time for coding, no worries! You can still support Merlinn in other ways:
 
@@ -123,7 +123,7 @@ Additionally, if you want to work on our Python services (currently only the `da
    ```bash
    yarn install
    ```
-2. Create a `.env` file as described in the [quickstart guide](https://github.com/merlinn-co/merlinn?tab=readme-ov-file#quick-installation-%EF%B8%8F).
+2. Create a `.env` file as described in the [quickstart guide](https://github.com/vespper/vespper?tab=readme-ov-file#quick-installation-%EF%B8%8F).
 3. Run the infrastructure services using docker:
    ```bash
    docker compose --profile infra up

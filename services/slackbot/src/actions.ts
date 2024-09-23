@@ -3,7 +3,7 @@ import util from "util";
 import { HELP_MESSAGE } from "./constants";
 
 export function attachCommands(app: App) {
-  app.command("/merlinn", async ({ ack, say, command, client }) => {
+  app.command("/vespper", async ({ ack, say, command, client }) => {
     await ack();
 
     switch (command.text) {
@@ -25,7 +25,7 @@ export function attachCommands(app: App) {
       }
       default:
         await say(
-          "Invalid command 😕 You can run `/merlinn help` to see all the available commands",
+          "Invalid command 😕 You can run `/vespper help` to see all the available commands",
         );
     }
   });

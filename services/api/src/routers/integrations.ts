@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
-import { vendorModel, organizationModel, integrationModel } from "@merlinn/db";
-import type { IIntegration } from "@merlinn/db";
+import { vendorModel, organizationModel, integrationModel } from "@vespper/db";
+import type { IIntegration } from "@vespper/db";
 import { checkAuth, getDBUser } from "../middlewares/auth";
 import { catchAsync } from "../utils/errors";
 import { AppError } from "../errors";

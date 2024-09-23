@@ -26,7 +26,7 @@ export const ConnectGithubIntegration = ({ orgId, data }: ConnectionProps) => {
         <li>
           Install Merlinn Github app on your desired organizations through{" "}
           <a
-            href="https://github.com/apps/merlinn-app/installations/select_target"
+            href="https://github.com/apps/vespper-app/installations/select_target"
             target="_blank"
           >
             this
