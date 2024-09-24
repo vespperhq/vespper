@@ -5,7 +5,7 @@ services:
     container_name: envoy
     profiles: ["app", "infra"]
     ports:
-      - "8080:8080"
+      - "${ENVOY_PORT}:${ENVOY_PORT}"
     volumes:
       - ./config/envoy/envoy.yaml:/etc/envoy/envoy.yaml
   postgres-common:
