@@ -15,7 +15,7 @@ services:
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     volumes:
-      - ${DATA_DIR}/postgres:/var/lib/postgresql/data
+      - ${DATA_DIR}/postgres:/var/lib/postgresql
       - ${CONFIG_DIR}/postgres/postgres_init.sh:/docker-entrypoint-initdb.d/init.sh
     environment:
       - POSTGRES_PASSWORD
