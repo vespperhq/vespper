@@ -38,7 +38,7 @@ services:
     profiles: ["app", "infra"]
     restart: always
     volumes:
-      - ${DATA_DIR}/mongo:/data/db:rw
+      - ${DATA_DIR}/mongo:/data:rw
     ports:
       - "${MONGO_PORT}:${MONGO_PORT}"
   chroma-common:
