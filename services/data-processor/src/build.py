@@ -1,4 +1,6 @@
+import datetime
 import traceback
+import uuid
 import nest_asyncio
 
 from utils import is_enterprise
@@ -33,6 +35,7 @@ async def build_index(
     data_sources: Optional[List[str]] = None,
 ):
     litellm_url = os.getenv("LITELLM_URL")
+    snapshot_id = str(uuid.uuid4())
 
     try:
         index = await db.index.find_one({"_id": index_id})
@@ -57,6 +60,7 @@ async def build_index(
             vector_store=vector_store,
             organization_id=organization_id,
             data_sources=data_sources,
+            snapshot_id=snapshot_id,
             on_progress=partial(update_status, status="in_progress"),
             on_complete=partial(update_status, status="completed"),
         )

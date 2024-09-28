@@ -211,6 +211,7 @@ services:
       - TELEMETRY_ENABLED
       - SECRET_MANAGER_TYPE
       - SECRET_MANAGER_DIRECTORY
+      - KNOWLEDGE_BASE_SNAPSHOT_DIRECTORY
       - HASHICORP_VAULT_ROOT_TOKEN
       - HASHICORP_VAULT_UNSEAL_TOKEN
       - HASHICORP_VAULT_URL
@@ -225,6 +226,7 @@ services:
       - "${DATA_PROCESSOR_PORT}:${DATA_PROCESSOR_PORT}"
     volumes:
       - ${DATA_DIR}/secrets:${SECRET_MANAGER_DIRECTORY}
+      - ${DATA_DIR}/knowledge:${KNOWLEDGE_BASE_SNAPSHOT_DIRECTORY}
     depends_on:
       - mongo
   log-parser-common:

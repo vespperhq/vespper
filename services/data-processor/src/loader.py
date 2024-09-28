@@ -8,9 +8,6 @@ from db.integrations import get_integrations_by_organization_id, populate_secret
 from loaders import loaders
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core.ingestion import IngestionPipeline
-from llama_index.core.settings import (
-    Settings,
-)
 
 from llama_index.core.schema import Document
 from llama_index.core.vector_stores.types import (
@@ -90,6 +87,7 @@ async def get_documents(
     index: Any,
     vector_store: BasePydanticVectorStore,
     organization_id: str,
+    snapshot_id: str,
     data_sources: Optional[List[str]] = None,
     total_limit: Optional[int] = 10000,  # unused at the moment
     on_progress: Optional[callable] = None,
@@ -117,17 +115,15 @@ async def get_documents(
             await on_progress(vendor_name)
 
         progress_bar.set_description(f"Processing {vendor_name}")
-        loader = loaders.get(vendor_name)
-        if not loader:
+        loader_cls = loaders.get(vendor_name)
+        if not loader_cls:
             print(f"No loader found for {vendor_name}")
             continue
 
         # Loader might be an async code, so we need to await it
         try:
-            if asyncio.iscoroutinefunction(loader):
-                raw_docs = await loader(integration)
-            else:
-                raw_docs = loader(integration)
+            loader = loader_cls(integration)
+            raw_docs = await loader.load()
 
             changed_documents, unchanged_documents, new_documents = (
                 await filter_unchanged_documents(vector_store, raw_docs)
