@@ -5,14 +5,14 @@ import {
   Timeframe,
   getTimestamp,
   timeframe2values,
-} from "../../../utils/dates";
-import { CoralogixClient } from "../../../clients/coralogix";
+} from "@utils/dates";
+import { CoralogixClient } from "@clients/coralogix";
 import {
   extractLogStructureKeysPrompt,
   filterHighCardinalityFieldsPrompt,
-} from "../../../agent/prompts";
+} from "@agent/prompts";
 import { JsonOutputParser } from "langchain/schema/output_parser";
-import { chatModel } from "../../../agent/model";
+import { chatModel } from "@agent/model";
 
 function getKeys(obj: Record<string, unknown>, path: string[] = []): string[] {
   let result: string[] = [];

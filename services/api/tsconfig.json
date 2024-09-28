@@ -4,7 +4,15 @@
     "rootDir": "./",
     "baseUrl": "./",
     "outDir": "./dist",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": {
+      "@tools/*": ["src/agent/tools/*"],
+      "@agent/*": ["src/agent/*"],
+      "@utils/*": ["src/utils/*"],
+      "@clients/*": ["src/clients/*"],
+      "@types/*": ["src/types/*"],
+      "@errors/*": ["src/errors/*"]
+    }
   },
   "files": ["./src/index.d.ts"],
   "include": ["./**/*.ts"],

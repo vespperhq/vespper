@@ -20,9 +20,9 @@ import {
   getTimestamp,
   Timeframe,
   timeframe2values,
-} from "../../../utils/dates";
-import { isLangfuseEnabled } from "../../../utils/ee";
-import { RunContext } from "../../../agent/types";
+} from "@utils/dates";
+import { isLangfuseEnabled } from "@utils/ee";
+import { RunContext } from "@agent/types";
 
 const PROMPT_TEMPLATE = `
 You are a Coralogix logs expert. Given a request in natural language, you should generate {nQueries} queries in a DataPrime syntax.
