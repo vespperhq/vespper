@@ -1,0 +1,63 @@
+{
+  "name": "doc-indexer",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "./src",
+  "targets": {
+    "dev": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "cwd": "services/doc-indexer",
+        "commands": ["poetry run python src/main.py"]
+      }
+    },
+    "deploy": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "cwd": "services/doc-indexer",
+        "commands": ["npx ts-node ../../tools/scripts/deploy.ts doc-indexer"]
+      }
+    },
+    "push-image": {
+      "executor": "nx:run-commands",
+      "options": {
+        "parallel": false,
+        "cwd": "services/doc-indexer",
+        "commands": [
+          "npx ts-node ../../tools/scripts/push-image.ts doc-indexer"
+        ]
+      }
+    },
+    "container": {
+      "executor": "@nx-tools/nx-container:build",
+      "defaultConfiguration": "local",
+      "options": {
+        "context": "services/doc-indexer",
+        "engine": "docker",
+        "platforms": ["linux/amd64"]
+      },
+      "configurations": {
+        "local": {
+          "tags": ["doc-indexer:latest"],
+          "push": false
+        },
+        "dockerhub": {
+          "push": true,
+          "tags": ["vespperhq/doc-indexer:latest"]
+        },
+        "production": {
+          "push": false,
+          "metadata": {
+            "images": [
+              "europe-west2-docker.pkg.dev/merlinn/production/doc-indexer"
+            ],
+            "tags": ["type=sha"]
+          }
+        }
+      }
+    }
+  },
+  "tags": []
+}

@@ -37,6 +37,8 @@ class IndexState(BaseModel):
 class Index(CommonDBModel):
     organization: Union[PyObjectId, Organization]
     dataSources: List[str]
+    name: str
+    type: Literal["chromadb", "pinecone"]
     stats: Optional[dict] = None
     state: IndexState
 
@@ -46,9 +48,15 @@ class Snapshot(CommonDBModel):
     organization: Union[PyObjectId, Organization]
 
 
+class JobStatus(BaseModel):
+    type: Literal["pending", "completed", "failed"]
+    metadata: Optional[dict] = None
+
+
 class Job(CommonDBModel):
-    type: Literal["ingest-knowledge"]
     organization: Union[PyObjectId, Organization]
+    type: Literal["ingest-knowledge"]
+    status: JobStatus
 
 
 class Plan(CommonDBModel):

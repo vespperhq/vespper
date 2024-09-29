@@ -13,7 +13,10 @@ async def get_previous_snapshot(current_snapshot_id: str) -> Snapshot | None:
         return None
 
     previous_snapshot = await snapshot_model.get_one(
-        {"createdAt": {"$lt": current_snapshot.createdAt}},
+        {
+            "organization": current_snapshot.organization,
+            "createdAt": {"$lt": current_snapshot.createdAt},
+        },
         sort=[("createdAt", -1)],
     )
 

@@ -83,6 +83,14 @@
     },
     {
       "type": "debugpy",
+      "name": "Doc Indexer: Debug",
+      "request": "launch",
+      "program": "src/main.py",
+      "cwd": "${workspaceFolder}/services/doc-indexer/",
+      "justMyCode": false
+    },
+    {
+      "type": "debugpy",
       "name": "Log Parser: Debug",
       "request": "launch",
       "program": "src/main.py",

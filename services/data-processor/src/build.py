@@ -1,4 +1,6 @@
+import os
 import traceback
+import httpx
 import nest_asyncio
 
 nest_asyncio.apply()
@@ -43,6 +45,16 @@ async def build_snapshot(
         await snapshot_model.get_one_by_id_and_update(
             snapshot.id, data={"stats": stats}
         )
+
+        # Notify the doc indexer service by sending HTTP request (POST)
+        # to /build-index
+        DOC_INDEXER_URL = os.getenv("DOC_INDEXER_URL")
+        async with httpx.AsyncClient() as client:
+            await client.post(
+                f"{DOC_INDEXER_URL}/build-index",
+                json={"snapshot_id": str(snapshot.id), "job_id": str(job.id)},
+            )
+
         print(f"Updated snapshot {str(snapshot.id)} with stats")
         print("Build snapshot completed")
     except Exception as e:

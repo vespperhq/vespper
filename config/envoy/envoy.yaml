@@ -40,6 +40,11 @@ static_resources:
                           route:
                             cluster: log_parser_service
                             prefix_rewrite: "/"
+                        - match:
+                            prefix: "/doc-indexer/"
+                          route:
+                            cluster: doc_indexer_service
+                            prefix_rewrite: "/"
                 http_filters:
                   - name: envoy.filters.http.router
                     typed_config:
@@ -126,6 +131,28 @@ static_resources:
                     socket_address:
                       address: host.docker.internal
                       port_value: 3004
+      health_checks:
+        - timeout: 1s
+          interval: 5s
+          unhealthy_threshold: 2
+          healthy_threshold: 1
+          http_health_check:
+            path: "/"
+
+    - name: doc_indexer_service
+      connect_timeout: 0.25s
+      type: STRICT_DNS
+      lb_policy: ROUND_ROBIN
+      dns_lookup_family: V4_ONLY
+      load_assignment:
+        cluster_name: doc_indexer_service
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: host.docker.internal
+                      port_value: 3005
       health_checks:
         - timeout: 1s
           interval: 5s

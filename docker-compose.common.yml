@@ -216,12 +216,7 @@ services:
       - HASHICORP_VAULT_UNSEAL_TOKEN
       - HASHICORP_VAULT_URL
       - MONGO_URI
-      - LITELLM_URL
       - IS_DOCKER=true
-      - CHROMA_HOST=chroma
-      - CHROMA_SSL=false
-      - CHROMA_PORT=8000
-      - CHROMA_API_KEY=${CHROMA_SERVER_AUTHN_CREDENTIALS}
     ports:
       - "${DATA_PROCESSOR_PORT}:${DATA_PROCESSOR_PORT}"
     volumes:

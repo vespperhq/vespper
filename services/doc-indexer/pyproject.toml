@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "data-processor"
+name = "doc-indexer"
 version = "0.1.0"
 description = ""
 authors = ["Dudu Lasry <davidlasry696@gmail.com>"]
@@ -7,12 +7,13 @@ authors = ["Dudu Lasry <davidlasry696@gmail.com>"]
 [tool.poetry.dependencies]
 python = "3.10.5"
 motor = "^3.3.2"
-python-dotenv = {extras = ["cli"], version = "^1.0.1"}
+python-dotenv = { extras = ["cli"], version = "^1.0.1" }
 slack-sdk = "^3.26.2"
 certifi = "^2024.2.2"
 openai = "^1.12.0"
 pydantic = "^2.6.1"
 tqdm = "^4.66.2"
+llama-index-vector-stores-pinecone = "^0.1.1"
 llama-index = "^0.10.6"
 llama-index-readers-slack = "^0.1.2"
 llama-index-readers-notion = "^0.1.4"
@@ -26,11 +27,13 @@ llama-index-readers-confluence = "^0.1.2"
 atlassian-python-api = "^3.41.10"
 fastapi = "^0.109.2"
 uvicorn = "^0.27.1"
+chromadb = "^0.5.0"
 httpx = "^0.27.0"
 hvac = "^2.2.0"
-aiofiles = "^24.1.0"
-py-db = {path = "../../packages/py-db", develop = true}
+litellm = "^1.41.0"
+tenacity = "8.5.0"
 py-storage = {path = "../../packages/py-storage", develop = true}
+py-db = {path = "../../packages/py-db", develop = true}
 
 
 [tool.poetry.group.dev.dependencies]
