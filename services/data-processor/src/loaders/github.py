@@ -7,11 +7,11 @@ from loaders.utils.github_client import GithubClient
 from llama_index.readers.github import (
     GitHubIssuesClient,
 )
-from db.types import Integration
+from db.db_types import Integration
 from loaders.readers.github_repo import GithubRepositoryReader
 from loaders.readers.github_issues import GitHubRepositoryIssuesReader
 
-from db.types import Integration
+from db.db_types import Integration
 from loaders.base import BaseLoader
 from llama_index.core.schema import Document
 

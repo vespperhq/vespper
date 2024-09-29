@@ -257,14 +257,9 @@ class SlackReader(BasePydanticReader):
             )
             # Remove messages with empty text
             messages = [message for message in messages if message["text"] != ""]
-            # debugging step
-            for message in messages:
-                if "glorious poop" in message["text"]:
-                    print("this is it boys")
-
             documents = [
                 Document(
-                    id_=message["ts"],
+                    doc_id=message["ts"],
                     text=message["text"],
                     metadata={
                         "channel_id": channel_id,

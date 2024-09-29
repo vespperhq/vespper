@@ -4,7 +4,7 @@ import requests
 from loaders.readers.confluence import ConfluenceReader
 from atlassian import Confluence
 
-from db.types import Integration
+from db.db_types import Integration
 from loaders.base import BaseLoader
 from llama_index.core.schema import Document
 

@@ -1,9 +1,9 @@
 from typing import List
-from db.types import Integration
+from db.db_types import Integration
 from notion_client import Client
 from loaders.readers.notion import NotionPageReader
 
-from db.types import Integration
+from db.db_types import Integration
 from loaders.base import BaseLoader
 from llama_index.core.schema import Document
 

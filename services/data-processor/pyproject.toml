@@ -32,6 +32,8 @@ httpx = "^0.27.0"
 hvac = "^2.2.0"
 litellm = "^1.41.0"
 tenacity = "8.5.0"
+aiofiles = "^24.1.0"
+py-db = {path = "../../packages/py-db", develop = true}
 
 
 [tool.poetry.group.dev.dependencies]

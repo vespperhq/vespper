@@ -3,9 +3,9 @@ import requests
 from datetime import datetime, timezone
 from dateutil import parser
 from loaders.readers.jira import JiraReader
-from db.types import Integration
+from db.db_types import Integration
 
-from db.types import Integration
+from db.db_types import Integration
 from loaders.base import BaseLoader
 from llama_index.core.schema import Document
 

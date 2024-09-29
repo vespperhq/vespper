@@ -1,6 +1,7 @@
 from typing import List
-from db.types import Integration
+from db.db_types import Integration
 from llama_index.core.schema import Document
+
 
 class BaseLoader:
     def __init__(self, name: str, integration: Integration):
