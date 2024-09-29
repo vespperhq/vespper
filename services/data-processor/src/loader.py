@@ -106,9 +106,9 @@ async def get_documents(
     progress_bar = tqdm(integrations)
 
     snapshot = await snapshot_model.get_one_by_id(snapshot_id)
-    directory = os.getenv("KNOWLEDGE_BASE_SNAPSHOT_DIRECTORY")
+    directory = os.getenv("SNAPSHOTS_DIRECTORY")
     if not directory:
-        raise ValueError("KNOWLEDGE_BASE_SNAPSHOT_DIRECTORY is not set")
+        raise ValueError("SNAPSHOTS_DIRECTORY is not set")
 
     storage = AsyncFileStorage(directory)
 

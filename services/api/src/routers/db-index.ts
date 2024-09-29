@@ -47,10 +47,12 @@ router.post(
       });
     }
 
+    const organizationId = String(req.user!.organization._id);
+
     if (isEnterprise()) {
       const attemptsState = await getPlanFieldState({
         fieldCode: PlanFieldCode.indexingAttempts,
-        organizationId: String(req.user!.organization._id),
+        organizationId,
       });
       if (!attemptsState.isAllowed) {
         throw AppError({
@@ -114,12 +116,12 @@ router.post(
 
     // TODO: use a proper messaging solution instead of plain API request
     const serviceUrl = process.env.DATA_PROCESSOR_URL as string;
-    const { data: index } = await axios.post(`${serviceUrl}/build-index`, {
-      organizationId: String(req.user!.organization._id),
-      dataSources: dataSources,
+    const { data: job } = await axios.post(`${serviceUrl}/build-snapshot`, {
+      organizationId,
+      dataSources,
     });
 
-    return res.status(202).json({ index });
+    return res.status(202).json({ job });
   }),
 );
 
