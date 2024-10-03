@@ -57,3 +57,6 @@ terraform.tfstate
 terraform.tfstate.backup
 vespper-aws
 vespper-aws.pub
+
+# Python
+__pycache__
