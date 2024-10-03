@@ -28,7 +28,7 @@ class SlackLoader(BaseLoader):
         id2name = {channel["id"]: channel["name"] for channel in channels["channels"]}
 
         # Try to join the channels, to avoid "not_in_channel" in Slack.
-        self.join_channels(self.client, channel_ids)
+        self.join_channels(channel_ids)
 
         loader = SlackReader(self.integration.credentials["access_token"])
         documents = loader.load_data(channel_ids=channel_ids)
