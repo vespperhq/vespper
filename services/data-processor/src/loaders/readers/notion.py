@@ -193,7 +193,7 @@ class NotionPageReader(BasePydanticReader):
                 docs.append(
                     Document(
                         text=page_text,
-                        id_=page_id,
+                        doc_id=page_id,
                         extra_info={"page_id": page_id, "updated_at": most_recent_time},
                     )
                 )

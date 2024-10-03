@@ -8,3 +8,5 @@ export { PlanState } from "./planState";
 export { User } from "./user";
 export { Vendor } from "./vendor";
 export { Webhook } from "./webhook";
+export { Snapshot } from "./snapshot";
+export { Job } from "./job";

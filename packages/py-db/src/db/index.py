@@ -1,17 +1,10 @@
 from typing import List
-from db import db
-from db.types import Index
+from db.base import BaseModel
+from db.db_types import Index
 from datetime import datetime
 from bson import ObjectId
 
-
-async def get_index_by_organization_id(organization_id: str) -> Index:
-    index = await db.index.find_one({"organization": ObjectId(organization_id)})
-    return index
-
-
-async def delete_index_by_id(id: str):
-    await db.index.delete_one({"_id": id})
+index_model = BaseModel[Index](collection_name="index", model_class=Index)
 
 
 async def create_index(
@@ -22,7 +15,7 @@ async def create_index(
         "status": "pending",
         "integrations": {source: "in_queue" for source in data_sources},
     }
-    result = await db.index.insert_one(
+    result = await index_model.create(
         {
             "name": organization_id,
             "organization": ObjectId(organization_id),
@@ -33,5 +26,4 @@ async def create_index(
             "updatedAt": current_timestamp,
         }
     )
-    created = await db.index.find_one({"_id": result.inserted_id})
-    return created
+    return result

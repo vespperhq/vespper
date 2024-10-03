@@ -1,11 +1,11 @@
 from slack_sdk import WebClient
-from db.types import Integration
+from db.db_types import Integration
 
 from typing import List
 from slack_sdk import WebClient
 from loaders.readers.slack import SlackReader
 
-from db.types import Integration
+from db.db_types import Integration
 from loaders.base import BaseLoader
 from llama_index.core.schema import Document
 

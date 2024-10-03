@@ -13,7 +13,7 @@ export const getIndex = async (axios: AxiosInstance) => {
 export const createIndex = async (
   axios: AxiosInstance,
   body: { dataSources: string[] },
-) => {
+): Promise<{ status: { type: "pending" | "completed" | "failed" } }> => {
   try {
     const response = await axios.post("/index", body);
 

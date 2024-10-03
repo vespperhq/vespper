@@ -15,7 +15,7 @@ services:
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     volumes:
-      - ${DATA_DIR}/postgres:/var/lib/postgresql
+      - ${DATA_DIR}/postgres:/var/lib/postgresql/data
       - ${CONFIG_DIR}/postgres/postgres_init.sh:/docker-entrypoint-initdb.d/init.sh
     environment:
       - POSTGRES_PASSWORD
@@ -38,7 +38,7 @@ services:
     profiles: ["app", "infra"]
     restart: always
     volumes:
-      - ${DATA_DIR}/mongo:/data:rw
+      - ${DATA_DIR}/mongo:/data/db:rw
     ports:
       - "${MONGO_PORT}:${MONGO_PORT}"
   chroma-common:
@@ -209,24 +209,39 @@ services:
     profiles: ["app"]
     environment:
       - TELEMETRY_ENABLED
+      - DOC_INDEXER_URL
       - SECRET_MANAGER_TYPE
       - SECRET_MANAGER_DIRECTORY
-      - KNOWLEDGE_BASE_SNAPSHOT_DIRECTORY
+      - SNAPSHOTS_DIRECTORY
       - HASHICORP_VAULT_ROOT_TOKEN
       - HASHICORP_VAULT_UNSEAL_TOKEN
       - HASHICORP_VAULT_URL
       - MONGO_URI
-      - LITELLM_URL
+      - IS_DOCKER=true
+    ports:
+      - "${DATA_PROCESSOR_PORT}:${DATA_PROCESSOR_PORT}"
+    volumes:
+      - ${DATA_DIR}/secrets:${SECRET_MANAGER_DIRECTORY}
+      - ${DATA_DIR}/snapshots:${SNAPSHOTS_DIRECTORY}
+    depends_on:
+      - mongo
+  doc-indexer-common:
+    container_name: doc-indexer
+    profiles: ["app"]
+    environment:
+      - TELEMETRY_ENABLED
+      - SNAPSHOTS_DIRECTORY
+      - MONGO_URI
       - IS_DOCKER=true
       - CHROMA_HOST=chroma
       - CHROMA_SSL=false
       - CHROMA_PORT=8000
       - CHROMA_API_KEY=${CHROMA_SERVER_AUTHN_CREDENTIALS}
+      - LITELLM_URL
     ports:
-      - "${DATA_PROCESSOR_PORT}:${DATA_PROCESSOR_PORT}"
+      - "${DOC_INDEXER_PORT}:${DOC_INDEXER_PORT}"
     volumes:
-      - ${DATA_DIR}/secrets:${SECRET_MANAGER_DIRECTORY}
-      - ${DATA_DIR}/knowledge:${KNOWLEDGE_BASE_SNAPSHOT_DIRECTORY}
+      - ${DATA_DIR}/snapshots:${SNAPSHOTS_DIRECTORY}
     depends_on:
       - mongo
   log-parser-common:

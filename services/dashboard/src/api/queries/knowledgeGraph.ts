@@ -7,9 +7,7 @@ export const useIndex = () => {
   return useQuery({
     queryKey: ["index"],
     queryFn: () => getIndex(axios),
-    refetchInterval: (data) => {
-      return data?.state?.data?.state?.status === "pending" ? 10000 : false;
-    },
+    refetchInterval: 1000,
   });
 };
 
@@ -19,9 +17,8 @@ export const useCreateIndex = () => {
 
   return useMutation({
     mutationKey: ["createIndex"],
-    mutationFn: async (requestData: { dataSources: string[] }) => {
-      await createIndex(axios, requestData);
-    },
+    mutationFn: (requestData: { dataSources: string[] }) =>
+      createIndex(axios, requestData),
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["index"] });
     },

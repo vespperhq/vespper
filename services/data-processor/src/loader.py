@@ -1,55 +1,44 @@
+import json
 import os
-import asyncio
-from typing import List, Optional, Any
+from typing import List, Optional
 from dateutil import parser
-import numpy as np
+from utils import populate_secrets
 from tqdm.auto import tqdm
-from db.integrations import get_integrations_by_organization_id, populate_secrets
+from db.db_types import Snapshot
+from db.integration import get_integrations_by_organization_id
+from db.snapshot import snapshot_model, get_previous_snapshot
 from loaders import loaders
-from llama_index.core.node_parser import SentenceSplitter
-from llama_index.core.ingestion import IngestionPipeline
-
+from storage.base import BaseStorage
+from storage.file import AsyncFileStorage
+from snapshots.utils import store_documents
+from bson import ObjectId
 from llama_index.core.schema import Document
-from llama_index.core.vector_stores.types import (
-    BasePydanticVectorStore,
-    VectorStoreQuery,
-    MetadataFilters,
-    MetadataFilter,
-    FilterOperator,
-)
 
 
 async def filter_unchanged_documents(
-    vector_store: BasePydanticVectorStore,
+    storage: BaseStorage,
     documents: List[Document],
+    data_source: str,
+    previous_snapshot: Snapshot,
 ):
-    # Create a dictionary to group documents by ref_doc_id
-    document_ids = [document.doc_id for document in documents]
+    documents_path = f"{previous_snapshot.id}/{data_source}"
 
-    result = vector_store.query(
-        VectorStoreQuery(
-            similarity_top_k=100000000000,  # TODO: This is a hack to make sure we get all the documents
-            filters=MetadataFilters(
-                filters=[
-                    MetadataFilter(
-                        key="ref_doc_id",
-                        value=document_ids,
-                        operator=FilterOperator.IN,
-                    )
+    # Get all JSON files from new, changed, and unchanged folders
+    total_file_paths = []
+    for status in ["new", "changed", "unchanged"]:
+        folder_path = os.path.join(documents_path, status)
+        if await storage.exists(folder_path):
+            file_paths = await storage.list(folder_path)
+            total_file_paths.extend(
+                [
+                    os.path.join(folder_path, f)
+                    for f in file_paths
+                    if f.endswith(".json")
                 ]
-            ),
-        )
-    )
-    db_nodes = result.nodes
-    if len(db_nodes) == 0:
-        return [], [], documents
+            )
 
-    db_nodes_groups = {}
-    for db_node in db_nodes:
-        ref_doc_id = db_node.ref_doc_id
-        if ref_doc_id not in db_nodes_groups:
-            db_nodes_groups[ref_doc_id] = []
-        db_nodes_groups[ref_doc_id].append(db_node)
+    if len(total_file_paths) == 0:
+        return [], [], documents
 
     new_documents = []
     unchanged_documents = []
@@ -62,10 +51,19 @@ async def filter_unchanged_documents(
             continue
 
         document_id = document.doc_id
-        document_nodes = db_nodes_groups.get(document_id, [])
-        if len(document_nodes) > 0:
+        previous_document_path = next(
+            (path for path in total_file_paths if path.endswith(f"{document_id}.json")),
+            None,
+        )
+
+        if previous_document_path:
+            content = await storage.load(previous_document_path)
+            data = json.loads(content)
+
+            previous_document = Document.from_dict(data)
+
             document_timestamp = parser.isoparse(document.metadata["updated_at"])
-            node_timestamp = parser.isoparse(document_nodes[0].metadata["updated_at"])
+            node_timestamp = parser.isoparse(previous_document.metadata["updated_at"])
 
             # If the document's updated_at date is greater than the node's updated_at date, it means
             # the document has been updated, so we need to re-index it
@@ -84,16 +82,15 @@ async def filter_unchanged_documents(
 
 
 async def get_documents(
-    index: Any,
-    vector_store: BasePydanticVectorStore,
-    organization_id: str,
-    snapshot_id: str,
+    organization_id: ObjectId,
+    snapshot_id: ObjectId,
     data_sources: Optional[List[str]] = None,
-    total_limit: Optional[int] = 10000,  # unused at the moment
     on_progress: Optional[callable] = None,
     on_complete: Optional[callable] = None,
 ):
-    integrations = await get_integrations_by_organization_id(organization_id)
+    integrations = await get_integrations_by_organization_id(
+        organization_id,
+    )
     if data_sources:
         integrations = [
             integration
@@ -105,9 +102,15 @@ async def get_documents(
     print(f"Found {len(integrations)} integrations: {vendor_names}")
 
     stats = {}
-    total_nodes = []
+
     progress_bar = tqdm(integrations)
-    n_existing_nodes = index.get("stats") and sum(index["stats"].values()) or 0
+
+    snapshot = await snapshot_model.get_one_by_id(snapshot_id)
+    directory = os.getenv("SNAPSHOTS_DIRECTORY")
+    if not directory:
+        raise ValueError("SNAPSHOTS_DIRECTORY is not set")
+
+    storage = AsyncFileStorage(directory)
 
     for integration in progress_bar:
         vendor_name = integration.vendor.name
@@ -120,36 +123,44 @@ async def get_documents(
             print(f"No loader found for {vendor_name}")
             continue
 
-        # Loader might be an async code, so we need to await it
         try:
             loader = loader_cls(integration)
-            raw_docs = await loader.load()
 
-            changed_documents, unchanged_documents, new_documents = (
-                await filter_unchanged_documents(vector_store, raw_docs)
-            )
+            raw_docs = await loader.load()
+            previous_snapshot = await get_previous_snapshot(snapshot_id)
+
+            changed_documents = []
+            unchanged_documents = []
+            new_documents = []
+
+            if not previous_snapshot:
+                # If no previous snapshot, we assume all documents are new
+                new_documents = raw_docs
+            else:
+                # If there is a previous snapshot, we check what has changed
+                changed_documents, unchanged_documents, new_documents = (
+                    await filter_unchanged_documents(
+                        storage=storage,
+                        documents=raw_docs,
+                        data_source=vendor_name,
+                        previous_snapshot=previous_snapshot,
+                    )
+                )
+
+            documents = {
+                "new": new_documents,
+                "changed": changed_documents,
+                "unchanged": unchanged_documents,
+            }
+            await store_documents(storage, snapshot.id, documents, vendor_name)
+            stats[integration.vendor.name] = {
+                status: len(docs) for status, docs in documents.items()
+            }
         except Exception as e:
             print(f"Could not load {vendor_name}. Error: {e}")
             continue
 
-        progress_bar.set_description(f"Transforming {vendor_name}")
-        pipeline = IngestionPipeline(
-            transformations=[SentenceSplitter(chunk_size=1024)],
-        )
-        num_cpus = os.cpu_count()
-        num_workers = min(4, num_cpus) if num_cpus > 1 else 1
-
-        new_nodes = pipeline.run(documents=new_documents, num_workers=num_workers)
-        changed_nodes = pipeline.run(
-            documents=changed_documents, num_workers=num_workers
-        )
-        nodes = new_nodes + changed_nodes
-
-        print(f"Found total of {len(raw_docs)} documents for {vendor_name}")
-        total_nodes.extend(nodes)
-        stats[integration.vendor.name] = n_existing_nodes + len(new_nodes)
-
         if on_complete:
             await on_complete(vendor_name)
 
-    return total_nodes, stats
+    return stats

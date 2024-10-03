@@ -42,6 +42,20 @@ export interface IPlanField {
   resetMode?: ResetMode;
 }
 
+export interface ISnapshot {
+  _id: Types.ObjectId;
+  stats: Record<string, number>;
+  organization: Types.ObjectId | IOrganization;
+}
+
+export type IJob = {
+  _id: Types.ObjectId;
+  organization: Types.ObjectId | IOrganization;
+  type: "ingest-knowledge";
+  status: "pending" | "created" | "failed";
+  phase: string;
+};
+
 export interface IPlan {
   _id: Types.ObjectId;
   name: string;

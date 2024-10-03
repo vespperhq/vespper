@@ -36,6 +36,7 @@ import { useMe } from "../../../api/queries/auth";
 import InfoIcon from "@mui/icons-material/Info";
 import { AlertDialog } from "../../../components/Dialogs";
 import { isEnterprise } from "../../../utils/ee";
+import { useJob } from "../../../api/queries/jobs";
 
 const Null = styled.span``;
 const emptySeries = [
@@ -57,6 +58,8 @@ const INDEXABLE_VENDORS = [
 ];
 
 export const OrganizationKnowledgeGraphPage = () => {
+  const [statusText, setStatusText] = useState<string>("");
+  const [progress, setProgress] = useState<number>(5);
   const integrationsQuery = useIntegrations();
   const vendorsQuery = useVendors();
   const queryClient = useQueryClient();
@@ -65,53 +68,23 @@ export const OrganizationKnowledgeGraphPage = () => {
   const { data: user } = useMe();
   const organization = user?.organization;
 
-  const index = useIndex();
+  const indexQuery = useIndex();
+  const jobQuery = useJob(organization?._id, "ingest-knowledge", "pending");
 
-  const [statusText, setStatusText] = useState<string>("");
-  const [progress, setProgress] = useState<number>(5);
+  const { data: index } = indexQuery;
+  const { data: jobs } = jobQuery;
+  const job = jobs && jobs[0];
 
   useEffect(() => {
-    const { data } = index;
-
-    if (data?.state?.status === "pending") {
-      if (data.state.integrations) {
-        let entry = Object.keys(data.state.integrations).find((key) => {
-          const value = data.state.integrations[key];
-          return value === "in_progress";
-        });
-
-        const totalAmount = Object.keys(data.state.integrations).length;
-        const percentPerVendor = 90 / totalAmount;
-
-        const completedList = Object.keys(data.state.integrations).filter(
-          (key) => {
-            const value = data.state.integrations[key];
-            return value === "completed";
-          },
-        );
-
-        setProgress(Math.max(5, completedList.length * percentPerVendor));
-
-        if (entry) {
-          setStatusText(`Fetching documents from ${entry}...`);
-        } else {
-          entry = Object.keys(data.state.integrations).find((key) => {
-            const value = data.state.integrations[key];
-            return value === "in_queue";
-          });
-          if (entry) {
-            setStatusText("Initializing process.");
-          } else {
-            setStatusText("Embedding documents...");
-          }
-        }
-      }
-    } else if (data?.state?.status === "completed") {
-      setProgress(100);
-    } else if (data?.state?.status === "failed") {
+    if (job?.status === "pending") {
       setProgress(5);
+      setStatusText("Knowledge graph is being built...");
+    } else if (job?.status === "failed") {
+      setStatusText(
+        "Knowledge graph build failed, please try again or contact support.",
+      );
     }
-  }, [index]);
+  }, [jobs]);
 
   const connectedVendors = integrationsQuery.data?.map(
     (integration: { vendor: { name: ConnectionName } }) =>
@@ -119,15 +92,15 @@ export const OrganizationKnowledgeGraphPage = () => {
   );
 
   const [selectedVendors, setSelectedVendors] = useState<string[]>(
-    index.data?.dataSources || [],
+    index?.dataSources || [],
   );
   useEffect(() => {
-    setSelectedVendors(index.data?.dataSources || []);
-  }, [index.data]);
+    setSelectedVendors(index?.dataSources || []);
+  }, [index]);
   const [isConfirmOpen, setConfirmOpen] = useState<boolean>(false);
 
-  const seriesData = index?.data?.stats
-    ? Object.entries(index.data.stats)
+  const seriesData = index?.stats
+    ? Object.entries(index?.stats)
         .map(([key, value]) => {
           return {
             name: key,
@@ -153,7 +126,7 @@ export const OrganizationKnowledgeGraphPage = () => {
   const { mutateAsync: deleteIndex } = useDeleteIndex();
 
   const handleDelete = async () => {
-    const promise = deleteIndex(index.data!._id);
+    const promise = deleteIndex(index?._id);
 
     toast.promise(promise, {
       loading: "Deleting knowledge graph...",
@@ -165,8 +138,8 @@ export const OrganizationKnowledgeGraphPage = () => {
     queryClient.invalidateQueries({ queryKey: ["index"] });
   };
 
-  const submitLabel = index.data ? "Rebuild Index" : "Build Index";
-  const confirmMessage = index.data
+  const submitLabel = index ? "Rebuild Index" : "Build Index";
+  const confirmMessage = index
     ? "Are you sure you want to rebuild the index? All of its data will be deleted"
     : `You will be creating a new index with the selected data sources: ${selectedVendors.join(
         ", ",
@@ -219,7 +192,7 @@ export const OrganizationKnowledgeGraphPage = () => {
                               <CustomSwitch
                                 checked={selectedVendors?.includes(vendor.name)}
                                 disabled={
-                                  index.data?.state?.status === "pending" ||
+                                  index?.state?.status === "pending" ||
                                   isPending
                                 }
                                 onChange={(e: {
@@ -300,11 +273,11 @@ export const OrganizationKnowledgeGraphPage = () => {
                 />
               )}
               <Box>
-                {index.data?.updatedAt && (
+                {index?.updatedAt && (
                   <div style={{ margin: "10px 0" }}>
                     <Typography level="title-sm">Last Indexed at: </Typography>
                     <Typography level="body-sm">
-                      {formatDate(index.data?.updatedAt)}
+                      {formatDate(index?.updatedAt)}
                     </Typography>
                   </div>
                 )}
@@ -329,25 +302,25 @@ export const OrganizationKnowledgeGraphPage = () => {
               onClick={() => setConfirmOpen(true)}
               disabled={
                 selectedVendors.length === 0 ||
-                index.data?.state?.status === "pending" ||
+                job?.status === "pending" ||
                 isPending
               }
             >
               {submitLabel}
             </Button>
-            {index.data?.state?.status === "pending" || isPending ? (
+            {job?.status === "pending" || isPending ? (
               <>
                 <CircularProgress sx={{ marginLeft: "20px" }} size="sm" />
                 <Typography sx={{ marginLeft: "20px" }}>
                   {statusText}
                 </Typography>
               </>
-            ) : index.data?.state?.status === "failed" ? (
+            ) : job?.status === "failed" ? (
               <Typography sx={{ color: "red", marginLeft: "20px" }}>
                 Index creation failed, please try again or contact support.
               </Typography>
             ) : null}
-            {index?.data?.state?.status === "pending" && (
+            {job?.status === "pending" && (
               <span style={{ width: "300px", margin: "0 auto" }}>
                 <LinearProgress
                   variant="outlined"
@@ -369,18 +342,16 @@ export const OrganizationKnowledgeGraphPage = () => {
           onClose={() => setConfirmOpen(false)}
           message={confirmMessage}
         />
-        {index.data &&
-          !isPending &&
-          index.data?.state?.status !== "pending" && (
-            <DangerZone
-              title="Delete Knowledge Graph"
-              description="Once deleted, it will be gone forever. Please be certain."
-              dialogContent={`Are you sure you want to delete your organizations knowledge graph?`}
-              onDelete={handleDelete}
-              deleteButtonText="Delete Graph"
-              sx={{ marginTop: "30px" }}
-            />
-          )}
+        {index && !isPending && index?.state?.status !== "pending" && (
+          <DangerZone
+            title="Delete Knowledge Graph"
+            description="Once deleted, it will be gone forever. Please be certain."
+            dialogContent={`Are you sure you want to delete your organizations knowledge graph? This action is irreversible.`}
+            onDelete={handleDelete}
+            deleteButtonText="Delete Graph"
+            sx={{ marginTop: "30px" }}
+          />
+        )}
       </Box>
     </Box>
   );

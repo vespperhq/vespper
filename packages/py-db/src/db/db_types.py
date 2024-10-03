@@ -1,6 +1,6 @@
 from typing import Dict, List, Literal, Optional, Union
-from pydantic import Field, BaseModel
-from models.common import CommonDBModel, PyObjectId
+from pydantic import BaseModel
+from db.common import CommonDBModel, PyObjectId
 
 
 class Vendor(CommonDBModel):
@@ -37,8 +37,22 @@ class IndexState(BaseModel):
 class Index(CommonDBModel):
     organization: Union[PyObjectId, Organization]
     dataSources: List[str]
+    name: str
+    type: Literal["chromadb", "pinecone"]
     stats: Optional[dict] = None
     state: IndexState
+
+
+class Snapshot(CommonDBModel):
+    stats: Optional[dict] = None
+    organization: Union[PyObjectId, Organization]
+
+
+class Job(CommonDBModel):
+    organization: Union[PyObjectId, Organization]
+    type: Literal["ingest-knowledge"]
+    status: Literal["pending", "completed", "failed"]
+    phase: str
 
 
 class Plan(CommonDBModel):

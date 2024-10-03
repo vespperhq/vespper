@@ -56,15 +56,20 @@ services:
       service: slackbot-common
     image: vespperhq/slackbot:latest
   data-processor:
-    extends:
-      file: docker-compose.common.yml
-      service: data-processor-common
-    image: vespperhq/data-processor:latest
+      extends:
+        file: docker-compose.common.yml
+        service: data-processor-common
+      image: vespperhq/data-processor:latest
   log-parser:
     extends:
       file: docker-compose.common.yml
       service: log-parser-common
     image: vespperhq/log-parser:latest
+  doc-indexer:
+    extends:
+      file: docker-compose.common.yml
+      service: doc-indexer-common
+    image: vespperhq/doc-indexer:latest
   dashboard:
     extends:
       file: docker-compose.common.yml

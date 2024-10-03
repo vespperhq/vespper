@@ -1,8 +1,8 @@
 from typing import List
-from db.types import Integration
+from db.db_types import Integration
 from loaders.readers.pagerduty import PagerDutyReader
 
-from db.types import Integration
+from db.db_types import Integration
 from loaders.base import BaseLoader
 from llama_index.core.schema import Document
 

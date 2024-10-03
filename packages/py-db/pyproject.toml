@@ -1,0 +1,40 @@
+[tool.poetry]
+name = "py-db"
+version = "0.1.0"
+description = ""
+authors = ["Dudu Lasry <davidlasry696@gmail.com>"]
+packages = [{ include = "db", from = "src" }]
+
+[tool.poetry.dependencies]
+python = "3.10.5"
+motor = "^3.3.2"
+python-dotenv = { extras = ["cli"], version = "^1.0.1" }
+certifi = "^2024.2.2"
+
+pydantic = "^2.6.1"
+tqdm = "^4.66.2"
+
+pygithub = "^2.2.0"
+nest-asyncio = "^1.6.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.1.1"
+pytest-sugar = "^1.0.0"
+pytest-cov = "^5.0.0"
+pytest-html = "^4.1.1"
+ruff = "^0.3.7"
+
+[tool.coverage.report]
+exclude_lines = ['if TYPE_CHECKING:']
+show_missing = true
+
+[tool.pytest.ini_options]
+addopts = "--cov --cov-report html:'./coverage/html' --cov-report xml:'./coverage/coverage.xml' --html='./reports/unittests/html/index.html' --junitxml='./reports/unittests/junit.xml'"
+
+[tool.ruff.lint]
+ignore = ["E402"] # module level import not at top of file
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
