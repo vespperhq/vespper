@@ -36,6 +36,9 @@ selfservice:
   methods:
     password:
       enabled: true
+      config:
+        haveibeenpwned_enabled: false
+        min_password_length: 6
     totp:
       config:
         issuer: Kratos
