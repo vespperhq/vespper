@@ -49,21 +49,33 @@ async def start_build_index(
     if not snapshot:
         raise HTTPException(status_code=404, detail="Snapshot not found")
 
+    data_sources = list(snapshot.stats.keys())
+
     job = await job_model.get_one_by_id(job_id)
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
 
     index = await index_model.get_one({"organization": snapshot.organization})
     if not index:
-        index = await index_model.create({"organization": snapshot.organization})
+        initial_state = {
+            "status": "pending",
+            "integrations": {source: "in_queue" for source in data_sources},
+        }
+        index = await index_model.create(
+            {
+                "name": str(snapshot.organization),
+                "type": "chromadb",
+                "organization": snapshot.organization,
+                "dataSources": data_sources,
+                "state": initial_state,
+            }
+        )
 
-    data_sources = snapshot.stats
     background_tasks.add_task(
         build_index,
         snapshot_id=snapshot.id,
         index_id=index.id,
         job_id=job.id,
-        data_sources=data_sources,
     )
 
     return index

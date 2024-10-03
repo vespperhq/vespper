@@ -209,6 +209,7 @@ services:
     profiles: ["app"]
     environment:
       - TELEMETRY_ENABLED
+      - DOC_INDEXER_URL
       - SECRET_MANAGER_TYPE
       - SECRET_MANAGER_DIRECTORY
       - SNAPSHOTS_DIRECTORY
@@ -221,6 +222,20 @@ services:
       - "${DATA_PROCESSOR_PORT}:${DATA_PROCESSOR_PORT}"
     volumes:
       - ${DATA_DIR}/secrets:${SECRET_MANAGER_DIRECTORY}
+      - ${DATA_DIR}/snapshots:${SNAPSHOTS_DIRECTORY}
+    depends_on:
+      - mongo
+  doc-indexer-common:
+    container_name: doc-indexer
+    profiles: ["app"]
+    environment:
+      - TELEMETRY_ENABLED
+      - SNAPSHOTS_DIRECTORY
+      - MONGO_URI
+      - IS_DOCKER=true
+    ports:
+      - "${DOC_INDEXER_PORT}:${DOC_INDEXER_PORT}"
+    volumes:
       - ${DATA_DIR}/snapshots:${SNAPSHOTS_DIRECTORY}
     depends_on:
       - mongo

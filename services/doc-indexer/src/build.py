@@ -1,6 +1,8 @@
 import traceback
+from typing import List
 import nest_asyncio
 from storage.file import AsyncFileStorage
+from llama_index.core.schema import Document
 
 from utils import is_enterprise
 from nodes import documents_to_nodes
@@ -51,10 +53,12 @@ async def build_index(
     try:
         snapshot = await snapshot_model.get_one_by_id(snapshot_id)
         index = await index_model.get_one_by_id(index_id)
+        job = await job_model.get_one_by_id(job_id)
 
         # Update job status
+        new_status = {"metadata": {"phase": "indexing"}}
         await job_model.get_one_by_id_and_update(
-            job_id, {"$set": {"status": {"metadata": {"phase": "indexing"}}}}
+            job_id, {"status": {**job.status.model_dump(), **new_status}}
         )
 
         store = get_vector_store(index.name, index.type)
@@ -63,44 +67,47 @@ async def build_index(
             await store.create_index()
 
         vector_store = store.get_llama_index_store()
-        file_store = AsyncFileStorage()
 
-        documents = await load_documents(file_store, snapshot_id)
-        documents_to_index = documents["new"] + documents["changed"]
+        directory = os.getenv("SNAPSHOTS_DIRECTORY")
+        if not directory:
+            raise ValueError("SNAPSHOTS_DIRECTORY is not set")
+        file_store = AsyncFileStorage(directory)
+
+        documents = await load_documents(file_store, str(snapshot_id))
+        documents_to_index: List[Document] = []
 
         total_nodes = []
         stats = {}
         for vendor in documents.keys():
             vendor_documents = documents[vendor]
-            total_documents = sum(
+            n_total_documents = sum(
                 [
                     len(status_documents)
                     for status_documents in vendor_documents.values()
                 ],
                 0,
             )
-            print(f"Found total of {len(total_documents)} documents for {vendor}")
+            print(f"Found total of {n_total_documents} documents for {vendor}")
 
-            for status in [
-                status for status in SNAPSHOT_STATUSES if status != "unchanged"
-            ]:
+            for status in ["new", "changed"]:
+                documents_to_index.extend(documents[vendor][status])
                 nodes = documents_to_nodes(documents[vendor][status])
                 total_nodes.extend(nodes)
 
-            n_existing_nodes = index.get("stats") and sum(index["stats"].values()) or 0
-            stats[vendor] = n_existing_nodes + len(vendor_documents["new"])
+            n_existing_docs = index.stats and sum(index.stats.values()) or 0
+            stats[vendor] = n_existing_docs + len(vendor_documents["new"])
 
         # Delete nodes of documents that are about to be re-indexed
         if len(documents_to_index) > 0:
             docs_to_delete = list(
-                set([document.ref_doc_id for document in documents_to_index])
+                set([document.doc_id for document in documents_to_index])
             )
             vector_store.delete(ref_doc_id=docs_to_delete)
 
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
 
         VectorStoreIndex(
-            documents,
+            total_nodes,
             vector_store=vector_store,
             show_progress=True,
             embed_model=get_embed_model(),

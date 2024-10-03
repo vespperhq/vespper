@@ -9,8 +9,5 @@ def documents_to_nodes(documents: List[Document], chunk_size: int = 1024) -> Lis
     pipeline = IngestionPipeline(
         transformations=[SentenceSplitter(chunk_size=chunk_size)],
     )
-    num_cpus = os.cpu_count()
-    num_workers = min(4, num_cpus) if num_cpus > 1 else 1
-
-    nodes = pipeline.run(documents=documents, num_workers=num_workers)
+    nodes = pipeline.run(documents=documents)
     return nodes

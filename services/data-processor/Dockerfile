@@ -10,7 +10,12 @@ RUN apt-get update \
     build-essential
 RUN pip install --no-cache-dir poetry==1.7.1
 
-COPY pyproject.toml poetry.lock ./
+COPY packages/py-db packages/py-db
+COPY packages/py-storage packages/py-storage
+COPY services/data-processor/pyproject.toml services/data-processor/
+COPY services/data-processor/poetry.lock services/data-processor/
+
+WORKDIR /app/services/data-processor
 RUN poetry config virtualenvs.create true && \
     poetry config virtualenvs.in-project true && \
     poetry install --no-root --no-dev --no-interaction
@@ -19,8 +24,8 @@ RUN poetry config virtualenvs.create true && \
 # To circumvent this, we install pysqlite3-binary and switch it in sysmodules.
 # https://stackoverflow.com/questions/77004853/chromadb-langchain-with-sentencetransformerembeddingfunction-throwing-sqlite3
 RUN poetry add pysqlite-binary
-
 RUN poetry run python -m nltk.downloader punkt stopwords -d ${NLTK_DATA}
-COPY . .
+
+COPY services/data-processor .
 
 CMD ["poetry", "run", "python", "src/main.py"]

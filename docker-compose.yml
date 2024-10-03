@@ -64,7 +64,15 @@ services:
       file: docker-compose.common.yml
       service: data-processor-common
     build:
-      context: services/data-processor
+      context: "."
+      dockerfile: services/data-processor/Dockerfile
+  doc-indexer:
+    extends:
+      file: docker-compose.common.yml
+      service: doc-indexer-common
+    build:
+      context: "."
+      dockerfile: services/doc-indexer/Dockerfile
   log-parser:
     extends:
       file: docker-compose.common.yml
