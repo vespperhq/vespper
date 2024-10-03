@@ -14,12 +14,10 @@ const JobSchema = new Schema<IJob>(
       enum: ["ingest-knowledge"],
     },
     status: {
-      type: {
-        type: String,
-        enum: ["pending", "completed", "failed"],
-      },
-      metadata: Schema.Types.Mixed,
+      type: String,
+      enum: ["pending", "completed", "failed"],
     },
+    phase: String,
   },
   { timestamps: true },
 );

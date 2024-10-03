@@ -52,10 +52,8 @@ export type IJob = {
   _id: Types.ObjectId;
   organization: Types.ObjectId | IOrganization;
   type: "ingest-knowledge";
-  status: {
-    type: "pending" | "created" | "failed";
-    metadata: Record<string, unknown>;
-  };
+  status: "pending" | "created" | "failed";
+  phase: string;
 };
 
 export interface IPlan {

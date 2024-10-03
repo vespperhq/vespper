@@ -11,6 +11,7 @@ import {
   organizationsRouter,
   indexRouter,
   featuresRouter,
+  jobsRouter,
 } from "./routers";
 import { errorHandler, invalidPathHandler } from "./middlewares/errors";
 import cookieParser from "cookie-parser";
@@ -41,6 +42,7 @@ app.use("/invite", inviteRouter);
 app.use("/organizations", organizationsRouter);
 app.use("/index", indexRouter);
 app.use("/features", featuresRouter);
+app.use("/jobs", jobsRouter);
 app.all("*", invalidPathHandler); // Handle 404
 
 // Global error handler

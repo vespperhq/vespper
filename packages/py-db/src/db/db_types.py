@@ -48,15 +48,11 @@ class Snapshot(CommonDBModel):
     organization: Union[PyObjectId, Organization]
 
 
-class JobStatus(BaseModel):
-    type: Literal["pending", "completed", "failed"]
-    metadata: Optional[dict] = None
-
-
 class Job(CommonDBModel):
     organization: Union[PyObjectId, Organization]
     type: Literal["ingest-knowledge"]
-    status: JobStatus
+    status: Literal["pending", "completed", "failed"]
+    phase: str
 
 
 class Plan(CommonDBModel):

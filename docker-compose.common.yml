@@ -15,7 +15,7 @@ services:
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     volumes:
-      - ${DATA_DIR}/postgres:/var/lib/postgresql
+      - ${DATA_DIR}/postgres:/var/lib/postgresql/data
       - ${CONFIG_DIR}/postgres/postgres_init.sh:/docker-entrypoint-initdb.d/init.sh
     environment:
       - POSTGRES_PASSWORD
@@ -38,7 +38,7 @@ services:
     profiles: ["app", "infra"]
     restart: always
     volumes:
-      - ${DATA_DIR}/mongo:/data:rw
+      - ${DATA_DIR}/mongo:/data/db:rw
     ports:
       - "${MONGO_PORT}:${MONGO_PORT}"
   chroma-common:
@@ -233,6 +233,11 @@ services:
       - SNAPSHOTS_DIRECTORY
       - MONGO_URI
       - IS_DOCKER=true
+      - CHROMA_HOST=chroma
+      - CHROMA_SSL=false
+      - CHROMA_PORT=8000
+      - CHROMA_API_KEY=${CHROMA_SERVER_AUTHN_CREDENTIALS}
+      - LITELLM_URL
     ports:
       - "${DOC_INDEXER_PORT}:${DOC_INDEXER_PORT}"
     volumes:

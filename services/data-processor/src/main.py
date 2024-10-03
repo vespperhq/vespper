@@ -52,10 +52,8 @@ async def start_build_snapshot(
     job = await job_model.create(
         data={
             "type": "ingest-knowledge",
-            "status": {
-                "type": "pending",
-                "metadata": {"phase": "collecting-documents"},
-            },
+            "status": "pending",
+            "phase": "collecting-documents",
             "organization": ObjectId(organization_id),
         }
     )

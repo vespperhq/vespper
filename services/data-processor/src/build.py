@@ -27,9 +27,7 @@ async def build_snapshot(
     try:
 
         async def update_status(vendor_name: str, status: str):
-            await job_model.get_one_by_id_and_update(
-                job_id, data={f"status.metadata.integrations.{vendor_name}": status}
-            )
+            print(f"Updating status for {vendor_name} to {status}")
 
         job = await job_model.get_one_by_id(job_id)
         snapshot = await snapshot_model.create(data={"organization": job.organization})

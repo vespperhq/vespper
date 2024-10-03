@@ -3,7 +3,12 @@ import axios from "axios";
 import { checkAuth, getDBUser } from "../middlewares/auth";
 import { catchAsync } from "../utils/errors";
 import { AppError, ErrorCode } from "../errors";
-import { indexModel, integrationModel, PlanFieldCode } from "@vespper/db";
+import {
+  indexModel,
+  integrationModel,
+  PlanFieldCode,
+  snapshotModel,
+} from "@vespper/db";
 import { refreshAtlassianToken } from "../services/oauth";
 import type { AtlassianIntegration, IIntegration } from "@vespper/db";
 import { zip } from "../utils/arrays";
@@ -156,6 +161,7 @@ router.delete(
 
     // Delete internal index
     await indexModel.deleteOneById(id);
+    await snapshotModel.delete({ organization: req.user!.organization._id });
 
     return res.status(200).json({ message: "Successfully deleted index" });
   }),

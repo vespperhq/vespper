@@ -8,3 +8,5 @@ export { planStateModel } from "./planState";
 export { userModel } from "./user";
 export { vendorModel } from "./vendor";
 export { webhookModel } from "./webhook";
+export { snapshotModel } from "./snapshot";
+export { jobModel } from "./job";

@@ -56,10 +56,7 @@ async def build_index(
         job = await job_model.get_one_by_id(job_id)
 
         # Update job status
-        new_status = {"metadata": {"phase": "indexing"}}
-        await job_model.get_one_by_id_and_update(
-            job_id, {"status": {**job.status.model_dump(), **new_status}}
-        )
+        await job_model.get_one_by_id_and_update(job_id, {"phase": "indexing"})
 
         store = get_vector_store(index.name, index.type)
 
@@ -117,6 +114,10 @@ async def build_index(
         await index_model.get_one_by_id_and_update(
             index_id,
             {"state.status": "completed", "stats": stats},
+        )
+        await job_model.get_one_by_id_and_update(
+            job_id,
+            {"status": "completed", "phase": "completed"},
         )
 
         # If it's an enterprise environment, update the plan state
