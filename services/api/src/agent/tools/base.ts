@@ -7,7 +7,7 @@ import {
   OpenAIToolsAgentOutputParser,
   ToolsAgentStep,
 } from "langchain/agents/openai/output_parser";
-import { Tool } from "@tools/types";
+import { Tool } from "../tools/types";
 import { ChatPromptTemplate } from "langchain/prompts";
 import { ChatOpenAI } from "langchain/chat_models/openai";
 

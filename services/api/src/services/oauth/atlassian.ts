@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
 import { integrationModel } from "@vespper/db";
 import type { AtlassianIntegration } from "@vespper/db";
-import { AtlassianClient } from "@clients/index";
+import { AtlassianClient } from "../../clients";
 import { AppError } from "../../errors";
 import { secretManager } from "../../common/secrets";
 

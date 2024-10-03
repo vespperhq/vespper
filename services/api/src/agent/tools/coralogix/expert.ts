@@ -4,12 +4,12 @@ import CallbackHandler from "langfuse-langchain";
 import { ChatPromptTemplate, MessagesPlaceholder } from "langchain/prompts";
 import { CoralogixIntegration } from "@vespper/db";
 import { default as logsExpertTool } from "./logs_expert";
-import { createAgent } from "@tools/base";
-import { RunContext } from "@agent/types";
-import { AnswerContext, LLMCallbacks } from "@agent/callbacks";
-import { buildOutput } from "@tools/utils";
+import { createAgent } from "../base";
+import { RunContext } from "../../../agent/types";
+import { AnswerContext, LLMCallbacks } from "../../../agent/callbacks";
+import { buildOutput } from "../utils";
 import { Callbacks } from "langchain/callbacks";
-import { isLangfuseEnabled } from "@utils/ee";
+import { isLangfuseEnabled } from "../../../utils/ee";
 
 const TOOL_LOADERS = [logsExpertTool];
 

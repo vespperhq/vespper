@@ -7,7 +7,7 @@ import {
   Timeframe,
   getTimestamp,
   timeframe2values,
-} from "@utils/dates";
+} from "../../../utils/dates";
 import { buildOutput } from "../utils";
 import { CoralogixClient } from "../../../clients";
 import { getPrettyLogAnalysis } from "./utils";
