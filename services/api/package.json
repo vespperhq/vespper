@@ -40,7 +40,7 @@
   "scripts": {
     "start": "node dist/src/server.js",
     "build": "npx tsc",
-    "watch": "npx nodemon -L --exec \"npx ts-node src/server.ts\" --ext ts",
+    "watch": "npx nodemon -L --exec \"npx ts-node --require tsconfig-paths/register src/server.ts\" --ext ts",
     "dev": "npx dotenv-cli -o -e ../../.env -e .env.dev yarn run watch",
     "tunnel": "source .env && ngrok http 3000 --domain=$TUNNEL_URL",
     "lint": "nx lint --ext ts",
