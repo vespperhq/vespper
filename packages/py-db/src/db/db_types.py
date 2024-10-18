@@ -52,7 +52,6 @@ class Job(CommonDBModel):
     organization: Union[PyObjectId, Organization]
     type: Literal["ingest-knowledge"]
     status: Literal["pending", "completed", "failed"]
-    phase: str
 
 
 class Plan(CommonDBModel):
