@@ -27,7 +27,7 @@
     "@ory/client": "^1.9.0",
     "@tanstack/react-query": "^5.17.0",
     "@tanstack/react-query-devtools": "^5.17.0",
-    "axios": "^1.6.2",
+    "axios": "^1.7.4",
     "axios-mock-adapter": "^1.22.0",
     "prism-react-renderer": "^2.3.1",
     "react": "^18.2.0",
@@ -60,7 +60,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "ts-jest": "^29.1.1",
     "typescript": "^5.2.2",
-    "vite": "^5.0.8"
+    "vite": "^5.1.8"
   },
   "nx": {
     "includedScripts": [
